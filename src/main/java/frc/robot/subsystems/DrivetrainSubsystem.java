@@ -151,8 +151,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
             BACK_LEFT_MODULE_STEER_OFFSET
     );
 
-    m_backLeftModule.get
-
     SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
         m_kinematics, getGyroscopeRotation(), new SwerveModulePosition[]{
                 new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -204,9 +202,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 //    return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
 }
 
-  public Pose2d getPose(){
-        return Pose2d(getGyroscopeRotation(), );
-  }
+//   public Pose2d getPose(){
+//         return Pose2d(getGyroscopeRotation(), );
+//   }
 
 
   public void drive(ChassisSpeeds chassisSpeeds) {

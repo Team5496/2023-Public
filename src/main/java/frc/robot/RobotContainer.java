@@ -75,8 +75,13 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("left/gotopieceleft", new PathConstraints(4.97, 3));
+  public Command getAutonomousCommand(String configuration, int count) {
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath(configuration+"/gotopiece"+configuration, new PathConstraints(4.97, 3));
+
+    if (count == 0) {
+      trajectory = PathPlanner.loadPath(configuration+"/gotopiece"+configuration, new PathConstraints(4.97, 3));
+    } else if (count == 1) {trajectory = PathPlanner.loadPath(configuration+"/placepiece"+configuration, new PathConstraints(4.97, 3));  }
+
     Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);
     PathPlannerState examplestate = (PathPlannerState) trajectory.sample(0.4);
     

@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,6 +19,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   // test commit lol 222
   private RobotContainer m_robotContainer;
+  private int count = 0;
+  private Command[] m_autonomousCommands = new Command[2];
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -56,18 +60,17 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+      for (int i = 0; i < 2; i++) {
+        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("left", i);
+      }
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+      SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
+      two_part_auto.schedule();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_robotContainer.m_drivetrainSubsystem.m_backleftPosition.distanceMeters += m_robotContainer.m_drivetrainSubsystem.m_backLeftModule.getDriveVelocity();
   }
 
   @Override

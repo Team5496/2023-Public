@@ -76,7 +76,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("longcurve", new PathConstraints(4.97, 3));
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("test", new PathConstraints(4.97, 3));
     Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);
     PathPlannerState examplestate = (PathPlannerState) trajectory.sample(0.4);
     

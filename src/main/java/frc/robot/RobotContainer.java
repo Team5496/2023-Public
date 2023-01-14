@@ -10,8 +10,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlanner;
 import frc.robot.commands.DefaultDriveCommand;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -72,8 +75,13 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("longcurve", new PathConstraints(4.97, 3));
+    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);
+    PathPlannerState examplestate = (PathPlannerState) trajectory.sample(0.4);
+    
+
+    System.out.println(examplestate.velocityMetersPerSecond);
+    return autocommand;
   }
 
   private static double deadband(double value, double deadband) {

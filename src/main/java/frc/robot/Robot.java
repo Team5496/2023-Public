@@ -66,7 +66,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_robotContainer.m_drivetrainSubsystem.m_backleftPosition.distanceMeters += m_robotContainer.m_drivetrainSubsystem.m_backLeftModule.getDriveVelocity();
+  }
 
   @Override
   public void teleopInit() {
@@ -83,7 +85,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    System.out.println(m_robotContainer.m_drivetrainSubsystem.get_yaw());
   }
 
   @Override

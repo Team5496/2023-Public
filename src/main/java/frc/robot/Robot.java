@@ -20,9 +20,7 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  // test commit lol 222
   private RobotContainer m_robotContainer;
-  private int count = 0;
   private Command[] m_autonomousCommands = new Command[2];
   private final Joystick m_codriver = new Joystick(1);
   private DoubleSolenoid scissor = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
@@ -94,6 +92,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    scissor.set(kReverse);
     Boolean activated = false;
     if (m_codriver.getRawButton(1) && activated == false){
       activated = true;

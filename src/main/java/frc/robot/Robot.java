@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
     if (m_codriver.getRawButton(1) && activated == false){
       activated = true;
       scissor.set(kForward);
-    } else if (m_codriver.getRawButton(1) && activated == true) {scissor.set(kReverse);}
+    } else if (m_codriver.getRawButton(1) && activated == true) {scissor.set(kReverse); activated = false;}
   }
 
   @Override

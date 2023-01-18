@@ -27,7 +27,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-
   private final Joystick m_controller = new Joystick(0);
 
   public void zeromotors() {
@@ -63,11 +62,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() { // commented for joystick support
-    // Back button zeros the gyroscope
+  private void configureButtonBindings() {
    // new Button(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
-            // .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+        //  .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
   }
 
   /**

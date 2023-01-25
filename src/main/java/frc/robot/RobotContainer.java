@@ -14,6 +14,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Lights;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,7 +26,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final Joystick m_controller = new Joystick(0);
-
+  private final Lights m_lights = new Lights();
   public void zeromotors() {
     m_drivetrainSubsystem.m_backLeftModule.set(0.0, 0.0);
     m_drivetrainSubsystem.m_backRightModule.set(0.0, 0.0);

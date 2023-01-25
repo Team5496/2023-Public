@@ -35,17 +35,17 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 2; //  Set front left module drive motor ID
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 4; //  Set front left module steer motor ID
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 10; //  Set front left steer encoder ID
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(332.46002197265625); //  Measure and set front left steer offset
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(342.06210937500003); //  Measure and set front left steer offset
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 5; //  Set front right drive motor ID
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 3; //  Set front right steer motor ID
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 9; //  Set front right steer encoder ID
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(202.752685546875); //  Measure and set front right steer offset
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(204.52031250000002); //  Measure and set front right steer offset
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 6; //  Set back left drive motor ID
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 1; //  Set back left steer motor ID
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 12; //  Set back left steer encoder ID
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(331.34765625); //  Measure and set back left steer offset
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(331.52109375000003); //  Measure and set back left steer offset
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 8; //  Set back right drive motor ID
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 7; //  Set back right steer motor ID
@@ -61,5 +61,4 @@ public final class Constants {
         LIGHT_STATES.put(LightStates.ON, LIGHT_STATE_ON);
         
     }
-
 } 

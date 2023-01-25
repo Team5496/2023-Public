@@ -60,6 +60,18 @@ public class Limelight
             : null;
     }
 
+    public double getDistanceToTarget() {
+        if (result.hasTargets()) {
+            return PhotonUtils.calculateDistanceToTargetMeters(
+                1.22,
+                0.36,
+                0.0,
+                Units.degreesToRadians(result.getBestTarget().getPitch()));
+        }
+        return 0.0;
+    }
+
+
     //not working
     public void changePipeline(int index) {
        // limelightTable.getEntry("pipeline").setNumber(index);

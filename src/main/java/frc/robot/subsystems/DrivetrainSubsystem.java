@@ -3,8 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import java.util.function.Consumer;
 import com.pathplanner.lib.commands.*;
@@ -15,6 +17,8 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.wpilibj2.command.Command;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Rotation2d;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.PathConstraints;
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -178,6 +182,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    }
 
 
+
+
   @Override
   public void periodic() {
     second_timer++;
@@ -223,6 +229,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 )
             );
         
+  }
+
+  public Command generateautotrajectory(Limelight limelight) {
+        Pose2d curr_robot_pose = m_odometry.getPoseMeters();
+
+        if (limelight.getCameraToTarget() != null) {
+                Transform3d apriltagtransform =  limelight.getCameraToTarget();
+                PathPlannerTrajectory traj1 = PathPlanner.generatePath(
+                        new PathConstraints(4, 3),
+                        new PathPoint(curr_robot_pose.getTranslation(), curr_robot_pose.getRotation()),
+                        new PathPoint(apriltagtransform.getTranslation().toTranslation2d(), apriltagtransform.getRotation().toRotation2d())
+                );
+
+                return generatetrajectory(traj1, false);
+        }
+
+        return null;
   }
 
 }

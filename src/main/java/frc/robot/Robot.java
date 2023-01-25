@@ -56,7 +56,6 @@ public class Robot extends TimedRobot {
     limelight.readPeriodically();
 
     if (limelight.getCameraToTarget() != null) {
-      limelight.printID();
     }
   }
 
@@ -71,7 +70,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
       for (int i = 0; i < 2; i++) {
-        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("left", i);
+        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("center", i);
       }
 
       SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
@@ -82,17 +81,21 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    limelight.readPeriodically();
+
+    if (limelight.getCameraToTarget() != null) {
+    }
+
   }
 
   @Override
   public void teleopInit() {
-    Command zeromotors = m_robotContainer.m_drivetrainSubsystem.zeromotors();
-    zeromotors.schedule();
-
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
   
+    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
+
   }
 
   /** This function is called periodically during operator control. */

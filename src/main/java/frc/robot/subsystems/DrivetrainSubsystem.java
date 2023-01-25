@@ -233,19 +233,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public Command generateautotrajectory(Limelight limelight) {
         Pose2d curr_robot_pose = m_odometry.getPoseMeters();
+        Transform3d apriltagtransform =  limelight.getCameraToTarget();
+        PathPlannerTrajectory traj1 = PathPlanner.generatePath(
+                new PathConstraints(4, 3),
+                new PathPoint(curr_robot_pose.getTranslation(), curr_robot_pose.getRotation()),
+                new PathPoint(apriltagtransform.getTranslation().toTranslation2d(), apriltagtransform.getRotation().toRotation2d())
+        );
 
-        if (limelight.getCameraToTarget() != null) {
-                Transform3d apriltagtransform =  limelight.getCameraToTarget();
-                PathPlannerTrajectory traj1 = PathPlanner.generatePath(
-                        new PathConstraints(4, 3),
-                        new PathPoint(curr_robot_pose.getTranslation(), curr_robot_pose.getRotation()),
-                        new PathPoint(apriltagtransform.getTranslation().toTranslation2d(), apriltagtransform.getRotation().toRotation2d())
-                );
-
-                return generatetrajectory(traj1, false);
-        }
-
-        return null;
+        return generatetrajectory(traj1, false);
   }
 
 }

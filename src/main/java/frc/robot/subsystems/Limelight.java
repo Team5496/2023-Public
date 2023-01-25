@@ -56,14 +56,13 @@ public class Limelight
 
     //gets the transform that maps the camera space to the tag space
     public Transform3d getCameraToTarget() {
-        return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget()
-            : null;
+        return result.getBestTarget().getBestCameraToTarget();
     }
 
     public double getDistanceToTarget() {
         if (result.hasTargets()) {
             return PhotonUtils.calculateDistanceToTargetMeters(
-                1.22,
+                1.18,
                 0.36,
                 0.0,
                 Units.degreesToRadians(result.getBestTarget().getPitch()));

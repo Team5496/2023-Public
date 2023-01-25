@@ -55,8 +55,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     limelight.readPeriodically();
 
-    if (limelight.getCameraToTarget() != null) {
-    }
+    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -69,12 +68,12 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-      for (int i = 0; i < 2; i++) {
-        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("center", i);
-      }
+    //  for (int i = 0; i < 2; i++) {
+      //  m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("center", i);
+      //}
 
-      SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
-      two_part_auto.schedule();
+     // SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
+      //two_part_auto.schedule();
 
   }
 
@@ -83,7 +82,14 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     limelight.readPeriodically();
 
+
     if (limelight.getCameraToTarget() != null) {
+      System.out.println("ghere");
+      Command command = m_robotContainer.m_drivetrainSubsystem.generateautotrajectory(limelight);
+
+      if (command != null) {
+        command.schedule();
+      }
     }
 
   }

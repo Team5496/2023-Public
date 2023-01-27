@@ -47,16 +47,23 @@ public class Limelight
     }
 
     //for testing input from camera and output on computer
-    public void printID() {
+    public int getID() {
         if(result.hasTargets())
         {        
-            System.out.println(result.getBestTarget().getFiducialId());
+            return result.getBestTarget().getFiducialId();
         }
+
+        return 0;
     }
 
     //gets the transform that maps the camera space to the tag space
     public Transform3d getCameraToTarget() {
-        return result.getBestTarget().getBestCameraToTarget();
+        if (result.hasTargets()) {
+            System.out.println(result.getBestTarget().getBestCameraToTarget().getTranslation().getY());
+            return result.getBestTarget().getBestCameraToTarget();
+        } 
+
+        return null;
     }
 
     public double getDistanceToTarget() {

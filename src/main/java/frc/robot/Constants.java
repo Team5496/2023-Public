@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +51,8 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 8; //  Set back right drive motor ID
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 7; //  Set back right steer motor ID
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11; //  Set back right steer encoder ID
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(87.01171875); //  Measure and set back right steer offset
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(86.042578125); //  Measure and set back right steer offset
+    
     public static final Map<LightStates,String> LIGHT_STATES; 
     public static final String LIGHT_STATE_OFF =  "{'on':false}";
     public static final String LIGHT_STATE_ON =  "{'on':true}";
@@ -62,3 +64,4 @@ public final class Constants {
         
     }
 } 
+

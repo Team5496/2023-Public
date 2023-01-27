@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -84,6 +85,10 @@ public class RobotContainer {
 
     System.out.println(examplestate.velocityMetersPerSecond);
     return autocommand;
+  }
+
+  public Command getgeneratedcommand(Limelight limelight){
+    return m_drivetrainSubsystem.generateautotrajectory(limelight);
   }
 
   private static double deadband(double value, double deadband) {

@@ -9,10 +9,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.I2C;
+import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorMatchResult;
 import frc.robot.subsystems.Limelight;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj.Joystick;
+import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorSensorV3.RawColor;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -23,8 +29,19 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private Command[] m_autonomousCommands = new Command[2];
+  private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
-  private Boolean activated = false;
+
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
+  private final ColorMatch m_colorMatcher = new ColorMatch();
+  private final Color colorYellow = new Color(0.322265625, 0.567138671875, 0.111083984375);
+  private final Color colorPurple = new Color(0.174560546875, 0.30712890625, 0.5185546875);
+  private String gamepiece = "";
+
+  private Boolean foundapriltag = false;
+  private double recordedapriltagdistanceforpath = 0.0;
+  private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
 
 
@@ -37,6 +54,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();    
+    m_colorMatcher.addColorMatch(colorPurple);
+    m_colorMatcher.addColorMatch(colorYellow);
   }
 
   /**
@@ -48,13 +67,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-    limelight.readPeriodically();
+    Color detectedcolor =  m_colorSensor.getColor();
+    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
+    System.out.println(detectedcolor.red + ", " + detectedcolor.green + ", " + detectedcolor.blue);
+  
+    
+    if (match.color == colorYellow) {
+      gamepiece = "cone";
+    } else {
+      gamepiece = "cube";
+    }
 
+    System.out.println(gamepiece);
+
+    CommandScheduler.getInstance().run();
     
   }
 
@@ -82,15 +108,17 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     limelight.readPeriodically();
 
-
     if (limelight.getCameraToTarget() != null) {
-      System.out.println("ghere");
-      Command command = m_robotContainer.m_drivetrainSubsystem.generateautotrajectory(limelight);
+      if (foundapriltag == false) {
+        pollcommand_isfinished = m_robotContainer.getgeneratedcommand(limelight);
+        foundapriltag = true;
 
-      if (command != null) {
-        command.schedule();
+        recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
+        recordedapriltagID = limelight.getID();
+        pollcommand_isfinished.schedule();
       }
     }
+
 
   }
 
@@ -107,6 +135,20 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    if (limelight.getCameraToTarget() != null) {
+      switch(recordedapriltagID)
+      {
+        case 6:
+        case 7:
+        case 8:
+        case 3:
+        case 2:
+        case 1:
+
+      }
+    
+    }
+
   }
 
   @Override

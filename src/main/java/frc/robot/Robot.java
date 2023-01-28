@@ -69,7 +69,6 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     Color detectedcolor =  m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
-    System.out.println(detectedcolor.red + ", " + detectedcolor.green + ", " + detectedcolor.blue);
   
     
     if (match.color == colorYellow) {
@@ -77,8 +76,6 @@ public class Robot extends TimedRobot {
     } else {
       gamepiece = "cube";
     }
-
-    System.out.println(gamepiece);
 
     CommandScheduler.getInstance().run();
     
@@ -118,9 +115,10 @@ public class Robot extends TimedRobot {
         pollcommand_isfinished.schedule();
       }
     }
-
-
   }
+
+
+  
 
   @Override
   public void teleopInit() {
@@ -135,10 +133,12 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    limelight.readPeriodically();
     if (limelight.getCameraToTarget() != null) {
       switch(recordedapriltagID)
       {
         case 6:
+        
         case 7:
         case 8:
         case 3:

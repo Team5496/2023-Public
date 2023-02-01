@@ -59,7 +59,7 @@ public class Limelight
     //gets the transform that maps the camera space to the tag space
     public Transform3d getCameraToTarget() {
         if (result.hasTargets()) {
-            System.out.println(result.getBestTarget().getBestCameraToTarget().getTranslation().getY());
+            System.out.println(result.getBestTarget().getBestCameraToTarget().getTranslation().getX());
             return result.getBestTarget().getBestCameraToTarget();
         } 
 

@@ -115,6 +115,17 @@ public class Robot extends TimedRobot {
         pollcommand_isfinished.schedule();
       }
     }
+
+    if (pollcommand_isfinished.isFinished()) {
+      foundapriltag = false;
+
+      if (gamepiece == "cube") {Command command = m_robotContainer.getSimpleCommand("right"); command.schedule();}
+      else {
+        Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
+      }
+    }
+
+
   }
 
 

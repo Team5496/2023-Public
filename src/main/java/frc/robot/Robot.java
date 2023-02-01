@@ -118,6 +118,7 @@ public class Robot extends TimedRobot {
 
     if (pollcommand_isfinished.isFinished()) {
       foundapriltag = false;
+      System.out.println("finished");
 
       if (gamepiece == "cube") {Command command = m_robotContainer.getSimpleCommand("right"); command.schedule();}
       else {

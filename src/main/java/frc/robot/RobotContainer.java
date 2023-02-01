@@ -89,7 +89,8 @@ public class RobotContainer {
 
   public Command getSimpleCommand(String config) {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath(config, new PathConstraints(4, 3));
-    
+    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, false);
+    return autocommand;
   }
 
   public Command getgeneratedcommand(Limelight limelight){

@@ -166,10 +166,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public Consumer<SwerveModuleState[]> consume_states = states -> { // swerve consumer, just feeds into drivebase and then purges states
         SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
-        m_frontLeftModule.set(states[0].speedMetersPerSecond / 2 / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-        m_frontRightModule.set(states[1].speedMetersPerSecond / 2 / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-        m_backLeftModule.set(states[2].speedMetersPerSecond / 2  / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-        m_backRightModule.set(states[3].speedMetersPerSecond / 2 / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians()); 
+        m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
+        m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
+        m_backLeftModule.set(states[2].speedMetersPerSecond  / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
+        m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians()); 
   };
     
   public Command zeromotors(){
@@ -231,17 +231,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
         
   }
 
-  public Command generateautotrajectory(Limelight limelight) {
-        Pose2d curr_robot_pose = m_odometry.getPoseMeters();
-        Transform3d apriltagtransform =  limelight.getCameraToTarget();
-
-        PathPlannerTrajectory traj1 = PathPlanner.generatePath(
-                new PathConstraints(4, 3),
-                new PathPoint(curr_robot_pose.getTranslation(), curr_robot_pose.getRotation()),
-                new PathPoint(apriltagtransform.getTranslation().toTranslation2d(), apriltagtransform.getRotation().toRotation2d())
-        );
-
-        return generatetrajectory(traj1, false);
-  }
 
 }

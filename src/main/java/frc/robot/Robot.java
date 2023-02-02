@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private Command[] m_autonomousCommands = new Command[2];
+  private Command[] m_autonomousArmCommands = new Command[2];
   private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
 
@@ -88,43 +89,40 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {}
 
+
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    //  for (int i = 0; i < 2; i++) {
-      //  m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("center", i);
-      //}
+      for (int i = 0; i < 2; i++) {
+        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("right", i);
+        m_autonomousArmCommands[i] = m_robotContainer.getSimpleCommand("left");
+      }
 
-     // SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
-      //two_part_auto.schedule();
 
+      SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1], m_autonomousArmCommands[0]);
+      two_part_auto.schedule();
   }
-
+ 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
     limelight.readPeriodically();
 
     if (limelight.getCameraToTarget() != null) {
-      if (foundapriltag == false) {
-        pollcommand_isfinished = m_robotContainer.getgeneratedcommand(limelight);
-        foundapriltag = true;
-
         recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
         recordedapriltagID = limelight.getID();
-        pollcommand_isfinished.schedule();
-      }
+
     }
 
-    if (pollcommand_isfinished.isFinished()) {
-      foundapriltag = false;
-      System.out.println("finished");
+   // if (true) {
+     // foundapriltag = false;
+      //System.out.println("finished");
 
-      if (gamepiece == "cube") {Command command = m_robotContainer.getSimpleCommand("right"); command.schedule();}
-      else {
-        Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
-      }
-    }
+      //if (gamepiece == "cube") {Command command = m_robotContainer.getSimpleCommand("right"); command.schedule();}
+      //else {
+        //Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
+      //}
+    //}
 
 
   }

@@ -38,7 +38,7 @@ public class Limelight
         ta = limelightTable.getEntry("ta");
         
         try {
-            aprilTagFieldLayout = new AprilTagFieldLayout("C:/Users/mentor/Documents/swervedrivedrop/swerve-template-xbox-Imported/src/main/java/frc/robot/AprilTagFieldLayout.json");
+            aprilTagFieldLayout = new AprilTagFieldLayout("april.json");
         } catch (IOException e) {
             System.out.println("File not found");
             e.printStackTrace();

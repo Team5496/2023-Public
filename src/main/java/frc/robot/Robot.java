@@ -94,12 +94,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
       for (int i = 0; i < 2; i++) {
-        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("right", i);
-        m_autonomousArmCommands[i] = m_robotContainer.getSimpleCommand("left");
+        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("left", i);
       }
 
-
-      SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1], m_autonomousArmCommands[0]);
+      m_autonomousArmCommands[0] = m_robotContainer.getSimpleCommand("left");
+ 
+      SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
       two_part_auto.schedule();
   }
  

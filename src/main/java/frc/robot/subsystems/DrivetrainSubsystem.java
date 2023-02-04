@@ -220,9 +220,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new PPSwerveControllerCommand(
                     traj, 
                     get_pose, // Pose supplier
-                    m_kinematics, // SwerveDriveKinematics
-                    new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                    new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+                    m_kinematics, // kP 0.013
+                    new PIDController(0.013, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.013, 0, 0), // Y controller (usually the same values as X controller)
                     new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                     consume_states, // Module states consumer
                     this // Requires this drive subsystem

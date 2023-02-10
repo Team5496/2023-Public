@@ -28,13 +28,6 @@ public class RobotContainer {
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
-  public void zeromotors() {
-    m_drivetrainSubsystem.m_backLeftModule.set(0.0, 0.0);
-    m_drivetrainSubsystem.m_backRightModule.set(0.0, 0.0);
-    m_drivetrainSubsystem.m_frontLeftModule.set(0.0, 0.0);
-    m_drivetrainSubsystem.m_frontRightModule.set(0.0, 0.0);
-  }
-
   public double exponentiate(double x){
     return Math.pow(x, 3);
   }
@@ -42,6 +35,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+
   public RobotContainer() {
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -50,9 +44,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis((exponentiate(m_controller.getY()))) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(exponentiate(m_controller.getX())) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(exponentiate(m_controller.getZ())) * 0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis((m_controller.getY())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis((m_controller.getX())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getZ()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings
@@ -79,14 +73,11 @@ public class RobotContainer {
   public Command getAutonomousCommand(String configuration, int count) {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath(configuration+"/gotopiece"+configuration, new PathConstraints(4.97, 3));
 
-    switch (count){
-      case 0:
-        trajectory = PathPlanner.loadPath(configuration+"/gotopiece"+configuration, new PathConstraints(4.97, 3));
-      case 1:
-        trajectory = PathPlanner.loadPath(configuration+"/placepiece"+configuration, new PathConstraints(4.97, 3));
-    }
+    if (count == 0) {
+      trajectory = PathPlanner.loadPath(configuration+"/gotopiece"+configuration, new PathConstraints(4.97, 3));
+    } else if (count == 1) {trajectory = PathPlanner.loadPath(configuration+"/placepiece"+configuration, new PathConstraints(4.97, 3));  }
 
-    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);
+    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, false);
     PathPlannerState examplestate = (PathPlannerState) trajectory.sample(0.4);
     
 

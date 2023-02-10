@@ -90,14 +90,13 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {}
 
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /** This autonomous runs the autonomous com1op  mand selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+      m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
       for (int i = 0; i < 2; i++) {
-        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("left", i);
+        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("right", i);
       }
-
-      m_autonomousArmCommands[0] = m_robotContainer.getSimpleCommand("left");
  
       SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
       two_part_auto.schedule();
@@ -106,13 +105,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    limelight.readPeriodically();
+    // limelight.readPeriodically();
 
-    if (limelight.getCameraToTarget() != null) {
-        recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
-        recordedapriltagID = limelight.getID();
+    // if (limelight.getCameraToTarget() != null) {
+    //     recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
+    //     recordedapriltagID = limelight.getID();
 
-    }
+    // }
 
    // if (true) {
      // foundapriltag = false;

@@ -16,6 +16,7 @@ import com.revrobotics.ColorMatchResult;
 import frc.robot.subsystems.Limelight;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorSensorV3.RawColor;
@@ -32,6 +33,7 @@ public class Robot extends TimedRobot {
   private Command[] m_autonomousArmCommands = new Command[2];
   private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
+  private Servo actuator = new Servo(0);
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
@@ -122,8 +124,6 @@ public class Robot extends TimedRobot {
         //Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
       //}
     //}
-
-
   }
 
 
@@ -131,6 +131,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    actuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+    actuator.set(1.0);
+  
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

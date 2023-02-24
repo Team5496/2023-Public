@@ -6,20 +6,27 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.I2C;
 import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatchResult;
 import frc.robot.subsystems.Limelight;
+import edu.wpi.first.wpilibj.DigitalInput;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorSensorV3.RawColor;
+import frc.robot.subsystems.Elevator;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import frc.robot.subsystems.Arm;
+import com.revrobotics.RelativeEncoder;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -33,6 +40,9 @@ public class Robot extends TimedRobot {
   private Command[] m_autonomousArmCommands = new Command[2];
   private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
+  private CANSparkMax motor = new CANSparkMax(2, MotorType.kBrushless);
+  private RelativeEncoder encoder = motor.getEncoder();
+
   private Servo actuator = new Servo(0);
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -41,6 +51,7 @@ public class Robot extends TimedRobot {
   private final Color colorYellow = new Color(0.322265625, 0.567138671875, 0.111083984375);
   private final Color colorPurple = new Color(0.174560546875, 0.30712890625, 0.5185546875);
   private String gamepiece = "";
+  private DigitalInput magnet = new DigitalInput(0);
 
   private Boolean foundapriltag = false;
   private double recordedapriltagdistanceforpath = 0.0;
@@ -69,7 +80,7 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {
+  public void robotPeriodic(){
     Color detectedcolor =  m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
   
@@ -107,23 +118,23 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    // limelight.readPeriodically();
+     limelight.readPeriodically();
 
-    // if (limelight.getCameraToTarget() != null) {
-    //     recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
-    //     recordedapriltagID = limelight.getID();
+     if (limelight.getCameraToTarget() != null) {
+         recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
+         recordedapriltagID = limelight.getID();
 
-    // }
+     }
 
-   // if (true) {
-     // foundapriltag = false;
-      //System.out.println("finished");
+   if (true) {
+     foundapriltag = false;
+      System.out.println("finished");
 
-      //if (gamepiece == "cube") {Command command = m_robotContainer.getSimpleCommand("right"); command.schedule();}
-      //else {
-        //Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
-      //}
-    //}
+      if (gamepiece == "cube") {Command command = m_robotContainer.getSimpleCommand("right"); command.schedule();}
+      else {
+        Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
+      }
+    }
   }
 
 
@@ -145,6 +156,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    if (magnet.get()) {motor.set(0.20);}
+    else {
+      motor.set(0);
+    }
+
     limelight.readPeriodically();
     if (limelight.getCameraToTarget() != null) {
       switch(recordedapriltagID)

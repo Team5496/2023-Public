@@ -30,8 +30,11 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Elevator;
+import java.lang.ArithmeticException;
 import static frc.robot.Constants.*;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   public static double second_timer = 0.0; // lol
@@ -41,6 +44,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
           SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
           SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+
   /**
    * The maximum angular velocity of the robot in radians per second.
    * <p>
@@ -88,6 +92,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   public DrivetrainSubsystem() {
+    super();
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     m_frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
@@ -163,6 +168,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_pose = pose;
         return m_pose;
   }
+
 
   public Consumer<SwerveModuleState[]> consume_states = states -> { // swerve consumer, just feeds into drivebase and then purges states
         SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);

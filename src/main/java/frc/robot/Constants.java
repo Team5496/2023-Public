@@ -53,6 +53,39 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11; //  Set back right steer encoder ID
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(86.042578125); //  Measure and set back right steer offset
     
+    /* ELEVATOR CONSTANTS / PID VALUES */
+    public static final int LEFT_ELEVATOR_MOTOR = 1; // Lead
+    public static final int RIGHT_ELEVATOR_MOTOR = 4; // Follower
+
+    public static final double e_KP = 0.001;
+    public static final double e_KI = 3e-8;
+    public static final double e_KD = 0;
+    public static final double e_KF = 0.0002;
+    public static final double e_OUTPUT_MIN = -2;
+    public static final double e_OUTPUT_MAX = 2;
+
+    /* ARM CONSTANTS */
+    public static final int LEFT_ARM_MOTOR = 0; // Lead
+    public static final int RIGHT_ARM_MOTOR = 0; // Follower
+
+    public static final double a_KP = 0.0;
+    public static final double a_KI = 0.0;
+    public static final double a_KD = 0.0;
+    public static final double a_KF = 0.0;
+    public static final int a_OUTPUT_MAX = 0;
+    public static final int a_OUTPUT_MIN = 0;
+    public static final double a_MAX_VELOCITY = 0.0;
+    public static final double a_MIN_VELOCITY = 0.0;
+    public static final double a_MAX_ACCELERATION = 0.0;
+    public static final double a_ALLOWED_ERROR = 0.0;
+
+    /* VISION CONSTANTS */
+    public static final double CAMERA_HEIGHT = 0.0;
+    public static final double CAMERA_PITCH = 0.0;
+
+    public static final double GRID_TARGET_HEIGHT = 0.0;
+    public static final double LOADING_TARGET_HEIGHT = 0.0;
+
     public static final Map<LightStates,String> LIGHT_STATES; 
     public static final String LIGHT_STATE_OFF =  "{'on':false}";
     public static final String LIGHT_STATE_ON =  "{'on':true}";

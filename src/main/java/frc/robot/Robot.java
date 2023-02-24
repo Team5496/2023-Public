@@ -156,6 +156,25 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+     /*
+    elevator.elevatorSmartDashboard();
+    
+    
+    if(controller.getAButton()) {
+      elevator.setPosition(150);
+    }
+    else if(controller.getBButton()) {
+      elevator.setPosition(0);
+    }
+  
+    if(elevator.getPosition() >= 30 && elevator.getPosition() <= 50) {
+      elevator.setPosition(40);
+    }
+    else {
+      elevator.setSmartMotion(40);
+    }
+    */
+    
     if (magnet.get()) {motor.set(0.20);}
     else {
       motor.set(0);

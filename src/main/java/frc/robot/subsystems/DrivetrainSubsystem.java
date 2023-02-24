@@ -29,10 +29,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator;
 import java.lang.ArithmeticException;
 import static frc.robot.Constants.*;
+import frc.robot.subsystems.Limelight;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -40,6 +42,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static double second_timer = 0.0; // lol
   public static double[] distances = {0.0, 0.0, 0.0, 0.0};
   public static final double MAX_VOLTAGE = 12.0;
+  public static Limelight limelight = new Limelight("gloworm");
   public static Pose2d m_pose = new Pose2d(0, 0, new Rotation2d());
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
           SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
@@ -82,7 +85,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public SwerveModulePosition m_backleftPosition = new SwerveModulePosition(0, new Rotation2d(0, 0));
   public SwerveModule m_backRightModule;
   public SwerveModulePosition m_backRightPosition = new SwerveModulePosition(0, new Rotation2d(0, 0));
-  public SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  public SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
         m_kinematics, getGyroscopeRotation(), new SwerveModulePosition[]{
                m_frontleftPosition, m_frontRightPosition, m_backleftPosition, m_backRightPosition
         }, m_pose);
@@ -194,15 +197,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void periodic() {
     second_timer++;
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
-    if (second_timer % 50 == 0) { // once a second has passed
-        second_timer = 0; 
 
-        for (int i = 0; i < 4; i++) {
-            distances[i] += states[i].speedMetersPerSecond; // measure total meters a module has travelled
-        }        
-    }
+    for (int i = 0; i < 4; i++) {
+        distances[i] += (states[i].speedMetersPerSecond / 50); // measure total meters a module has travelled
+    }        
 
     positions[0] = new SwerveModulePosition(distances[0], new Rotation2d(m_frontLeftModule.getSteerAngle()));
     positions[1] = new SwerveModulePosition(distances[1], new Rotation2d(m_frontRightModule.getSteerAngle()));

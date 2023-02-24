@@ -179,17 +179,20 @@ public class Robot extends TimedRobot {
     */
 
 
-    if (m_normaldriver.getAButtonPressed()) {
+    if (m_normaldriver.getAButton()) {
       elevator.goUp();
-    } else if (m_normaldriver.getBButtonPressed()) {
+    } else if (m_normaldriver.getBButton()) {
       elevator.goDown();
+    } else if (m_normaldriver.getXButtonPressed()) {
+      elevator.hold();
     }
 
-    
+    /*
     if (magnet.get()) {elevator.goUp();}
     else {
       elevator.goDown();
     }
+    */
 
     /* 
     limelight.readPeriodically();

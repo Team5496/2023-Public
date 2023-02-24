@@ -22,18 +22,20 @@ public class Elevator {
 
         l_motorController = l_motor.getPIDController();
         l_motorEncoder = l_motor.getEncoder();
-        l_motorEncoder.setPositionConversionFactor(100);
-        l_motor.setClosedLoopRampRate(0.1);
+       // l_motorEncoder.setPositionConversionFactor(100);
+        //l_motor.setClosedLoopRampRate(0.1);
 
         f_motor.follow(l_motor, true);
         f_motorEncoder = f_motor.getEncoder();
-        f_motorEncoder.setPositionConversionFactor(100);
+       // f_motorEncoder.setPositionConversionFactor(100);
 
+        /* 
         l_motorController.setP(Constants.e_KP, 0);
         l_motorController.setI(Constants.e_KI, 0);
         l_motorController.setD(Constants.e_KD, 0);
         l_motorController.setFF(Constants.e_KF, 0);
         l_motorController.setOutputRange(Constants.e_OUTPUT_MIN, Constants.e_OUTPUT_MAX, 0);
+        */
     }
 
     public void setPosition(double position) {
@@ -46,7 +48,15 @@ public class Elevator {
     public void resetEncoderPosition() {
         l_motorEncoder.setPosition(0);
         f_motorEncoder.setPosition(0);
-    }    
+    }
+    
+    public void goUp() {
+        l_motor.set(0.25);
+    }
+
+    public void goDown() {
+        l_motor.set(-0.25);
+    }
     public void elevatorSmartDashboard() {
         SmartDashboard.putNumber("Lead Position", l_motorEncoder.getPosition());
         SmartDashboard.putNumber("Graph Position", l_motorEncoder.getPosition());

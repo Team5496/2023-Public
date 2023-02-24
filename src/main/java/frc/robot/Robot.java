@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.I2C;
 import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatchResult;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj.DigitalInput;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
@@ -40,8 +41,6 @@ public class Robot extends TimedRobot {
   private Command[] m_autonomousArmCommands = new Command[2];
   private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
-  private CANSparkMax motor = new CANSparkMax(2, MotorType.kBrushless);
-  private RelativeEncoder encoder = motor.getEncoder();
 
   private Servo actuator = new Servo(0);
 
@@ -52,21 +51,20 @@ public class Robot extends TimedRobot {
   private final Color colorPurple = new Color(0.174560546875, 0.30712890625, 0.5185546875);
   private String gamepiece = "";
   private DigitalInput magnet = new DigitalInput(0);
+  private Elevator elevator = new Elevator();
 
   private Boolean foundapriltag = false;
   private double recordedapriltagdistanceforpath = 0.0;
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
-
-
+  private final XboxController m_normaldriver = new XboxController(0);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+
     m_robotContainer = new RobotContainer();    
     m_colorMatcher.addColorMatch(colorPurple);
     m_colorMatcher.addColorMatch(colorYellow);
@@ -142,12 +140,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    elevator.resetEncoderPosition();
+    /* 
     actuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
     actuator.set(1.0);
-  
+    
+    */
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+
   
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
 
@@ -174,12 +177,21 @@ public class Robot extends TimedRobot {
       elevator.setSmartMotion(40);
     }
     */
-    
-    if (magnet.get()) {motor.set(0.20);}
-    else {
-      motor.set(0);
+
+
+    if (m_normaldriver.getAButtonPressed()) {
+      elevator.goUp();
+    } else if (m_normaldriver.getBButtonPressed()) {
+      elevator.goDown();
     }
 
+    
+    if (magnet.get()) {elevator.goUp();}
+    else {
+      elevator.goDown();
+    }
+
+    /* 
     limelight.readPeriodically();
     if (limelight.getCameraToTarget() != null) {
       switch(recordedapriltagID)
@@ -195,6 +207,8 @@ public class Robot extends TimedRobot {
       }
     
     }
+
+    */
 
   }
 

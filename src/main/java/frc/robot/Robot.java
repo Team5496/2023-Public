@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic(){
     Color detectedcolor =  m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
-  
+
     
     if (match.color == colorYellow) {
       gamepiece = "cone";
@@ -179,6 +179,7 @@ public class Robot extends TimedRobot {
       elevator.setSmartMotion(40);
     }
     */
+<<<<<<< HEAD
 
 
     if (m_normaldriver.getAButton()) {
@@ -187,6 +188,22 @@ public class Robot extends TimedRobot {
       elevator.goDown();
     } else if (m_normaldriver.getXButtonPressed()) {
       elevator.hold();
+=======
+    Boolean ran = false;
+    elevator.elevatorSmartDashboard();
+
+    SequentialCommandGroup elevatorroutine = elevator.setPositionCommand(1200, 500, 300);
+
+    if (m_normaldriver.getYButtonPressed() && ran == false){
+      elevatorroutine.schedule();
+      ran = true;
+    }
+     
+    if (m_normaldriver.getAButtonPressed()) {
+      elevator.setPosition(1200);
+    } else if (m_normaldriver.getBButtonPressed()) {
+      elevator.setPosition(500);
+>>>>>>> 21ccad0eec55c05a67f846bdef0409b368fc90b6
     }
 
     /*

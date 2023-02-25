@@ -6,9 +6,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.lang.Runnable;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class Elevator {
     
@@ -40,11 +45,34 @@ public class Elevator {
         l_motorController.setOutputRange(Constants.e_OUTPUT_MIN, Constants.e_OUTPUT_MAX, 0);
     }
 
+
     public void setPosition(double position) {
         l_motorController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
+
+    public SequentialCommandGroup setPositionCommand(double... positions) {
+        SequentialCommandGroup group = new SequentialCommandGroup(new InstantCommand(() -> setPosition(positions[0])));
+
+        for (int i = 0; i < positions.length; i++) {
+            final int j = i;
+            group.addCommands(
+                new InstantCommand(() -> setPosition(positions[j]))
+            );
+        }
+
+        return group;
+    }
+
     public double getPosition() {
         return l_motorEncoder.getPosition();
+    }
+
+
+    
+    public void setPositionRoutine(double... positions) {
+        for (double position : positions) {
+            setPosition(position);
+        }
     }
 
     public void resetEncoderPosition() {

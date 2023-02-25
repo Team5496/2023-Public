@@ -119,13 +119,12 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-     limelight.readPeriodically();
+    limelight.readPeriodically();
 
-     if (limelight.getCameraToTarget() != null) {
-         recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
-         recordedapriltagID = limelight.getID();
-
-     }
+    if (limelight.getCameraToTarget() != null) {
+        recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
+        recordedapriltagID = limelight.getID();
+    }
 
    if (true) {
      foundapriltag = false;

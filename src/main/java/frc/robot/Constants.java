@@ -54,13 +54,13 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(86.042578125); //  Measure and set back right steer offset
     
     /* ELEVATOR CONSTANTS / PID VALUES */
-    public static final int LEFT_ELEVATOR_MOTOR = 1; // Lead
-    public static final int RIGHT_ELEVATOR_MOTOR = 4; // Follower
+    public static final int LEFT_ELEVATOR_MOTOR = 2; // Lead
+    public static final int RIGHT_ELEVATOR_MOTOR = 5; // Follower
 
-    public static final double e_KP = 0.001;
-    public static final double e_KI = 3e-8;
+    public static final double e_KP = 0.0004;
+    public static final double e_KI = 4e-9;
     public static final double e_KD = 0;
-    public static final double e_KF = 0.0002;
+    public static final double e_KF = 0.00006;
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
 

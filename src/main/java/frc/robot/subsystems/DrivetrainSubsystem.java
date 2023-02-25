@@ -32,6 +32,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
 import java.lang.ArithmeticException;
 import static frc.robot.Constants.*;
 import frc.robot.subsystems.Limelight;
@@ -213,7 +215,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
     m_pose = m_odometry.update(getGyroscopeRotation(), positions); // update odometry
     consume_states.accept(states);
+    var res = limelight.result;
 
+
+    if (res.hasTargets()) {
+        Optional<EstimatedRobotPose> result = limelight.getRobotPoseAprilTag(m_odometry.getEstimatedPosition());
+        EstimatedRobotPose campose = result.get();
+
+        m_odometry.addVisionMeasurement(
+                campose.estimatedPose.toPose2d(),
+                campose.timestampSeconds
+        );
+    }
   }
 
   public Command generatetrajectory(PathPlannerTrajectory traj, boolean isFirst){

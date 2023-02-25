@@ -12,7 +12,7 @@ import frc.robot.Constants;
 
 public class Elevator {
     
-    private CANSparkMax l_motor, f_motor;
+    public CANSparkMax l_motor, f_motor;
     private SparkMaxPIDController l_motorController;
     private RelativeEncoder l_motorEncoder, f_motorEncoder;
     public double kP, kI, kD, kF, kMaxOutput, kMinOutput;
@@ -26,6 +26,8 @@ public class Elevator {
         l_motorEncoder = l_motor.getEncoder();
         l_motorEncoder.setPositionConversionFactor(100);
         l_motor.setClosedLoopRampRate(2.5);
+        l_motorEncoder.setPositionConversionFactor(100);
+        l_motor.setClosedLoopRampRate(.1);
 
         f_motor.follow(l_motor, true);
         f_motorEncoder = f_motor.getEncoder();
@@ -39,7 +41,7 @@ public class Elevator {
     }
 
     public void setPosition(double position) {
-        l_motorController.setReference(position, CANSparkMax.ControlType.kPosition, 0);
+        l_motorController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
     public double getPosition() {
         return l_motorEncoder.getPosition();
@@ -49,21 +51,27 @@ public class Elevator {
         l_motorEncoder.setPosition(0);
         f_motorEncoder.setPosition(0);
     }
+
+    public void driveJoystick(double y) {
+        l_motor.set(y);
+    }
     
     public void goUp() {
-        l_motorController.setReference(150.0, CANSparkMax.ControlType.kPosition);
+        l_motorController.setReference(50, CANSparkMax.ControlType.kVelocity);
     }
     public void goDown() {
-        l_motorController.setReference(-150.0, CANSparkMax.ControlType.kPosition);
+        l_motorController.setReference(-50.0, CANSparkMax.ControlType.kVelocity);
     }
     public void hold() {
         l_motorController.setReference(l_motorEncoder.getPosition(), CANSparkMax.ControlType.kPosition);
     }
+
 
     public void elevatorSmartDashboard() {
         SmartDashboard.putNumber("Lead Position", l_motorEncoder.getPosition());
         SmartDashboard.putNumber("Graph Position", l_motorEncoder.getPosition());
         SmartDashboard.putNumber("Follower Position", f_motorEncoder.getPosition());
         SmartDashboard.putNumber("Follower Velocity", f_motorEncoder.getVelocity());
+        SmartDashboard.putNumber("Output Current", l_motor.getOutputCurrent());
     }
 }

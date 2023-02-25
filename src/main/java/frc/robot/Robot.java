@@ -28,6 +28,8 @@ import frc.robot.subsystems.Elevator;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.subsystems.Arm;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    elevator.resetEncoderPosition();
 
     m_robotContainer = new RobotContainer();    
     m_colorMatcher.addColorMatch(colorPurple);
@@ -116,13 +119,12 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-     limelight.readPeriodically();
+    limelight.readPeriodically();
 
-     if (limelight.getCameraToTarget() != null) {
-         recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
-         recordedapriltagID = limelight.getID();
-
-     }
+    if (limelight.getCameraToTarget() != null) {
+        recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
+        recordedapriltagID = limelight.getID();
+    }
 
    if (true) {
      foundapriltag = false;
@@ -140,12 +142,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    elevator.resetEncoderPosition();
     /* 
     actuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
     actuator.set(1.0);
     
     */
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

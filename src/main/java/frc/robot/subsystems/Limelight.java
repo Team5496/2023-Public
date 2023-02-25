@@ -26,7 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class Limelight
 {
     private PhotonCamera camera;
-    private PhotonPipelineResult result;
+    public PhotonPipelineResult result;
     Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
     NetworkTable limelightTable;
     NetworkTableEntry tx, ty, ta;

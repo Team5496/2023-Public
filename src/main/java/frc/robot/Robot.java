@@ -29,6 +29,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.subsystems.Arm;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -66,7 +67,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    elevator.resetEncoderPosition();
 
     m_robotContainer = new RobotContainer();    
     m_colorMatcher.addColorMatch(colorPurple);
@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic(){
     Color detectedcolor =  m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
-
+  
     
     if (match.color == colorYellow) {
       gamepiece = "cone";
@@ -156,57 +156,37 @@ public class Robot extends TimedRobot {
   
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
 
+    elevator.resetEncoderPosition();
+    elevator.setPosition(0.0);
+    SmartDashboard.putNumber("Set Position", 0);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-     /*
-    elevator.elevatorSmartDashboard();
-    
-    
-    if(controller.getAButton()) {
-      elevator.setPosition(150);
-    }
-    else if(controller.getBButton()) {
-      elevator.setPosition(0);
-    }
-  
-    if(elevator.getPosition() >= 30 && elevator.getPosition() <= 50) {
-      elevator.setPosition(40);
-    }
-    else {
-      elevator.setSmartMotion(40);
-    }
-    */
-<<<<<<< HEAD
-
+    SmartDashboard.putNumber("Output", elevator.getOutput());
+    SmartDashboard.putNumber("Actual Position", elevator.getPosition());
 
     if (m_normaldriver.getAButton()) {
-      elevator.goUp();
+      elevator.setPosition(400.0);
     } else if (m_normaldriver.getBButton()) {
-      elevator.goDown();
+      elevator.setPosition(500.0);
     } else if (m_normaldriver.getXButtonPressed()) {
-      elevator.hold();
-=======
-    Boolean ran = false;
-    elevator.elevatorSmartDashboard();
+      elevator.setPosition(700.0);
+    } else if (m_normaldriver.getYButtonPressed()) {
+      elevator.setPosition(1900.0);
+    }
 
+    /*
+    Boolean ran = false;
     SequentialCommandGroup elevatorroutine = elevator.setPositionCommand(1200, 500, 300);
 
     if (m_normaldriver.getYButtonPressed() && ran == false){
       elevatorroutine.schedule();
       ran = true;
     }
-     
-    if (m_normaldriver.getAButtonPressed()) {
-      elevator.setPosition(1200);
-    } else if (m_normaldriver.getBButtonPressed()) {
-      elevator.setPosition(500);
->>>>>>> 21ccad0eec55c05a67f846bdef0409b368fc90b6
-    }
-
-    /*
+  
+    /* 
     if (magnet.get()) {elevator.goUp();}
     else {
       elevator.goDown();

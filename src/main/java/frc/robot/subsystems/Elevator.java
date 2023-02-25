@@ -66,6 +66,9 @@ public class Elevator {
     public double getPosition() {
         return l_motorEncoder.getPosition();
     }
+    public double getOutput() {
+        return l_motor.getOutputCurrent();
+    }
 
 
     

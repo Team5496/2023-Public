@@ -6,35 +6,58 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import java.util.Map;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
+
 
 public class Arm {
-    private CANSparkMax motors[] = new CANSparkMax[3];
-    private SparkMaxPIDController m_pidcontrollers[] = new SparkMaxPIDController[3];
-    private int kP, kI, kD, kF;
-    private RelativeEncoder m_encoders[] =  new RelativeEncoder[3];
-    private DigitalInput m_sensor = new DigitalInput(1);
+    private CANSparkMax a_follower, a_leader;
+    private SparkMaxPIDController a_leaderPID;
+    private RelativeEncoder a_followerEncoder, a_leaderEncoder;
+    DigitalInput m_sensor = new DigitalInput(1);
 
     public boolean getArmSensor() {
         return m_sensor.get();
     }
 
-
-    public Arm(int deviceIDs[]){
+    public Arm(){
         super();
-        for (int i = 0; i < 3; i++) {
-            motors[i] = new CANSparkMax(deviceIDs[i], MotorType.kBrushless);
-            m_pidcontrollers[i] = motors[i].getPIDController();
-            m_encoders[i] = motors[i].getEncoder();
 
-            m_pidcontrollers[i].setP(kP);
-            m_pidcontrollers[i].setI(kI);
-            m_pidcontrollers[i].setD(kD);
-            m_pidcontrollers[i].setFF(kF);
-            m_pidcontrollers[i].setOutputRange(-1, 1);
-        }
+        a_follower = new CANSparkMax(Constants.RIGHT_ARM_MOTOR, MotorType.kBrushless);
+        a_leader = new CANSparkMax(Constants.LEFT_ARM_MOTOR, MotorType.kBrushless);
+        
+        a_leaderPID = a_follower.getPIDController();
+        a_leaderEncoder = a_leader.getEncoder();
+        a_leaderEncoder.setPositionConversionFactor(100);
+        a_leader.setClosedLoopRampRate(.1);
+
+        a_follower.follow(a_leader, true);
+        a_followerEncoder = a_follower.getEncoder();
+        a_followerEncoder.setPositionConversionFactor(100);
+
+        a_leaderPID.setP(Constants.a_KP, 1);
+        a_leaderPID.setI(Constants.a_KI, 1);
+        a_leaderPID.setD(Constants.a_KD, 1);
+        a_leaderPID.setFF(Constants.a_KF, 1);
+        a_leaderPID.setOutputRange(Constants.a_OUTPUT_MIN, Constants.a_OUTPUT_MAX, 1);
     }
 
-    public void setMotorPosition(int deviceIndex, int rotations) {
-        m_pidcontrollers[deviceIndex].setReference(rotations, CANSparkMax.ControlType.kPosition);
+    public SequentialCommandGroup setPositionCommandArm(double... positions) {
+        SequentialCommandGroup group = new SequentialCommandGroup(new InstantCommand(() -> setMotorPosition(positions[0])));
+
+        for (int i = 1; i < positions.length; i++) {
+            final int j = i;
+            group.addCommands(
+                new InstantCommand(() -> setMotorPosition(positions[j]))
+            );
+        }
+        
+        return group;
+    }
+
+
+    public void setMotorPosition(double rotations) {
+        a_leaderPID.setReference(rotations, CANSparkMax.ControlType.kPosition);
     }
 }

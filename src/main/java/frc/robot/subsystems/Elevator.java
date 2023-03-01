@@ -53,7 +53,7 @@ public class Elevator {
     public SequentialCommandGroup setPositionCommand(double... positions) {
         SequentialCommandGroup group = new SequentialCommandGroup(new InstantCommand(() -> setPosition(positions[0])));
 
-        for (int i = 0; i < positions.length; i++) {
+        for (int i = 1; i < positions.length; i++) {
             final int j = i;
             group.addCommands(
                 new InstantCommand(() -> setPosition(positions[j]))

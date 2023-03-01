@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
   private double recordedapriltagdistanceforpath = 0.0;
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
-  private final XboxController m_normaldriver = new XboxController(0);
+  private final XboxController m_normaldriver = new XboxController(2);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.

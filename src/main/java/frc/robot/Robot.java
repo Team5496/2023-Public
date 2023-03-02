@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
   private final Joystick m_codriver = new Joystick(1);
 
   private Servo actuator = new Servo(0);
-
+  private Arm arm = new Arm();
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     elevator.resetEncoderPosition();
+    arm.resetEncoderPosition();
 
     m_robotContainer = new RobotContainer();    
     m_colorMatcher.addColorMatch(colorPurple);
@@ -142,12 +143,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    /* 
     actuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
-    actuator.set(1.0);
+    actuator.set(0.0);
     
-    */
-
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -181,6 +179,7 @@ public class Robot extends TimedRobot {
     */
     Boolean ran = false;
     elevator.elevatorSmartDashboard();
+    arm.armsmartdashboard();
 
     SequentialCommandGroup elevatorroutine = elevator.setPositionCommand(1200, 500, 300);
 
@@ -188,12 +187,17 @@ public class Robot extends TimedRobot {
       elevatorroutine.schedule();
       ran = true;
     }
+
+    if (m_normaldriver.getXButtonPressed()) {
+      arm.setMotorPosition(1300);
+    }
      
     if (m_normaldriver.getAButtonPressed()) {
-      elevator.setPosition(1200);
+      elevator.setPosition(1900);
     } else if (m_normaldriver.getBButtonPressed()) {
       elevator.setPosition(500);
     }
+
     /* 
     if (magnet.get()) {elevator.goUp();}
     else {

@@ -68,10 +68,10 @@ public final class Constants {
     public static final int LEFT_ARM_MOTOR = 3; // Lead
     public static final int RIGHT_ARM_MOTOR = 4; // Follower
 
-    public static final double a_KP = 0.0004;
-    public static final double a_KI = 4e-9;
+    public static final double a_KP = 0.00054;
+    public static final double a_KI = 3e-8;
     public static final double a_KD = 0.0;
-    public static final double a_KF = 0.00006;
+    public static final double a_KF = 5e-5;
     public static final int a_OUTPUT_MAX = 2;
     public static final int a_OUTPUT_MIN = -2;
     public static final double a_MAX_VELOCITY = 0.0;

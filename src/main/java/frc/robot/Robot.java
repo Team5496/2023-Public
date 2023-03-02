@@ -45,8 +45,6 @@ public class Robot extends TimedRobot {
   private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
 
-  private Servo actuator = new Servo(0);
-
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
@@ -67,7 +65,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
     m_robotContainer = new RobotContainer();    
     m_colorMatcher.addColorMatch(colorPurple);
     m_colorMatcher.addColorMatch(colorYellow);
@@ -85,7 +82,6 @@ public class Robot extends TimedRobot {
     Color detectedcolor =  m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
   
-    
     if (match.color == colorYellow) {
       gamepiece = "cone";
     } else {
@@ -93,7 +89,6 @@ public class Robot extends TimedRobot {
     }
 
     CommandScheduler.getInstance().run();
-    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -142,18 +137,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    /* 
-    actuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
-    actuator.set(1.0);
-    
-    */
-
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
 
-
-  
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
 
     elevator.resetEncoderPosition();

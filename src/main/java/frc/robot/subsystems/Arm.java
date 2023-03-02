@@ -4,12 +4,14 @@ import frc.robot.Constants;
 
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import java.util.Map;
 
+import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -34,7 +36,7 @@ public class Arm {
         a_leaderController = a_leader.getPIDController();
         a_leaderEncoder = a_leader.getEncoder();
         a_leaderEncoder.setPositionConversionFactor(100);
-        a_leader.setClosedLoopRampRate(.1);
+        a_leader.setClosedLoopRampRate(1);
 
         a_follower.follow(a_leader, true);
         a_followerEncoder = a_follower.getEncoder();
@@ -57,6 +59,17 @@ public class Arm {
         }
         return group;
     }
+
+    public void armsmartdashboard(){
+        SmartDashboard.putNumber("arm lead", a_leaderEncoder.getPosition());
+        SmartDashboard.putNumber("arm follower", a_followerEncoder.getPosition());
+    }
+
+    public void resetEncoderPosition() {
+        a_leaderEncoder.setPosition(0.0);
+        a_followerEncoder.setPosition(0.0);
+    }
+
 
     public void setMotorPosition(double rotations) {
         a_leaderController.setReference(rotations, CANSparkMax.ControlType.kPosition);

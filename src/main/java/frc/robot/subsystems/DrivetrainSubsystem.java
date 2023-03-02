@@ -217,8 +217,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     consume_states.accept(states);
     var res = limelight.result;
 
-    /*
-        if (res.hasTargets()) {
+
+    if (res.hasTargets()) {
         Optional<EstimatedRobotPose> result = limelight.getRobotPoseAprilTag(m_odometry.getEstimatedPosition());
         EstimatedRobotPose campose = result.get();
 
@@ -227,7 +227,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 campose.timestampSeconds
         );
     }
-    */
   }
 
   public Command generatetrajectory(PathPlannerTrajectory traj, boolean isFirst){

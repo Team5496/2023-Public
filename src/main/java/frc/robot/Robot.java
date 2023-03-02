@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
   private Command[] m_autonomousArmCommands = new Command[2];
   private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
-
+  private Arm arm = new Arm();
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
@@ -166,13 +166,20 @@ public class Robot extends TimedRobot {
 
     /*
     Boolean ran = false;
+    elevator.elevatorSmartDashboard();
+
     SequentialCommandGroup elevatorroutine = elevator.setPositionCommand(1200, 500, 300);
 
     if (m_normaldriver.getYButtonPressed() && ran == false){
       elevatorroutine.schedule();
       ran = true;
     }
-  
+     
+    if (m_normaldriver.getAButtonPressed()) {
+      elevator.setPosition(1200);
+    } else if (m_normaldriver.getBButtonPressed()) {
+      elevator.setPosition(500);
+    }
     /* 
     if (magnet.get()) {elevator.goUp();}
     else {

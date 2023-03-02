@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.lang.Runnable;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,11 +30,13 @@ public class Elevator {
         l_motorController = l_motor.getPIDController();
         l_motorEncoder = l_motor.getEncoder();
         l_motorEncoder.setPositionConversionFactor(100);
+        l_motor.setClosedLoopRampRate(2.5);
+        l_motorEncoder.setPositionConversionFactor(100);
         l_motor.setClosedLoopRampRate(.1);
 
         f_motor.follow(l_motor, true);
         f_motorEncoder = f_motor.getEncoder();
-        f_motorEncoder.setPositionConversionFactor(100);
+       // f_motorEncoder.setPositionConversionFactor(100);
 
         l_motorController.setP(Constants.e_KP, 0);
         l_motorController.setI(Constants.e_KI, 0);
@@ -64,6 +66,9 @@ public class Elevator {
     public double getPosition() {
         return l_motorEncoder.getPosition();
     }
+    public double getOutput() {
+        return l_motor.getOutputCurrent();
+    }
 
 
     
@@ -83,16 +88,15 @@ public class Elevator {
     }
     
     public void goUp() {
-        l_motorController.setReference(150.0, CANSparkMax.ControlType.kPosition);
+        l_motorController.setReference(50, CANSparkMax.ControlType.kVelocity);
     }
-
     public void goDown() {
-        l_motorController.setReference(-150.0, CANSparkMax.ControlType.kPosition);
+        l_motorController.setReference(-50.0, CANSparkMax.ControlType.kVelocity);
+    }
+    public void hold() {
+        l_motorController.setReference(l_motorEncoder.getPosition(), CANSparkMax.ControlType.kPosition);
     }
 
-    public void hold() {
-        l_motorController.setReference(l_motorEncoder.getPosition(), CANSparkMax.ControlType.kVelocity);
-    }
 
     public void elevatorSmartDashboard() {
         SmartDashboard.putNumber("Lead Position", l_motorEncoder.getPosition());

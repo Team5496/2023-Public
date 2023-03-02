@@ -57,10 +57,10 @@ public final class Constants {
     public static final int LEFT_ELEVATOR_MOTOR = 2; // Lead
     public static final int RIGHT_ELEVATOR_MOTOR = 5; // Follower
 
-    public static final double e_KP = 0.0004;
+    public static final double e_KP = 0.0008;
     public static final double e_KI = 4e-9;
     public static final double e_KD = 0;
-    public static final double e_KF = 0.00006;
+    public static final double e_KF = 0.0001;
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
 
@@ -78,6 +78,13 @@ public final class Constants {
     public static final double a_MIN_VELOCITY = 0.0;
     public static final double a_MAX_ACCELERATION = 0.0;
     public static final double a_ALLOWED_ERROR = 0.0;
+
+    /* INTAKE CONSTANTS */
+    public static final int LEFT_INTAKE_MOTOR = 0;
+    public static final int RIGHT_INTAKE_MOTOR = 0;
+
+    public static final int LEFT_ACTUATOR = 0;
+    public static final int RIGHT_ACTUATOR = 0;
 
     /* VISION CONSTANTS */
     public static final double CAMERA_HEIGHT = 0.0;

@@ -29,6 +29,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.subsystems.Arm;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -67,7 +68,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     elevator.resetEncoderPosition();
-    arm.resetEncoderPosition();
 
     m_robotContainer = new RobotContainer();    
     m_colorMatcher.addColorMatch(colorPurple);
@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic(){
     Color detectedcolor =  m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
-
+  
     
     if (match.color == colorYellow) {
       gamepiece = "cone";
@@ -154,32 +154,30 @@ public class Robot extends TimedRobot {
   
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
 
+    elevator.resetEncoderPosition();
+    elevator.setPosition(0.0);
+    SmartDashboard.putNumber("Set Position", 0);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-     /*
-    elevator.elevatorSmartDashboard();
-    
-    
-    if(controller.getAButton()) {
-      elevator.setPosition(150);
+    SmartDashboard.putNumber("Output", elevator.getOutput());
+    SmartDashboard.putNumber("Actual Position", elevator.getPosition());
+
+    if (m_normaldriver.getAButton()) {
+      elevator.setPosition(400.0);
+    } else if (m_normaldriver.getBButton()) {
+      elevator.setPosition(500.0);
+    } else if (m_normaldriver.getXButtonPressed()) {
+      elevator.setPosition(700.0);
+    } else if (m_normaldriver.getYButtonPressed()) {
+      elevator.setPosition(1900.0);
     }
-    else if(controller.getBButton()) {
-      elevator.setPosition(0);
-    }
-  
-    if(elevator.getPosition() >= 30 && elevator.getPosition() <= 50) {
-      elevator.setPosition(40);
-    }
-    else {
-      elevator.setSmartMotion(40);
-    }
-    */
+
+    /*
     Boolean ran = false;
     elevator.elevatorSmartDashboard();
-    arm.armsmartdashboard();
 
     SequentialCommandGroup elevatorroutine = elevator.setPositionCommand(1200, 500, 300);
 
@@ -187,24 +185,20 @@ public class Robot extends TimedRobot {
       elevatorroutine.schedule();
       ran = true;
     }
-
-    if (m_normaldriver.getXButtonPressed()) {
-      arm.setMotorPosition(1300);
-    }
      
     if (m_normaldriver.getAButtonPressed()) {
-      elevator.setPosition(1900);
+      elevator.setPosition(1200);
     } else if (m_normaldriver.getBButtonPressed()) {
       elevator.setPosition(500);
     }
-
     /* 
     if (magnet.get()) {elevator.goUp();}
     else {
       elevator.goDown();
     }
+    */
 
-    
+    /* 
     limelight.readPeriodically();
     if (limelight.getCameraToTarget() != null) {
       switch(recordedapriltagID)

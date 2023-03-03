@@ -15,7 +15,6 @@ public class RobotStates {
         STOP,
         CARRY
     }
-    
     enum Events {
         START_FINISHED,
         CUBE_PICKED_UP

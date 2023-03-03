@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 
 public class Arm {
@@ -55,17 +55,28 @@ public class Arm {
         return group;
     }
 
+    public double getArmPosition() {
+        return a_leaderEncoder.getPosition();
+    }
+
     public boolean getArmSensor() {
         return m_sensor.get();
     }
 
-    public InstantCommand getPositionCommand(double position) {
-        return new InstantCommand(() -> setPosition(position));
+    public FunctionalCommand getPositionCommand(double position) {
+        return new FunctionalCommand(
+            () -> System.out.println("Driving arm"),
+            () -> setPosition(position),
+            interrupted -> setPosition(0),
+            () -> Math.abs(getArmPosition() - position) <= 50
+        );
     }
 
     public void setPosition(double position) {
         a_leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
+
+
 
 
     public void armsmartdashboard(){

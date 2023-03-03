@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
   private final XboxController m_normaldriver = new XboxController(2);
+  SequentialCommandGroup group = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), elevator.setPositionCommand(Constants.ELEVATOR_LOW));
 
   
 
@@ -148,6 +149,10 @@ public class Robot extends TimedRobot {
     elevator.resetEncoderPosition();
     elevator.setPosition(0.0);
     SmartDashboard.putNumber("Set Position", 0);
+
+    group.schedule();
+
+    System.out.println(group.isScheduled());
   }
 
   /** This function is called periodically during operator control. */
@@ -166,6 +171,7 @@ public class Robot extends TimedRobot {
       elevator.setPosition(1900.0);
     }
 
+    System.out.println(group.isFinished());
     /*
     Boolean ran = false;
     elevator.elevatorSmartDashboard();

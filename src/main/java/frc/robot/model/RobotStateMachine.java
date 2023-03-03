@@ -132,16 +132,16 @@ public class RobotStateMachine {
     private void seekObjective(RobotStatesEnum objective) {
         switch (objective) {
             case PLACE_CUBE_H: 
-                new EnumBasedMachineDefinitionBuilderProvider()
-                    .getMachineDefinitionBuilder(RobotStatesEnum.class, Events.class)
-                    .name("place_cube_high")
-                    .states(RobotStatesEnum.values())
-                    .initialState(RobotStatesEnum.START)
-                    .idleStates(RobotStatesEnum.START)
-                    .terminalStates(RobotStatesEnum.CUBE_PLACED_H)
-                    .events(Events.values())
-                    .transitions(start,to_place_cube, cube_placed)
-                    .build();
+            new EnumBasedMachineDefinitionBuilderProvider()
+                .getMachineDefinitionBuilder(RobotStatesEnum.class, Events.class)
+                .name("place_cube_high")
+                .states(RobotStatesEnum.values())
+                .initialState(RobotStatesEnum.START)
+                .idleStates(RobotStatesEnum.START)
+                .terminalStates(RobotStatesEnum.CUBE_PLACED_H)
+                .events(Events.values())
+                .transitions(start,to_place_cube, cube_placed)
+                .build();
         
         }
     }

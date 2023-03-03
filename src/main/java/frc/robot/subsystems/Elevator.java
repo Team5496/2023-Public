@@ -8,6 +8,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,8 +57,13 @@ public class Elevator {
     }
 
 
-    public InstantCommand setPositionCommand(double position) {
-        return new InstantCommand(() -> setPosition(position));
+    public FunctionalCommand setPositionCommand(double position) {
+        return new FunctionalCommand(
+            () -> System.out.println("Driving elevator"),
+            () -> setPosition(position),
+            interrupted -> setPosition(0),
+            () -> Math.abs(getPosition() - position) <= 50
+        );
     }
 
     public SequentialCommandGroup setPositionCommand(double... positions) {

@@ -37,16 +37,16 @@ public class RobotStateMachine {
              * Create and run the state machine for place cube H
              * 
             */
-            // EnumBasedMachineDefinitionBuilderProvider()
-            //     .getMachineDefinitionBuilder(RobotStatesEnum.class, Events.class)
-            //     .name("place_cube_high")
-            //     .states(RobotStatesEnum.values())
-            //     .initialState(RobotStatesEnum.START)
-            //     .idleStates(RobotStatesEnum.START)
-            //     .terminalStates(RobotStatesEnum.CUBE_PLACED_H)
-            //     .events(Events.values())
-            //     .transitions(start,to_place_cube, cube_placed)
-            //     .build();
+            new EnumBasedMachineDefinitionBuilderProvider()
+                .getMachineDefinitionBuilder(RobotStatesEnum.class, Events.class)
+                .name("place_cube_high")
+                .states(RobotStatesEnum.values())
+                .initialState(RobotStatesEnum.START)
+                .idleStates(RobotStatesEnum.START)
+                .terminalStates(RobotStatesEnum.CUBE_PLACED_H)
+                .events(Events.values())
+                .transitions(start,to_place_cube, cube_placed)
+                .build();
         
         }
     }

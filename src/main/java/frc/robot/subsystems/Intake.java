@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Servo;
-
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 
 

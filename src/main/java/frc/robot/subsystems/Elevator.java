@@ -50,9 +50,14 @@ public class Elevator {
         l_motorController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
+
+    public InstantCommand setPositionCommand(double position) {
+        return new InstantCommand(() -> setPosition(position));
+    }
+
     public SequentialCommandGroup setPositionCommand(double... positions) {
         SequentialCommandGroup group = new SequentialCommandGroup(new InstantCommand(() -> setPosition(positions[0])));
-
+    
         for (int i = 1; i < positions.length; i++) {
             final int j = i;
             group.addCommands(

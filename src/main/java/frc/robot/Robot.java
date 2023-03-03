@@ -147,12 +147,12 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
 
     elevator.resetEncoderPosition();
-    elevator.setPosition(0.0);
-    SmartDashboard.putNumber("Set Position", 0);
+    SmartDashboard.putNumber("Set (Position", 0);
 
-    group.schedule();
 
-    System.out.println(group.isScheduled());
+    // group.schedule();
+
+    // System.out.println(group.isScheduled());
   }
 
   /** This function is called periodically during operator control. */
@@ -166,9 +166,9 @@ public class Robot extends TimedRobot {
     } else if (m_normaldriver.getBButton()) {
       elevator.setPosition(500.0);
     } else if (m_normaldriver.getXButtonPressed()) {
-      elevator.setPosition(700.0);
+      arm.setPosition(1300.0);
     } else if (m_normaldriver.getYButtonPressed()) {
-      elevator.setPosition(1900.0);
+      elevator.setPosition(1700.0);
     }
 
     System.out.println(group.isFinished());
@@ -183,12 +183,6 @@ public class Robot extends TimedRobot {
       ran = true;
     }
      
-    if (m_normaldriver.getAButtonPressed()) {
-      elevator.setPosition(1200);
-    } else if (m_normaldriver.getBButtonPressed()) {
-      elevator.setPosition(500);
-    }
-    /* 
     if (magnet.get()) {elevator.goUp();}
     else {
       elevator.goDown();
@@ -213,6 +207,13 @@ public class Robot extends TimedRobot {
     }
 
     */
+
+    if (m_normaldriver.getAButtonPressed()) {
+      elevator.setPosition(1200);
+    } else if (m_normaldriver.getBButtonPressed()) {
+      elevator.setPosition(500);
+    }
+
 
   }
 

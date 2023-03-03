@@ -64,7 +64,7 @@ public final class Constants {
     public static final double e_KP = 0.0008;
     public static final double e_KI = 4e-9;
     public static final double e_KD = 0;
-    public static final double e_KF = 0.0001;
+    public static final double e_KF = 0.00014;
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
 
@@ -76,7 +76,7 @@ public final class Constants {
     public static final int ARM_RETRACT = 0;
     public static final int ARM_DOWN = 800;
 
-    public static final double a_KP = 0.00054;
+    public static final double a_KP = 0.007;
     public static final double a_KI = 3e-8;
     public static final double a_KD = 0.0;
     public static final double a_KF = 5e-5;

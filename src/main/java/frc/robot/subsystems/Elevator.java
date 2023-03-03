@@ -66,7 +66,7 @@ public class Elevator {
         );
     }
 
-    public SequentialCommandGroup setPositionCommand(double... positions) {
+    public SequentialCommandGroup getPositionCommandSequential(double... positions) {
         SequentialCommandGroup group = new SequentialCommandGroup(new InstantCommand(() -> setPosition(positions[0])));
     
         for (int i = 1; i < positions.length; i++) {

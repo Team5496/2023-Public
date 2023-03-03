@@ -73,7 +73,7 @@ public class Arm {
     }
 
     public void setPosition(double position) {
-        a_leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
+        a_leaderController.setReference(position, CANSparkMax.ControlType.kPosition, 1);
     }
 
 

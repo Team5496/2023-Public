@@ -14,9 +14,9 @@ public class EnumToCommand {
         corresponding_commands.put( 
             RobotStates.RobotStatesEnum.CARRY,
             new SequentialCommandGroup(
-                elevator.setPositionCommand(Constants.ELEVATOR_MID),
+                elevator.setPositionCommand(Constants.ELEVATOR_HIGH),
                 arm.getPositionCommand(Constants.ARM_RETRACT),
-                intake.get_intakeInCommand(10)
+                elevator.setPositionCommand(Constants.ELEVATOR_MID)
             )
         );
 
@@ -24,8 +24,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PICK_UP_C,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_LOW),
-                arm.getPositionCommand(Constants.ARM_STRAIGHT),
-                intake.get_intakeInCommand(10)
+                arm.getPositionCommand(Constants.ARM_STRAIGHT)
             )
         );
 
@@ -33,8 +32,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PICK_UP_UC,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_LOW),
-                arm.getPositionCommand(Constants.ARM_STRAIGHT),
-                intake.get_intakeInCommand(10)
+                arm.getPositionCommand(Constants.ARM_STRAIGHT)
             )
         );
 
@@ -42,8 +40,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PICK_UP_TC,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_LOW),
-                arm.getPositionCommand(Constants.ARM_STRAIGHT),
-                intake.get_intakeInCommand(10)
+                arm.getPositionCommand(Constants.ARM_STRAIGHT)
             )
         );
 
@@ -51,8 +48,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PLACE_LOW,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_LOW),
-                arm.getPositionCommand(Constants.ARM_DOWN),
-                intake.get_intakeOutCommand(10)
+                arm.getPositionCommand(Constants.ARM_DOWN)
             )
         );
 
@@ -60,8 +56,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PLACE_CONE_M,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_MID),
-                arm.getPositionCommand(Constants.ARM_DOWN),
-                intake.get_intakeOutCommand(10)
+                arm.getPositionCommand(Constants.ARM_DOWN)
             )
         );
 
@@ -69,8 +64,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PLACE_CONE_H,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_HIGH),
-                arm.getPositionCommand(Constants.ARM_DOWN),
-                intake.get_intakeOutCommand(10)
+                arm.getPositionCommand(Constants.ARM_DOWN)
             )
         );
 
@@ -78,8 +72,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PLACE_CUBE_M,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_MID),
-                arm.getPositionCommand(Constants.ARM_STRAIGHT),
-                intake.get_intakeOutCommand(10)
+                arm.getPositionCommand(Constants.ARM_STRAIGHT)
             )
         );
 
@@ -87,8 +80,7 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.PLACE_CUBE_H,
             new SequentialCommandGroup(
                 elevator.setPositionCommand(Constants.ELEVATOR_HIGH),
-                arm.getPositionCommand(Constants.ARM_STRAIGHT),
-                intake.get_intakeOutCommand(10)
+                arm.getPositionCommand(Constants.ARM_STRAIGHT)
             )
         );
     }

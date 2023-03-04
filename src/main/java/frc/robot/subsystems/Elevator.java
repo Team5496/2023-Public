@@ -32,7 +32,7 @@ public class Elevator {
         e_leaderController = e_leader.getPIDController();
         e_leaderEncoder = e_leader.getEncoder();
         e_leaderEncoder.setPositionConversionFactor(100);
-        e_leader.setClosedLoopRampRate(2.5);
+        e_leader.setClosedLoopRampRate(.1);
 
         e_follower.follow(e_leader, true);
         e_followerEncoder = e_follower.getEncoder();
@@ -61,7 +61,7 @@ public class Elevator {
         return new FunctionalCommand(
             () -> System.out.println("Driving elevator"),
             () -> setPosition(position),
-            interrupted -> setPosition(0),
+            interrupted -> System.out.println("Ended driving elevator"),
             () -> Math.abs(getPosition() - position) <= 100
         );
     }

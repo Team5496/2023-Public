@@ -18,6 +18,7 @@ public class Arm {
     private SparkMaxPIDController a_leaderController;
     private RelativeEncoder a_followerEncoder, a_leaderEncoder;
     DigitalInput m_sensor = new DigitalInput(1);
+    int slot = 1;
 
     public Arm(){
         super();
@@ -33,14 +34,19 @@ public class Arm {
         a_follower.follow(a_leader, true);
         a_followerEncoder = a_follower.getEncoder();
         // a_followerEncoder.setPositionConversionFactor(100);
-
         a_leaderController.setP(Constants.a_KP, 1);
         a_leaderController.setI(Constants.a_KI, 1);
         a_leaderController.setD(Constants.a_KD, 1);
         a_leaderController.setFF(Constants.a_KF, 1);
-        a_leaderController.setOutputRange(Constants.a_OUTPUT_MIN, Constants.a_OUTPUT_MAX, 1);
 
+        a_leaderController.setP(Constants.a_KPR, 2);
+        a_leaderController.setI(Constants.a_KIR, 2);
+        a_leaderController.setD(Constants.a_KDR, 2);
+        a_leaderController.setFF(Constants.a_KFR, 2);
+
+        a_leaderController.setOutputRange(Constants.a_OUTPUT_MIN, Constants.a_OUTPUT_MAX, 1);
     }
+
 
     public SequentialCommandGroup setPositionCommandArm(double... positions) {
         SequentialCommandGroup group = new SequentialCommandGroup(new InstantCommand(() -> setMotorPosition(positions[0])));
@@ -64,16 +70,22 @@ public class Arm {
     }
 
     public FunctionalCommand getPositionCommand(double position) {
+        if (position == Constants.ARM_RETRACT) {
+            slot = 2;
+        } else {
+            slot = 1;
+        }
+
         return new FunctionalCommand(
             () -> System.out.println("Driving arm"),
-            () -> setPosition(position),
-            interrupted -> setPosition(0),
+            () -> setPosition(position, slot),
+            interrupted -> System.out.println("Ended driving arm"),
             () -> Math.abs(getArmPosition() - position) <= 100
         );
     }
 
-    public void setPosition(double position) {
-        a_leaderController.setReference(position, CANSparkMax.ControlType.kPosition, 1);
+    public void setPosition(double position, int slot) {
+        a_leaderController.setReference(position, CANSparkMax.ControlType.kPosition, slot);
     }
 
     public void idleMode(String mode) {

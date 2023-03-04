@@ -29,6 +29,7 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorSensorV3.RawColor;
 import frc.robot.model.EnumToCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
@@ -62,9 +63,12 @@ public class Robot extends TimedRobot {
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
   private final XboxController m_normaldriver = new XboxController(2);
-  SequentialCommandGroup group = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_STRAIGHT));
-
-  
+  SequentialCommandGroup group = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN));
+  SequentialCommandGroup group1 = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT), elevator.setPositionCommand(Constants.ELEVATOR_MID));
+  SequentialCommandGroup group2 = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
+  Boolean ran = false;
+  Boolean ran1 = false;
+  SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
 
   /* 
    * This function is run when the robot is first started up and should be used for any
@@ -149,15 +153,14 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
+    SmartDashboard.putNumber("kP", Constants.a_KP);
+    SmartDashboard.putNumber("kI", Constants.a_KI);
+    SmartDashboard.putNumber("kF", Constants.a_KF);
 
     elevator.resetEncoderPosition();
     arm.resetEncoderPosition();
-    arm.setPosition(0.0);
+    arm.setPosition(Constants.ARM_RETRACT, 2);
     SmartDashboard.putNumber("Set Position", 0);
-
-
-    // group.schedule();
-
     // System.out.println(group.isScheduled());
   }
 
@@ -168,25 +171,28 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Actual Position", elevator.getPosition());
 
     arm.armsmartdashboard();
-
     if (m_normaldriver.getAButton()) {
-      elevator.setPosition(400.0);
+      FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_HIGH);
+      command1.schedule();
     } else if (m_normaldriver.getBButton()) {
-      arm.setPosition(0.0);
-    } else if (m_normaldriver.getXButtonPressed()) {
-      arm.setPosition(1300.0);
+      FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_LOW);
+      command1.schedule();
+    } else if (m_normaldriver.getXButtonPressed() && !ran) {
+      //group1.schedule();
+      ran = true;
     } else if (m_normaldriver.getYButtonPressed()) {
-      elevator.setPosition(1500.0);
-    } 
-
-    if(m_normaldriver.getLeftBumperPressed()) {
-      arm.idleMode("brake");
-    } else if(m_normaldriver.getRightBumperPressed()) {
-      arm.idleMode("coast");
+      FunctionalCommand command = elevator.setPositionCommand(Constants.ELEVATOR_MID);
+      command.schedule();
     }
 
-    System.out.println(group.isFinished());
-    
+    if(m_normaldriver.getLeftBumperPressed()) {
+      intake.intakeIn(0);
+    } else if(m_normaldriver.getRightBumperPressed()) {
+      intake.intakeIn(0.4);
+    } else if  (m_normaldriver.getBackButtonPressed()) {
+      intake.intakeOut(0.4);
+    }
+
     elevator.elevatorSmartDashboard();
     /* 
     if (m_normaldriver.getYButtonPressed() && ran == false){

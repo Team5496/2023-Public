@@ -62,7 +62,7 @@ public class Elevator {
             () -> System.out.println("Driving elevator"),
             () -> setPosition(position),
             interrupted -> setPosition(0),
-            () -> Math.abs(getPosition() - position) <= 50
+            () -> Math.abs(getPosition() - position) <= 100
         );
     }
 

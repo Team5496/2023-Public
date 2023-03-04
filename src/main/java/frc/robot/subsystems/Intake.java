@@ -12,20 +12,10 @@ import frc.robot.Constants;
 
 
 public class Intake {
-    private CANSparkMax i_leader, i_follower;
-    private Servo leftActuator, rightActuator;
+    private CANSparkMax i_leader;    
     
     public Intake() {
-
-        i_leader = new CANSparkMax(Constants.LEFT_INTAKE_MOTOR, MotorType.kBrushless);
-        i_follower = new CANSparkMax(Constants.RIGHT_INTAKE_MOTOR, MotorType.kBrushless);
-
-        i_follower.follow(i_leader);
-
-        leftActuator = new Servo(Constants.LEFT_ACTUATOR);
-        leftActuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
-        rightActuator = new Servo(Constants.RIGHT_ACTUATOR);
-        rightActuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+        i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
     }
 
     public InstantCommand get_intakeInCommand(double speed) {
@@ -47,12 +37,4 @@ public class Intake {
         i_leader.stopMotor();
     }
 
-    public void actuatorOut() {
-        leftActuator.set(1.0);
-        rightActuator.set(1.0);
-    }
-    public void actuatorIn() {
-        leftActuator.set(0.0);
-        rightActuator.set(0.0);
-    }
 }

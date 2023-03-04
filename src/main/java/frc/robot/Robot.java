@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,6 +28,7 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorSensorV3.RawColor;
+import frc.robot.model.EnumToCommand;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
@@ -44,21 +46,23 @@ public class Robot extends TimedRobot {
   private Command pollcommand_isfinished;
   private final Joystick m_codriver = new Joystick(1);
   private Arm arm = new Arm();
+  private Elevator elevator = new Elevator();
+  private Intake intake = new Intake();
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  private EnumToCommand teleopcommandhandler = new EnumToCommand(elevator, arm, intake);
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
   private final Color colorYellow = new Color(0.322265625, 0.567138671875, 0.111083984375);
   private final Color colorPurple = new Color(0.174560546875, 0.30712890625, 0.5185546875);
   private String gamepiece = "";
   private DigitalInput magnet = new DigitalInput(0);
-  private Elevator elevator = new Elevator();
 
   private Boolean foundapriltag = false;
   private double recordedapriltagdistanceforpath = 0.0;
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
   private final XboxController m_normaldriver = new XboxController(2);
-  SequentialCommandGroup group = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), elevator.setPositionCommand(Constants.ELEVATOR_LOW));
+  SequentialCommandGroup group = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_STRAIGHT));
 
   
 
@@ -166,17 +170,14 @@ public class Robot extends TimedRobot {
     } else if (m_normaldriver.getBButton()) {
       elevator.setPosition(500.0);
     } else if (m_normaldriver.getXButtonPressed()) {
-      arm.setPosition(1300.0);
+      arm.setPosition(1100.0);
     } else if (m_normaldriver.getYButtonPressed()) {
       elevator.setPosition(1700.0);
     }
 
     System.out.println(group.isFinished());
     /*
-    Boolean ran = false;
     elevator.elevatorSmartDashboard();
-
-    SequentialCommandGroup elevatorroutine = elevator.setPositionCommand(1200, 500, 300);
 
     if (m_normaldriver.getYButtonPressed() && ran == false){
       elevatorroutine.schedule();

@@ -88,11 +88,7 @@ public final class Constants {
     public static final double a_ALLOWED_ERROR = 0.0;
 
     /* INTAKE CONSTANTS */
-    public static final int LEFT_INTAKE_MOTOR = 0;
-    public static final int RIGHT_INTAKE_MOTOR = 0;
-
-    public static final int LEFT_ACTUATOR = 0;
-    public static final int RIGHT_ACTUATOR = 0;
+    public static final int INTAKE_MOTOR = 0;
 
     /* VISION CONSTANTS */
     public static final double CAMERA_HEIGHT = 0.0;

@@ -68,7 +68,7 @@ public class Arm {
             () -> System.out.println("Driving arm"),
             () -> setPosition(position),
             interrupted -> setPosition(0),
-            () -> Math.abs(getArmPosition() - position) <= 50
+            () -> Math.abs(getArmPosition() - position) <= 100
         );
     }
 

@@ -151,7 +151,9 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
 
     elevator.resetEncoderPosition();
-    SmartDashboard.putNumber("Set (Position", 0);
+    arm.resetEncoderPosition();
+    arm.setPosition(0.0);
+    SmartDashboard.putNumber("Set Position", 0);
 
 
     // group.schedule();
@@ -165,20 +167,28 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Output", elevator.getOutput());
     SmartDashboard.putNumber("Actual Position", elevator.getPosition());
 
+    arm.armsmartdashboard();
+
     if (m_normaldriver.getAButton()) {
       elevator.setPosition(400.0);
     } else if (m_normaldriver.getBButton()) {
-      elevator.setPosition(500.0);
+      arm.setPosition(0.0);
     } else if (m_normaldriver.getXButtonPressed()) {
-      arm.setPosition(1100.0);
+      arm.setPosition(1300.0);
     } else if (m_normaldriver.getYButtonPressed()) {
-      elevator.setPosition(1700.0);
+      elevator.setPosition(1500.0);
+    } 
+
+    if(m_normaldriver.getLeftBumperPressed()) {
+      arm.idleMode("brake");
+    } else if(m_normaldriver.getRightBumperPressed()) {
+      arm.idleMode("coast");
     }
 
     System.out.println(group.isFinished());
-    /*
+    
     elevator.elevatorSmartDashboard();
-
+    /* 
     if (m_normaldriver.getYButtonPressed() && ran == false){
       elevatorroutine.schedule();
       ran = true;
@@ -208,12 +218,6 @@ public class Robot extends TimedRobot {
     }
 
     */
-
-    if (m_normaldriver.getAButtonPressed()) {
-      elevator.setPosition(1200);
-    } else if (m_normaldriver.getBButtonPressed()) {
-      elevator.setPosition(500);
-    }
 
 
   }

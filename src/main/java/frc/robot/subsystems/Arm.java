@@ -28,7 +28,7 @@ public class Arm {
         a_leaderController = a_leader.getPIDController();
         a_leaderEncoder = a_leader.getEncoder();
         a_leaderEncoder.setPositionConversionFactor(100);
-        a_leader.setClosedLoopRampRate(1);
+        a_leader.setClosedLoopRampRate(10);
 
         a_follower.follow(a_leader, true);
         a_followerEncoder = a_follower.getEncoder();
@@ -76,6 +76,15 @@ public class Arm {
         a_leaderController.setReference(position, CANSparkMax.ControlType.kPosition, 1);
     }
 
+    public void idleMode(String mode) {
+        if(mode.equals("brake")) {
+            a_leader.setIdleMode(CANSparkMax.IdleMode.kBrake);
+            a_follower.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        } else if(mode.equals("coast")) {
+            a_leader.setIdleMode(CANSparkMax.IdleMode.kCoast);
+            a_follower.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        }
+    }
 
 
 

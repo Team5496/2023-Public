@@ -61,10 +61,10 @@ public final class Constants {
     public static final int ELEVATOR_MID = 1200;
     public static final int ELEVATOR_HIGH = 1900;
 
-    public static final double e_KP = 0.0008;
-    public static final double e_KI = 4e-9;
+    public static final double e_KP = 0.0006;
+    public static final double e_KI = 2e-9;
     public static final double e_KD = 0;
-    public static final double e_KF = 0.00014;
+    public static final double e_KF = 0.00012;
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
 
@@ -76,10 +76,11 @@ public final class Constants {
     public static final int ARM_RETRACT = 0;
     public static final int ARM_DOWN = 800;
 
-    public static final double a_KP = 0.007;
-    public static final double a_KI = 3e-8;
+    public static final double heavy_KP = 0.002;
+    public static final double a_KP = 0.0016;
+    public static final double a_KI = 3e-10;
     public static final double a_KD = 0.0;
-    public static final double a_KF = 5e-5;
+    public static final double a_KF = 4e-5;
     public static final int a_OUTPUT_MAX = 2;
     public static final int a_OUTPUT_MIN = -2;
     public static final double a_MAX_VELOCITY = 0.0;
@@ -88,7 +89,7 @@ public final class Constants {
     public static final double a_ALLOWED_ERROR = 0.0;
 
     /* INTAKE CONSTANTS */
-    public static final int INTAKE_MOTOR = 0;
+    public static final int INTAKE_MOTOR = 1;
 
     /* VISION CONSTANTS */
     public static final double CAMERA_HEIGHT = 0.0;

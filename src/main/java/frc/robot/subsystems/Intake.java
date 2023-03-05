@@ -15,7 +15,7 @@ public class Intake {
     private CANSparkMax i_leader;    
 
     public Intake() {
-        i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
+        i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushed);
     }
 
     public FunctionalCommand get_intakeInCommand(double speed) {

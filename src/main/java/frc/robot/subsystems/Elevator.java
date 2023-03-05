@@ -108,5 +108,7 @@ public class Elevator {
         SmartDashboard.putNumber("Follower Position", e_followerEncoder.getPosition());
         SmartDashboard.putNumber("Follower Velocity", e_followerEncoder.getVelocity());
         SmartDashboard.putNumber("Output Current", e_leader.getOutputCurrent());
+        SmartDashboard.putNumber("Elevator Lead Temp", e_leader.getMotorTemperature());
+        SmartDashboard.putNumber("Elevator Follower temp", e_follower.getMotorTemperature());
     }
 }

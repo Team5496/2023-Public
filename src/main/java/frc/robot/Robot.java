@@ -63,12 +63,13 @@ public class Robot extends TimedRobot {
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
   private final XboxController m_normaldriver = new XboxController(2);
-  SequentialCommandGroup group = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN));
-  SequentialCommandGroup group1 = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT), elevator.setPositionCommand(Constants.ELEVATOR_MID));
-  SequentialCommandGroup group2 = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
+  SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_PICK_UP), arm.getPositionCommand(Constants.ARM_DOWN));
+  SequentialCommandGroup carryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT), elevator.setPositionCommand(Constants.ELEVATOR_MID));
+  SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
   Boolean ran = false;
   Boolean ran1 = false;
-  SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
+  Boolean ran2 = false;
+  //SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
 
   /* 
    * This function is run when the robot is first started up and should be used for any
@@ -159,7 +160,7 @@ public class Robot extends TimedRobot {
 
     elevator.resetEncoderPosition();
     arm.resetEncoderPosition();
-    arm.setPosition(Constants.ARM_RETRACT, 2);
+    //arm.setPosition(Constants.ARM_RETRACT, 2);
     SmartDashboard.putNumber("Set Position", 0);
     // System.out.println(group.isScheduled());
   }
@@ -171,26 +172,32 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Actual Position", elevator.getPosition());
 
     arm.armsmartdashboard();
-    if (m_normaldriver.getAButton()) {
-      FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_HIGH);
-      command1.schedule();
-    } else if (m_normaldriver.getBButton()) {
-      FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_LOW);
-      command1.schedule();
-    } else if (m_normaldriver.getXButtonPressed() && !ran) {
-      //group1.schedule();
+
+    if (m_normaldriver.getAButton() && !ran) {
+      //FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_HIGH);
+      //command1.schedule();
+      conePickUpGroup.schedule();
       ran = true;
+    } else if (m_normaldriver.getBButton() && !ran1) {
+      //FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_LOW);
+      //command1.schedule();
+      carryGroup.schedule();
+      ran1 = true;
+    } else if (m_normaldriver.getXButtonPressed() && !ran2) {
+      placeConeHighGroup.schedule();
+      ran2 = true;
     } else if (m_normaldriver.getYButtonPressed()) {
-      FunctionalCommand command = elevator.setPositionCommand(Constants.ELEVATOR_MID);
-      command.schedule();
+      //FunctionalCommand command = elevator.setPositionCommand(Constants.ELEVATOR_MID);
+      //command.schedule();
     }
+    
 
     if(m_normaldriver.getLeftBumperPressed()) {
       intake.intakeIn(0);
     } else if(m_normaldriver.getRightBumperPressed()) {
-      intake.intakeIn(0.4);
-    } else if  (m_normaldriver.getBackButtonPressed()) {
-      intake.intakeOut(0.4);
+      intake.intakeIn(0.8);
+    } else if  (m_normaldriver.getRightTriggerAxis() > 0.1) {
+      intake.intakeOut(-0.8);
     }
 
     elevator.elevatorSmartDashboard();

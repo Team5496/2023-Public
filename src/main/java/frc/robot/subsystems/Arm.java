@@ -29,7 +29,7 @@ public class Arm {
         a_leaderController = a_leader.getPIDController();
         a_leaderEncoder = a_leader.getEncoder();
         a_leaderEncoder.setPositionConversionFactor(100);
-        a_leader.setClosedLoopRampRate(10);
+        a_leader.setClosedLoopRampRate(8);
 
         a_follower.follow(a_leader, true);
         a_followerEncoder = a_follower.getEncoder();
@@ -80,7 +80,7 @@ public class Arm {
             () -> System.out.println("Driving arm"),
             () -> setPosition(position, slot),
             interrupted -> System.out.println("Ended driving arm"),
-            () -> Math.abs(getArmPosition() - position) <= 100
+            () -> Math.abs(getArmPosition() - position) <= 50
         );
     }
 
@@ -103,6 +103,8 @@ public class Arm {
     public void armsmartdashboard(){
         SmartDashboard.putNumber("arm lead", a_leaderEncoder.getPosition());
         SmartDashboard.putNumber("arm follower", a_followerEncoder.getPosition());
+        SmartDashboard.putNumber("Arm Lead Temp", a_leader.getMotorTemperature());
+        SmartDashboard.putNumber("Arm Follower temp", a_follower.getMotorTemperature());
     }
 
     public void resetEncoderPosition() {

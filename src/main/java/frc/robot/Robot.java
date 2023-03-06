@@ -63,9 +63,9 @@ public class Robot extends TimedRobot {
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
   private final XboxController m_normaldriver = new XboxController(2);
-  SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_PICK_UP), arm.getPositionCommand(Constants.ARM_DOWN));
-  SequentialCommandGroup carryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT), elevator.setPositionCommand(Constants.ELEVATOR_MID));
-  SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
+  SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP), arm.getPositionCommand(Constants.ARM_DOWN));
+  SequentialCommandGroup carryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_MID));
+  SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
   Boolean ran = false;
   Boolean ran1 = false;
   Boolean ran2 = false;

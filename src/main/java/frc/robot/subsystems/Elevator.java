@@ -57,7 +57,7 @@ public class Elevator {
     }
 
 
-    public FunctionalCommand setPositionCommand(double position) {
+    public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(
             () -> System.out.println("Driving elevator"),
             () -> setPosition(position),

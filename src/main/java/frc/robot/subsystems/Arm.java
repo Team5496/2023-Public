@@ -18,7 +18,6 @@ public class Arm {
     private SparkMaxPIDController a_leaderController;
     private RelativeEncoder a_followerEncoder, a_leaderEncoder;
     DigitalInput m_sensor = new DigitalInput(1);
-    int slot = 1;
 
     public Arm(){
         super();
@@ -29,8 +28,7 @@ public class Arm {
         a_leaderController = a_leader.getPIDController();
         a_leaderEncoder = a_leader.getEncoder();
         a_leaderEncoder.setPositionConversionFactor(100);
-        a_leader.setClosedLoopRampRate(8);
-
+        a_leader.setClosedLoopRampRate(6);
         a_follower.follow(a_leader, true);
         a_followerEncoder = a_follower.getEncoder();
         // a_followerEncoder.setPositionConversionFactor(100);
@@ -43,6 +41,11 @@ public class Arm {
         a_leaderController.setI(Constants.a_KIR, 2);
         a_leaderController.setD(Constants.a_KDR, 2);
         a_leaderController.setFF(Constants.a_KFR, 2);
+
+        a_leaderController.setP(Constants.a_KPUP, 3);
+        a_leaderController.setI(Constants.a_KIUP, 3);
+        a_leaderController.setD(Constants.a_KDUP, 3);
+        a_leaderController.setFF(Constants.a_KFUP, 3);
 
         a_leaderController.setOutputRange(Constants.a_OUTPUT_MIN, Constants.a_OUTPUT_MAX, 1);
     }
@@ -63,6 +66,7 @@ public class Arm {
 
     public double getArmPosition() {
         return a_leaderEncoder.getPosition();
+
     }
 
     public boolean getArmSensor() {
@@ -70,17 +74,23 @@ public class Arm {
     }
 
     public FunctionalCommand getPositionCommand(double position) {
+        int slot = 1;
+        a_leader.setClosedLoopRampRate(6);
+
         if (position == Constants.ARM_RETRACT) {
             slot = 2;
-        } else {
-            slot = 1;
+            a_leader.setClosedLoopRampRate(4);
+        } else if (position == Constants.ARM_UP) {
+            slot = 3;
+            a_leader.setClosedLoopRampRate(3);
         }
 
+        final int finalslot = slot;
         return new FunctionalCommand(
             () -> System.out.println("Driving arm"),
-            () -> setPosition(position, slot),
+            () -> setPosition(position, finalslot),
             interrupted -> System.out.println("Ended driving arm"),
-            () -> Math.abs(getArmPosition() - position) <= 50
+            () -> Math.abs(getArmPosition() - position) <= 95
         );
     }
 

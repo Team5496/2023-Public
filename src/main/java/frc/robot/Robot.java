@@ -64,8 +64,9 @@ public class Robot extends TimedRobot {
   private Limelight limelight = new Limelight("gloworm");
   private final XboxController m_normaldriver = new XboxController(2);
   SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP), arm.getPositionCommand(Constants.ARM_DOWN));
-  SequentialCommandGroup carryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_MID));
+  SequentialCommandGroup carryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT));
   SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
+  SequentialCommandGroup testarmgoingup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
   Boolean ran = false;
   Boolean ran1 = false;
   Boolean ran2 = false;
@@ -160,7 +161,7 @@ public class Robot extends TimedRobot {
 
     elevator.resetEncoderPosition();
     arm.resetEncoderPosition();
-    //arm.setPosition(Constants.ARM_RETRACT, 2);
+    arm.setPosition(Constants.ARM_RETRACT, 2);
     SmartDashboard.putNumber("Set Position", 0);
     // System.out.println(group.isScheduled());
   }
@@ -172,23 +173,18 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Actual Position", elevator.getPosition());
 
     arm.armsmartdashboard();
-
     if (m_normaldriver.getAButton() && !ran) {
-      //FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_HIGH);
-      //command1.schedule();
+      // elevator.setPosition(800);
       conePickUpGroup.schedule();
       ran = true;
     } else if (m_normaldriver.getBButton() && !ran1) {
-      //FunctionalCommand command1 = elevator.setPositionCommand(Constants.ELEVATOR_LOW);
-      //command1.schedule();
       carryGroup.schedule();
       ran1 = true;
     } else if (m_normaldriver.getXButtonPressed() && !ran2) {
-      placeConeHighGroup.schedule();
+      elevator.setPosition(Constants.ELEVATOR_MID);
       ran2 = true;
     } else if (m_normaldriver.getYButtonPressed()) {
-      //FunctionalCommand command = elevator.setPositionCommand(Constants.ELEVATOR_MID);
-      //command.schedule();
+      testarmgoingup.schedule();
     }
     
 

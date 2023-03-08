@@ -63,13 +63,12 @@ public class Robot extends TimedRobot {
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
   private final XboxController m_normaldriver = new XboxController(2);
-  SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP), arm.getPositionCommand(Constants.ARM_DOWN));
-  SequentialCommandGroup carryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_RETRACT));
+  SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN), elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP));
+  SequentialCommandGroup carryGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
+  SequentialCommandGroup armgoback = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK));
   SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
   SequentialCommandGroup testarmgoingup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
-  Boolean ran = false;
-  Boolean ran1 = false;
-  Boolean ran2 = false;
+
   //SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
 
   /* 
@@ -173,18 +172,23 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Actual Position", elevator.getPosition());
 
     arm.armsmartdashboard();
-    if (m_normaldriver.getAButton() && !ran) {
-      // elevator.setPosition(800);
+
+    if (m_normaldriver.getAButton()) {
       conePickUpGroup.schedule();
-      ran = true;
-    } else if (m_normaldriver.getBButton() && !ran1) {
+    } else if (m_normaldriver.getBButton()) {
       carryGroup.schedule();
-      ran1 = true;
-    } else if (m_normaldriver.getXButtonPressed() && !ran2) {
-      elevator.setPosition(Constants.ELEVATOR_MID);
-      ran2 = true;
+    } else if (m_normaldriver.getXButtonPressed()) {
+      armgoback.schedule();
     } else if (m_normaldriver.getYButtonPressed()) {
       testarmgoingup.schedule();
+    }
+
+    if (m_normaldriver.getBackButtonPressed()) {
+      elevator.setPosition(elevator.getPosition() - 100);
+    }
+
+    if (m_normaldriver.getStartButtonPressed()) {
+      elevator.setPosition(elevator.getPosition() + 100);
     }
     
 

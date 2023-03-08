@@ -57,9 +57,9 @@ public final class Constants {
     public static final int LEFT_ELEVATOR_MOTOR = 2; // Lead
     public static final int RIGHT_ELEVATOR_MOTOR = 5; // Follower
 
-    public static final int ELEVATOR_LOW = 0;
+    public static final int ELEVATOR_LOW = 300;
     public static final int ELEVATOR_MID = 700;
-    public static final int ELEVATOR_PICK_UP = 1440;
+    public static final int ELEVATOR_PICK_UP = 1050;
     public static final int ELEVATOR_HIGH = 1520;
 
     public static final double e_KP = 0.0006;
@@ -74,8 +74,9 @@ public final class Constants {
     public static final int RIGHT_ARM_MOTOR = 4; // Follower
 
     public static final int ARM_STRAIGHT = 1400;
-    public static final int ARM_RETRACT = -200;
+    public static final int ARM_RETRACT = -300;
     public static final int ARM_DOWN = 692;
+    public static final int ARM_GO_BACK = -199;
     public static final int ARM_UP = -800;
 
     public static final double a_KP = 0.0007;
@@ -90,10 +91,13 @@ public final class Constants {
 
     public static final double a_KPUP = 0.0007;
     public static final double a_KIUP = 2e-10;
-    public static final double a_KDUP = 0.0004;
+    public static final double a_KDUP = 0.0007;
     public static final double a_KFUP = 0.75e-6;
 
-    
+    public static final double a_KPB = 0.00021;
+    public static final double a_KIB = 0.0;
+    public static final double a_KDB = 0.0015;
+    public static final double a_KFB = 0.75e-6;
 
     public static final int a_OUTPUT_MAX = 2;
     public static final int a_OUTPUT_MIN = -2;

@@ -47,6 +47,11 @@ public class Arm {
         a_leaderController.setD(Constants.a_KDUP, 3);
         a_leaderController.setFF(Constants.a_KFUP, 3);
 
+        a_leaderController.setP(Constants.a_KPB, 0);
+        a_leaderController.setI(Constants.a_KIB, 0);
+        a_leaderController.setD(Constants.a_KDB, 0);
+        a_leaderController.setFF(Constants.a_KFB, 0);
+
         a_leaderController.setOutputRange(Constants.a_OUTPUT_MIN, Constants.a_OUTPUT_MAX, 1);
     }
 
@@ -83,6 +88,9 @@ public class Arm {
         } else if (position == Constants.ARM_UP) {
             slot = 3;
             a_leader.setClosedLoopRampRate(3);
+        } else if (position == Constants.ARM_GO_BACK) {
+            slot = 0;
+            a_leader.setClosedLoopRampRate(10);
         }
 
         final int finalslot = slot;

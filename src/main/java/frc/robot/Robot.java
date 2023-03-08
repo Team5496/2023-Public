@@ -66,9 +66,9 @@ public class Robot extends TimedRobot {
   SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN), elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP));
   SequentialCommandGroup carryGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
   SequentialCommandGroup armgoback = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK));
-  SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
-  SequentialCommandGroup testarmgoingup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
+  SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
   SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
+  SequentialCommandGroup placeConeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
   String lastcommand = "";
   //SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
 
@@ -178,16 +178,25 @@ public class Robot extends TimedRobot {
 
     if (m_normaldriver.getAButton()) {
       conePickUpGroup.schedule();
+      lastcommand = "conepickup";
+    } else if (m_normaldriver.getBButton() && lastcommand == "placeconehigh" || m_normaldriver.getBButton() && lastcommand == "pickupshelf"){
+      armgoback.schedule();
+      carryGroup.schedule();
+      lastcommand = "carry";
     } else if (m_normaldriver.getBButton()) {
       carryGroup.schedule();
+      lastcommand = "carry";
+    } else if (m_normaldriver.getYButtonPressed() && lastcommand == "carry") {
+      placeConeHighGroup.schedule();
+      lastcommand = "placeconehigh";
     } else if (m_normaldriver.getXButtonPressed()) {
-      armgoback.schedule();
-    } else if (m_normaldriver.getYButtonPressed()) {
-      testarmgoingup.schedule();
-    } 
+      placeConeMiddle.schedule();
+      lastcommand = "placeconemiddle"
+    }
 
     if (m_normaldriver.getBackButtonPressed()) {
       pickUpShelf.schedule();
+      lastcommand = "pickupshelf";
     }
 
     if (m_normaldriver.getStartButtonPressed()) {
@@ -198,9 +207,9 @@ public class Robot extends TimedRobot {
     if(m_normaldriver.getLeftBumperPressed()) {
       intake.intakeIn(0);
     } else if(m_normaldriver.getRightBumperPressed()) {
-      intake.intakeIn(0.8);
+      intake.intakeIn(0.9);
     } else if  (m_normaldriver.getRightTriggerAxis() > 0.1) {
-      intake.intakeOut(-0.8);
+      intake.intakeOut(-0.9);
     }
 
     elevator.elevatorSmartDashboard();

@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
       lastcommand = "placeconehigh";
     } else if (m_normaldriver.getXButtonPressed() && lastcommand == "carry") {
       placeConeMiddle.schedule();
-      lastcommand = "placeconemiddle"
+      lastcommand = "placeconemiddle";
     }
 
     if (m_normaldriver.getBackButtonPressed()) {

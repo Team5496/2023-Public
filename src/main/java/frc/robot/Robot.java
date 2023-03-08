@@ -51,12 +51,6 @@ public class Robot extends TimedRobot {
   private Intake intake = new Intake();
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private EnumToCommand teleopcommandhandler = new EnumToCommand(elevator, arm, intake);
-  private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
-  private final ColorMatch m_colorMatcher = new ColorMatch();
-  private final Color colorYellow = new Color(0.322265625, 0.567138671875, 0.111083984375);
-  private final Color colorPurple = new Color(0.174560546875, 0.30712890625, 0.5185546875);
-  private String gamepiece = "";
-  private DigitalInput magnet = new DigitalInput(0);
 
   private Boolean foundapriltag = false;
   private double recordedapriltagdistanceforpath = 0.0;
@@ -65,11 +59,11 @@ public class Robot extends TimedRobot {
   private final XboxController m_normaldriver = new XboxController(2);
   SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN), elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP));
   SequentialCommandGroup carryGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
-  SequentialCommandGroup armgoback = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK));
+  SequentialCommandGroup retractArmAndCarryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
   SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
   SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
   SequentialCommandGroup placeConeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
-  String lastcommand = "";
+  String lastcommand = "carry";
   //SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
 
   /* 
@@ -79,8 +73,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();    
-    m_colorMatcher.addColorMatch(colorPurple);
-    m_colorMatcher.addColorMatch(colorYellow);
   }
 
   /**
@@ -92,15 +84,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic(){
-    Color detectedcolor =  m_colorSensor.getColor();
-    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedcolor);
-  
-    if (match.color == colorYellow) {
-      gamepiece = "cone";
-    } else {
-      gamepiece = "cube";
-    }
-
     CommandScheduler.getInstance().run();
   }
 
@@ -176,12 +159,11 @@ public class Robot extends TimedRobot {
 
     
 
-    if (m_normaldriver.getAButton()) {
+    if (m_normaldriver.getAButton() && lastcommand == "carry") {
       conePickUpGroup.schedule();
       lastcommand = "conepickup";
     } else if (m_normaldriver.getBButton() && lastcommand == "placeconehigh" || m_normaldriver.getBButton() && lastcommand == "pickupshelf"){
-      armgoback.schedule();
-      carryGroup.schedule();
+      retractArmAndCarryGroup.schedule();
       lastcommand = "carry";
     } else if (m_normaldriver.getBButton()) {
       carryGroup.schedule();
@@ -189,7 +171,7 @@ public class Robot extends TimedRobot {
     } else if (m_normaldriver.getYButtonPressed() && lastcommand == "carry") {
       placeConeHighGroup.schedule();
       lastcommand = "placeconehigh";
-    } else if (m_normaldriver.getXButtonPressed()) {
+    } else if (m_normaldriver.getXButtonPressed() && lastcommand == "carry") {
       placeConeMiddle.schedule();
       lastcommand = "placeconemiddle"
     }

@@ -58,7 +58,7 @@ public final class Constants {
     public static final int RIGHT_ELEVATOR_MOTOR = 5; // Follower
 
     public static final int ELEVATOR_LOW = 300;
-    public static final int ELEVATOR_MID = 700;
+    public static final int ELEVATOR_MID = 850;
     public static final int ELEVATOR_PICK_UP = 1050;
     public static final int ELEVATOR_HIGH = 1520;
 
@@ -96,7 +96,7 @@ public final class Constants {
 
     public static final double a_KPB = 0.00021;
     public static final double a_KIB = 0.0;
-    public static final double a_KDB = 0.0015;
+    public static final double a_KDB = 0.0016;
     public static final double a_KFB = 0.75e-6;
 
     public static final int a_OUTPUT_MAX = 2;

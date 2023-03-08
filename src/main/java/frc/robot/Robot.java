@@ -68,7 +68,8 @@ public class Robot extends TimedRobot {
   SequentialCommandGroup armgoback = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK));
   SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_STRAIGHT));
   SequentialCommandGroup testarmgoingup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
-
+  SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
+  String lastcommand = "";
   //SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
 
   /* 
@@ -173,6 +174,8 @@ public class Robot extends TimedRobot {
 
     arm.armsmartdashboard();
 
+    
+
     if (m_normaldriver.getAButton()) {
       conePickUpGroup.schedule();
     } else if (m_normaldriver.getBButton()) {
@@ -181,10 +184,10 @@ public class Robot extends TimedRobot {
       armgoback.schedule();
     } else if (m_normaldriver.getYButtonPressed()) {
       testarmgoingup.schedule();
-    }
+    } 
 
     if (m_normaldriver.getBackButtonPressed()) {
-      elevator.setPosition(elevator.getPosition() - 100);
+      pickUpShelf.schedule();
     }
 
     if (m_normaldriver.getStartButtonPressed()) {

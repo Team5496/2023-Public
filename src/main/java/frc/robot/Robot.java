@@ -10,6 +10,7 @@ import frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
@@ -45,18 +46,19 @@ public class Robot extends TimedRobot {
   private Command[] m_autonomousCommands = new Command[2];
   private Command[] m_autonomousArmCommands = new Command[2];
   private Command pollcommand_isfinished;
-  private final Joystick m_codriver = new Joystick(1);
   private Arm arm = new Arm();
   private Elevator elevator = new Elevator();
   private Intake intake = new Intake();
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private EnumToCommand teleopcommandhandler = new EnumToCommand(elevator, arm, intake);
+  private GenericHID controlBoard = new GenericHID(0);
 
   private Boolean foundapriltag = false;
   private double recordedapriltagdistanceforpath = 0.0;
   private int recordedapriltagID = 0;
   private Limelight limelight = new Limelight("gloworm");
-  private final XboxController m_normaldriver = new XboxController(2);
+
+  // TELEOP
   SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN), elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP));
   SequentialCommandGroup carryGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
   SequentialCommandGroup retractArmAndCarryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
@@ -64,6 +66,9 @@ public class Robot extends TimedRobot {
   SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
   SequentialCommandGroup placeConeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
   String lastcommand = "carry";
+
+  // AUTO
+
   //SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
 
   /* 
@@ -117,6 +122,7 @@ public class Robot extends TimedRobot {
         recordedapriltagID = limelight.getID();
     }
 
+    /*
    if (true) {
      foundapriltag = false;
       System.out.println("finished");
@@ -126,6 +132,7 @@ public class Robot extends TimedRobot {
         Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
       }
     }
+    */
   }
 
 
@@ -138,14 +145,11 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
-    SmartDashboard.putNumber("kP", Constants.a_KP);
-    SmartDashboard.putNumber("kI", Constants.a_KI);
-    SmartDashboard.putNumber("kF", Constants.a_KF);
 
     elevator.resetEncoderPosition();
     arm.resetEncoderPosition();
     arm.setPosition(Constants.ARM_RETRACT, 2);
-    SmartDashboard.putNumber("Set Position", 0);
+    //SmartDashboard.putNumber("Set Position", 0);
     // System.out.println(group.isScheduled());
   }
 
@@ -159,40 +163,22 @@ public class Robot extends TimedRobot {
 
     
 
-    if (m_normaldriver.getAButton() && lastcommand == "carry") {
+    if (controlBoard.getRawButtonPressed(1) && lastcommand == "carry") {
       conePickUpGroup.schedule();
       lastcommand = "conepickup";
-    } else if (m_normaldriver.getBButton() && lastcommand == "placeconehigh" || m_normaldriver.getBButton() && lastcommand == "pickupshelf"){
+    } else if (controlBoard.getRawButtonPressed(2) && lastcommand == "placeconehigh" || controlBoard.getRawButtonPressed(2) && lastcommand == "pickupshelf"){
       retractArmAndCarryGroup.schedule();
       lastcommand = "carry";
-    } else if (m_normaldriver.getBButton()) {
+    } else if (controlBoard.getRawButtonPressed(2)) {
       carryGroup.schedule();
       lastcommand = "carry";
-    } else if (m_normaldriver.getYButtonPressed() && lastcommand == "carry") {
+    } else if (controlBoard.getRawButtonPressed(5) && lastcommand == "carry") {
       placeConeHighGroup.schedule();
       lastcommand = "placeconehigh";
-    } else if (m_normaldriver.getXButtonPressed() && lastcommand == "carry") {
+    } else if (controlBoard.getRawButtonPressed(7) && lastcommand == "carry") {
       placeConeMiddle.schedule();
       lastcommand = "placeconemiddle";
-    }
-
-    if (m_normaldriver.getBackButtonPressed()) {
-      pickUpShelf.schedule();
-      lastcommand = "pickupshelf";
-    }
-
-    if (m_normaldriver.getStartButtonPressed()) {
-      elevator.setPosition(elevator.getPosition() + 100);
-    }
-    
-
-    if(m_normaldriver.getLeftBumperPressed()) {
-      intake.intakeIn(0);
-    } else if(m_normaldriver.getRightBumperPressed()) {
-      intake.intakeIn(0.9);
-    } else if  (m_normaldriver.getRightTriggerAxis() > 0.1) {
-      intake.intakeOut(-0.9);
-    }
+    }    
 
     elevator.elevatorSmartDashboard();
     /* 

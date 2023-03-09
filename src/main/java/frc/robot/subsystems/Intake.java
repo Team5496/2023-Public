@@ -7,32 +7,32 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
-import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Intake {
-    private CANSparkMax i_leader;    
+public class Intake extends SubsystemBase {
+    private CANSparkMax i_leader;
+    private double elapsed_time = 0;
 
     public Intake() {
         i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushed);
     }
 
-    public FunctionalCommand get_intakeInCommand(double speed) {
-        return new InstantCommand(() -> intakeIn(speed));
+    public FunctionalCommand get_intakeCommand(double speed) {
+        elapsed_time = 0;
+        return new FunctionalCommand(
+            () -> System.out.println("Driving intake"),
+            () -> driveIntake(speed),
+            interrupted -> intakeStop(),
+            () -> elapsed_time >= 3
+        );
     }
 
-    public FunctionalCommand get_intakeOutCommand(double speed) {
-        return new InstantCommand(() -> intakeOut(speed));
-    }
-
-
-    public void intakeIn(double speed) {
+    public void driveIntake(double speed) {
         i_leader.set(speed);
     }
-    public void intakeOut(double speed) {
-        i_leader.set(speed); //possibly invert, may invert speed when giving the parameter
-    }
+
     public void intakeStop() {
         i_leader.stopMotor();
     }

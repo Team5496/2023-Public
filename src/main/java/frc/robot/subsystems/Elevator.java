@@ -32,7 +32,7 @@ public class Elevator {
         e_leaderController = e_leader.getPIDController();
         e_leaderEncoder = e_leader.getEncoder();
         e_leaderEncoder.setPositionConversionFactor(100);
-        e_leader.setClosedLoopRampRate(.1);
+        e_leader.setClosedLoopRampRate(.3);
 
         e_follower.follow(e_leader, true);
         e_followerEncoder = e_follower.getEncoder();
@@ -50,6 +50,12 @@ public class Elevator {
     }
 
     public void setPosition(double position) {
+        if (position < getPosition()) {
+            e_leader.setClosedLoopRampRate(2);
+        } else {
+            e_leader.setClosedLoopRampRate(.6);
+        }
+
         e_leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
     public double getPosition() {

@@ -23,12 +23,14 @@ public class Arm {
         super();
 
         a_follower = new CANSparkMax(Constants.RIGHT_ARM_MOTOR, MotorType.kBrushless);
+        a_follower.setIdleMode(CANSparkMax.IdleMode.kCoast);
         a_leader = new CANSparkMax(Constants.LEFT_ARM_MOTOR, MotorType.kBrushless);
+        a_leader.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
         a_leaderController = a_leader.getPIDController();
         a_leaderEncoder = a_leader.getEncoder();
         a_leaderEncoder.setPositionConversionFactor(100);
-        a_leader.setClosedLoopRampRate(6);
+        a_leader.setClosedLoopRampRate(.1);
         a_follower.follow(a_leader, true);
         a_followerEncoder = a_follower.getEncoder();
         // a_followerEncoder.setPositionConversionFactor(100);
@@ -80,17 +82,17 @@ public class Arm {
 
     public FunctionalCommand getPositionCommand(double position) {
         int slot = 1;
-        a_leader.setClosedLoopRampRate(6);
+        a_leader.setClosedLoopRampRate(.2);
 
         if (position == Constants.ARM_RETRACT) {
             slot = 2;
-            a_leader.setClosedLoopRampRate(4);
+            a_leader.setClosedLoopRampRate(1);
         } else if (position == Constants.ARM_UP) {
             slot = 3;
-            a_leader.setClosedLoopRampRate(3);
+            a_leader.setClosedLoopRampRate(.05);
         } else if (position == Constants.ARM_GO_BACK) {
             slot = 0;
-            a_leader.setClosedLoopRampRate(10);
+            a_leader.setClosedLoopRampRate(20);
         }
 
         final int finalslot = slot;
@@ -98,23 +100,15 @@ public class Arm {
             () -> System.out.println("Driving arm"),
             () -> setPosition(position, finalslot),
             interrupted -> System.out.println("Ended driving arm"),
-            () -> Math.abs(getArmPosition() - position) <= 95
+            () -> Math.abs(getArmPosition() - position) <= 665
         );
+        //original error 95
     }
 
     public void setPosition(double position, int slot) {
         a_leaderController.setReference(position, CANSparkMax.ControlType.kPosition, slot);
     }
 
-    public void idleMode(String mode) {
-        if(mode.equals("brake")) {
-            a_leader.setIdleMode(CANSparkMax.IdleMode.kBrake);
-            a_follower.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        } else if(mode.equals("coast")) {
-            a_leader.setIdleMode(CANSparkMax.IdleMode.kCoast);
-            a_follower.setIdleMode(CANSparkMax.IdleMode.kCoast);
-        }
-    }
 
 
 
@@ -123,6 +117,7 @@ public class Arm {
         SmartDashboard.putNumber("arm follower", a_followerEncoder.getPosition());
         SmartDashboard.putNumber("Arm Lead Temp", a_leader.getMotorTemperature());
         SmartDashboard.putNumber("Arm Follower temp", a_follower.getMotorTemperature());
+        SmartDashboard.putNumber("Voltage", a_leader.getAppliedOutput());
     }
 
     public void resetEncoderPosition() {

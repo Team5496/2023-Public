@@ -73,31 +73,31 @@ public final class Constants {
     public static final int LEFT_ARM_MOTOR = 3; // Lead
     public static final int RIGHT_ARM_MOTOR = 4; // Follower
 
-    public static final int ARM_STRAIGHT = 1400;
-    public static final int ARM_RETRACT = -300;
-    public static final int ARM_DOWN = 692;
-    public static final int ARM_GO_BACK = -199;
-    public static final int ARM_UP = -800;
+    public static final int ARM_STRAIGHT = 9800; //1400
+    public static final int ARM_RETRACT = -500; //-300
+    public static final int ARM_DOWN = 4844; //692
+    public static final int ARM_GO_BACK = -1393; //-199
+    public static final int ARM_UP = -5600; //-800
 
-    public static final double a_KP = 0.0007;
-    public static final double a_KI = 3e-10;
+    public static final double a_KP = 0.000175; //0.0007
+    public static final double a_KI = 6e-10; //3e-10
     public static final double a_KD = 0.0;
-    public static final double a_KF = 2e-6;
+    public static final double a_KF = 5e-7; //2e-6
 
-    public static final double a_KPR = 0.001;
-    public static final double a_KIR = 3.5e-10;
+    public static final double a_KPR = 0.00025; //0.001
+    public static final double a_KIR = 8.75e-11; //3.5e-10
     public static final double a_KDR = 0.0;
-    public static final double a_KFR = 2e-6;
+    public static final double a_KFR = 5e-7; //2e-6
 
-    public static final double a_KPUP = 0.0007;
-    public static final double a_KIUP = 2e-10;
-    public static final double a_KDUP = 0.0007;
-    public static final double a_KFUP = 0.75e-6;
+    public static final double a_KPUP = 0.000175; //0.0007
+    public static final double a_KIUP = 5e-11; //2e-10
+    public static final double a_KDUP = 0.000175; //0.0007
+    public static final double a_KFUP = 1.875e-7; //0.75e-6
 
-    public static final double a_KPB = 0.00021;
+    public static final double a_KPB = 0.000013125; //0.00021
     public static final double a_KIB = 0.0;
-    public static final double a_KDB = 0.0016;
-    public static final double a_KFB = 0.75e-6;
+    public static final double a_KDB = 0.0008; //0.0016
+    public static final double a_KFB = 1.875e-7; //0.75e-6
 
     public static final int a_OUTPUT_MAX = 2;
     public static final int a_OUTPUT_MIN = -2;

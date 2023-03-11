@@ -57,14 +57,14 @@ public final class Constants {
     public static final int LEFT_ELEVATOR_MOTOR = 2; // Lead
     public static final int RIGHT_ELEVATOR_MOTOR = 5; // Follower
 
-    public static final int ELEVATOR_LOW = 300;
+    public static final int ELEVATOR_LOW = 500;
     public static final int ELEVATOR_MID = 850;
-    public static final int ELEVATOR_PICK_UP = 1050;
-    public static final int ELEVATOR_HIGH = 1520;
+    public static final int ELEVATOR_PICK_UP = 950;
+    public static final int ELEVATOR_HIGH = 1540;
 
-    public static final double e_KP = 0.0006;
-    public static final double e_KI = 0.2e-9;
-    public static final double e_KD = 0;
+    public static final double e_KP = 0.00063;
+    public static final double e_KI = 1e-10;
+    public static final double e_KD = 0.0;
     public static final double e_KF = 0.000095;
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
@@ -72,12 +72,12 @@ public final class Constants {
     /* ARM CONSTANTS */
     public static final int LEFT_ARM_MOTOR = 3; // Lead
     public static final int RIGHT_ARM_MOTOR = 4; // Follower
-
+    public static final int ARM_UP_MIDDLE = -5450;
     public static final int ARM_STRAIGHT = 9800; //1400
-    public static final int ARM_RETRACT = -500; //-300
+    public static final int ARM_RETRACT = -1500; //-300
     public static final int ARM_DOWN = 4844; //692
     public static final int ARM_GO_BACK = -1393; //-199
-    public static final int ARM_UP = -5600; //-800
+    public static final int ARM_UP = -7000; //-800
 
     public static final double a_KP = 0.000175; //0.0007
     public static final double a_KI = 6e-10; //3e-10
@@ -89,14 +89,14 @@ public final class Constants {
     public static final double a_KDR = 0.0;
     public static final double a_KFR = 5e-7; //2e-6
 
-    public static final double a_KPUP = 0.000175; //0.0007
+    public static final double a_KPUP = 0.00018; //0.0007
     public static final double a_KIUP = 5e-11; //2e-10
-    public static final double a_KDUP = 0.000175; //0.0007
+    public static final double a_KDUP = 0.000174; //0.0007
     public static final double a_KFUP = 1.875e-7; //0.75e-6
 
-    public static final double a_KPB = 0.000013125; //0.00021
+    public static final double a_KPB = 0.00013; //0.00021
     public static final double a_KIB = 0.0;
-    public static final double a_KDB = 0.0008; //0.0016
+    public static final double a_KDB = 0.000035; //0.0016
     public static final double a_KFB = 1.875e-7; //0.75e-6
 
     public static final int a_OUTPUT_MAX = 2;

@@ -51,7 +51,8 @@ public class Robot extends TimedRobot {
   private Intake intake = new Intake();
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private EnumToCommand teleopcommandhandler = new EnumToCommand(elevator, arm, intake);
-  private GenericHID controlBoard = new GenericHID(0);
+  private GenericHID controlBoard = new GenericHID(1);
+  private XboxController controlIntake = new XboxController(2);
 
   private Boolean foundapriltag = false;
   private double recordedapriltagdistanceforpath = 0.0;
@@ -64,12 +65,18 @@ public class Robot extends TimedRobot {
   SequentialCommandGroup retractArmAndCarryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
   SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
   SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
-  SequentialCommandGroup placeConeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
+  SequentialCommandGroup placeConeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), arm.getPositionCommand(Constants.ARM_UP_MIDDLE));
+  SequentialCommandGroup placeCubeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), arm.getPositionCommand(Constants.ARM_UP_MIDDLE)); 
+  SequentialCommandGroup placeCubeHigh = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
   String lastcommand = "carry";
 
   // AUTO
+  
+  SequentialCommandGroup theEntireAuto = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP), intake.get_intakeCommand(-0.8), arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
+  
 
-  //SequentialCommandGroup start = new SequentialCommandGroup(elevator.setPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_RETRACT));
+
+  // AUTO
 
   /* 
    * This function is run when the robot is first started up and should be used for any
@@ -103,52 +110,33 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous com1op  mand selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-      m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
-      for (int i = 0; i < 2; i++) {
-        m_autonomousCommands[i] = m_robotContainer.getAutonomousCommand("right", i);
-      }
- 
-      SequentialCommandGroup two_part_auto = new SequentialCommandGroup(m_autonomousCommands[0], m_autonomousCommands[1]);
-      two_part_auto.schedule();
+    elevator.resetEncoderPosition();
+    arm.resetEncoderPosition();
+    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
+
+    arm.setPosition(Constants.ARM_RETRACT, 2);
+
+    theEntireAuto.addCommands(
+      m_robotContainer.getAutonomousCommand(1)
+    );
+
+    theEntireAuto.schedule();
+
   }
  
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    limelight.readPeriodically();
-
-    if (limelight.getCameraToTarget() != null) {
-        recordedapriltagdistanceforpath = limelight.getDistanceToTarget();
-        recordedapriltagID = limelight.getID();
-    }
-
-    /*
-   if (true) {
-     foundapriltag = false;
-      System.out.println("finished");
-
-      if (gamepiece == "cube") {Command command = m_robotContainer.getSimpleCommand("right"); command.schedule();}
-      else {
-        Command command = m_robotContainer.getSimpleCommand("left"); command.schedule();
-      }
-    }
-    */
   }
 
 
   
 
   @Override
-  public void teleopInit() {
+  public void teleopInit() {    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
-
-    elevator.resetEncoderPosition();
-    arm.resetEncoderPosition();
-    arm.setPosition(Constants.ARM_RETRACT, 2);
     //SmartDashboard.putNumber("Set Position", 0);
     // System.out.println(group.isScheduled());
   }
@@ -161,56 +149,49 @@ public class Robot extends TimedRobot {
 
     arm.armsmartdashboard();
 
-    
 
-    if (controlBoard.getRawButtonPressed(1) && lastcommand == "carry") {
+    if (controlBoard.getRawButtonPressed(1) && lastcommand.equals("carry")) {
+      System.out.println("ran");
       conePickUpGroup.schedule();
       lastcommand = "conepickup";
-    } else if (controlBoard.getRawButtonPressed(2) && lastcommand == "placeconehigh" || controlBoard.getRawButtonPressed(2) && lastcommand == "pickupshelf"){
+    } else if (controlBoard.getRawButtonPressed(3) && lastcommand.equals("placeconehigh") || 
+               controlBoard.getRawButtonPressed(3) && lastcommand.equals("pickupshelf") || 
+               controlBoard.getRawButtonPressed(3) && lastcommand.equals("placecubehigh") ||
+               controlBoard.getRawButtonPressed(3) && lastcommand.equals("placecubemiddle") || 
+               controlBoard.getRawButtonPressed(3) && lastcommand.equals("placeconemiddle")){
       retractArmAndCarryGroup.schedule();
       lastcommand = "carry";
     } else if (controlBoard.getRawButtonPressed(2)) {
+      System.out.println("pressed");
       carryGroup.schedule();
       lastcommand = "carry";
-    } else if (controlBoard.getRawButtonPressed(5) && lastcommand == "carry") {
+    } else if (controlBoard.getRawButtonPressed(5) && lastcommand.equals("carry")) {
       placeConeHighGroup.schedule();
       lastcommand = "placeconehigh";
-    } else if (controlBoard.getRawButtonPressed(7) && lastcommand == "carry") {
+    } else if (controlBoard.getRawButtonPressed(7) && lastcommand.equals("carry")) {
       placeConeMiddle.schedule();
-      lastcommand = "placeconemiddle";
-    }    
+      lastcommand = "placeconehigh";
+    } else if (controlBoard.getRawButtonPressed(6) && lastcommand.equals("carry")) {
+      placeCubeHigh.schedule();
+      lastcommand = "placeconehigh";
+    } else if (controlBoard.getRawButtonPressed(8) && lastcommand.equals("carry")) {
+      placeCubeMiddle.schedule();
+      lastcommand = "placeconehigh";
+    }
+
+    if (controlBoard.getRawButtonPressed(11)) {
+      CommandScheduler.getInstance().cancelAll();
+    }
 
     elevator.elevatorSmartDashboard();
-    /* 
-    if (m_normaldriver.getYButtonPressed() && ran == false){
-      elevatorroutine.schedule();
-      ran = true;
-    }
-     
-    if (magnet.get()) {elevator.goUp();}
-    else {
-      elevator.goDown();
-    }
-    */
 
-    /* 
-    limelight.readPeriodically();
-    if (limelight.getCameraToTarget() != null) {
-      switch(recordedapriltagID)
-      {
-        case 6:
-        
-        case 7:
-        case 8:
-        case 3:
-        case 2:
-        case 1:
-
-      }
-    
+    if (controlIntake.getRightBumperPressed()) {
+      intake.driveIntake(0.85);
+    } else if (controlIntake.getLeftBumperPressed()) {
+      intake.driveIntake(-0.85);
+    } else if (controlIntake.getStartButtonPressed()) {
+      intake.intakeStop();
     }
-
-    */
 
 
   }

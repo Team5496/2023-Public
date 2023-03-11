@@ -87,12 +87,12 @@ public class Arm {
         if (position == Constants.ARM_RETRACT) {
             slot = 2;
             a_leader.setClosedLoopRampRate(1);
-        } else if (position == Constants.ARM_UP) {
+        } else if (position == Constants.ARM_UP || position == Constants.ARM_UP_MIDDLE) {
             slot = 3;
             a_leader.setClosedLoopRampRate(.05);
         } else if (position == Constants.ARM_GO_BACK) {
             slot = 0;
-            a_leader.setClosedLoopRampRate(20);
+            a_leader.setClosedLoopRampRate(2.5);
         }
 
         final int finalslot = slot;
@@ -100,7 +100,7 @@ public class Arm {
             () -> System.out.println("Driving arm"),
             () -> setPosition(position, finalslot),
             interrupted -> System.out.println("Ended driving arm"),
-            () -> Math.abs(getArmPosition() - position) <= 665
+            () -> Math.abs(getArmPosition() - position) <= 400
         );
         //original error 95
     }

@@ -204,7 +204,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 
     for (int i = 0; i < 4; i++) {
-        distances[i] += (states[i].speedMetersPerSecond / 50); // measure total meters a module has travelled
+        distances[i] += (states[i].speedMetersPerSecond / 50.0); // measure total meters a module has travelled
     }        
 
     positions[0] = new SwerveModulePosition(distances[0], new Rotation2d(m_frontLeftModule.getSteerAngle()));
@@ -215,9 +215,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
     m_pose = m_odometry.update(getGyroscopeRotation(), positions); // update odometry
     consume_states.accept(states);
-    var res = limelight.result;
 
-
+    /* 
     if (res.hasTargets()) {
         Optional<EstimatedRobotPose> result = limelight.getRobotPoseAprilTag(m_odometry.getEstimatedPosition());
         EstimatedRobotPose campose = result.get();
@@ -227,6 +226,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 campose.timestampSeconds
         );
     }
+    */
   }
 
   public Command generatetrajectory(PathPlannerTrajectory traj, boolean isFirst){

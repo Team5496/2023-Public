@@ -13,20 +13,28 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
     private CANSparkMax i_leader;
-    private double elapsed_time = 0;
+    private double elapsed_time = 0.0;
 
     public Intake() {
         i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushed);
     }
 
     public FunctionalCommand get_intakeCommand(double speed) {
-        elapsed_time = 0;
         return new FunctionalCommand(
-            () -> System.out.println("Driving intake"),
+            () -> elapsed_time = 0.0,
             () -> driveIntake(speed),
             interrupted -> intakeStop(),
-            () -> elapsed_time >= 3
+            () -> getElapsedTime() > 1.0
         );
+    }
+
+    public double getElapsedTime() {
+        return elapsed_time;
+    }
+
+    @Override
+    public void periodic() {
+        elapsed_time += (1.0 / 50.0);
     }
 
     public void driveIntake(double speed) {

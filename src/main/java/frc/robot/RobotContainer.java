@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlanner;
 import frc.robot.commands.DefaultDriveCommand;
@@ -43,8 +44,8 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> exponentiate(-modifyAxis((m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> exponentiate(-modifyAxis((m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> exponentiate(modifyAxis(m_controller.getY())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> exponentiate(modifyAxis(m_controller.getX())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> exponentiate(-modifyAxis(m_controller.getZ())) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
@@ -69,24 +70,10 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand(String configuration, int count) {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath(configuration+"/gotopiece"+configuration, new PathConstraints(4.97, 3));
-
-    if (count == 0) {
-      trajectory = PathPlanner.loadPath(configuration+"/gotopiece"+configuration, new PathConstraints(4.97, 3));
-    } else if (count == 1) {trajectory = PathPlanner.loadPath(configuration+"/placepiece"+configuration, new PathConstraints(4.97, 3));  }
-
-    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, false);
-    PathPlannerState examplestate = (PathPlannerState) trajectory.sample(0.4);
-    
-
-    System.out.println(examplestate.velocityMetersPerSecond);
-    return autocommand;
-  }
-
-  public Command getSimpleCommand(String config) {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("move" + config, new PathConstraints(4, 3));
-    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);
+  public Command getAutonomousCommand(int count) {
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 3));
+    PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, Alliance.Blue);
+    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);    
     return autocommand;
   }
 

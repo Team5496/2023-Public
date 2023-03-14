@@ -153,8 +153,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
    * 'forwards' direction.
    */
-  public void zeroGyroscope() {
-    m_pigeon.setYaw(0.0);
+  public void zeroGyroscope(double gyroangle) {
+    m_pigeon.setYaw(gyroangle);
   }
 
   public Rotation2d getGyroscopeRotation() {
@@ -169,7 +169,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public Pose2d reset_pose(Pose2d pose){ // read name
-        pose = new Pose2d(0, 0, new Rotation2d(0, 0));
         m_pose = pose;
         return m_pose;
   }
@@ -182,16 +181,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_backLeftModule.set(states[2].speedMetersPerSecond  / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
         m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians()); 
   };
-    
-  public Command zeromotors(){
-        return new InstantCommand(() -> {
-                m_frontLeftModule.set(0, 0);
-                m_frontRightModule.set(0, 0);
-                m_backLeftModule.set(0, 0);
-                m_backRightModule.set(0, 0);        
-        });
-   }
-
 
 
 

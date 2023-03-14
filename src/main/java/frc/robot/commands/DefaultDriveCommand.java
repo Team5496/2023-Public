@@ -38,7 +38,7 @@ public class DefaultDriveCommand extends CommandBase {
 
     }
     public void reset() {
-        m_drivetrainSubsystem.zeroGyroscope();
+        m_drivetrainSubsystem.zeroGyroscope(0.0);
     }
 
 

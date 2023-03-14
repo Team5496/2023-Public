@@ -49,31 +49,23 @@ public class Robot extends TimedRobot {
   private Arm arm = new Arm();
   private Elevator elevator = new Elevator();
   private Intake intake = new Intake();
-  private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  private EnumToCommand teleopcommandhandler = new EnumToCommand(elevator, arm, intake);
   private GenericHID controlBoard = new GenericHID(1);
-  private XboxController controlIntake = new XboxController(2);
-
-  private Boolean foundapriltag = false;
-  private double recordedapriltagdistanceforpath = 0.0;
-  private int recordedapriltagID = 0;
-  private Limelight limelight = new Limelight("gloworm");
 
   // TELEOP
   SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN), elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP));
   SequentialCommandGroup carryGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
   SequentialCommandGroup retractArmAndCarryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
   SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
-  SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_MID), arm.getPositionCommand(Constants.ARM_UP));
   SequentialCommandGroup placeConeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), arm.getPositionCommand(Constants.ARM_UP_MIDDLE));
   SequentialCommandGroup placeCubeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), arm.getPositionCommand(Constants.ARM_UP_MIDDLE)); 
   SequentialCommandGroup placeCubeHigh = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
+  SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_SHELF), arm.getPositionCommand(Constants.ARM_UP_MIDDLE));
   String lastcommand = "carry";
 
   // AUTO
   
-  SequentialCommandGroup theEntireAuto = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP), intake.get_intakeCommand(-0.8), arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
-  
+  SequentialCommandGroup placeConeHighAuto = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP), intake.get_intakeCommand(-0.8), arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
+  SequentialCommandGroup placeCubeLowAuto = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), intake.get_intakeCommand(0.8));
 
 
   // AUTO
@@ -112,16 +104,12 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     elevator.resetEncoderPosition();
     arm.resetEncoderPosition();
-    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope();
+    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(-90.0);
 
     arm.setPosition(Constants.ARM_RETRACT, 2);
 
-    theEntireAuto.addCommands(
-      m_robotContainer.getAutonomousCommand(1)
-    );
-
-    theEntireAuto.schedule();
-
+    placeConeHighAuto.addCommands(m_robotContainer.getAutonomousCommand(1));
+    placeConeHighAuto.schedule();
   }
  
   /** This function is called periodically during autonomous. */
@@ -134,11 +122,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {    
+    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    //SmartDashboard.putNumber("Set Position", 0);
-    // System.out.println(group.isScheduled());
+
+    if (placeConeHighAuto != null) {
+      placeConeHighAuto.cancel();
+    }
+    
+
   }
 
   /** This function is called periodically during operator control. */
@@ -148,7 +142,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Actual Position", elevator.getPosition());
 
     arm.armsmartdashboard();
-
 
     if (controlBoard.getRawButtonPressed(1) && lastcommand.equals("carry")) {
       System.out.println("ran");
@@ -171,28 +164,20 @@ public class Robot extends TimedRobot {
     } else if (controlBoard.getRawButtonPressed(7) && lastcommand.equals("carry")) {
       placeConeMiddle.schedule();
       lastcommand = "placeconehigh";
-    } else if (controlBoard.getRawButtonPressed(6) && lastcommand.equals("carry")) {
-      placeCubeHigh.schedule();
-      lastcommand = "placeconehigh";
-    } else if (controlBoard.getRawButtonPressed(8) && lastcommand.equals("carry")) {
-      placeCubeMiddle.schedule();
+    } else if (controlBoard.getRawButtonPressed(6)) {
+      intake.driveIntake(0.85);
+    } else if (controlBoard.getRawButtonPressed(8)) {
+      intake.driveIntake(-0.85);
+    } else if (controlBoard.getRawButtonPressed(4) && lastcommand.equals("carry")) {
+      pickUpShelf.schedule();
       lastcommand = "placeconehigh";
     }
 
     if (controlBoard.getRawButtonPressed(11)) {
-      CommandScheduler.getInstance().cancelAll();
-    }
-
-    elevator.elevatorSmartDashboard();
-
-    if (controlIntake.getRightBumperPressed()) {
-      intake.driveIntake(0.85);
-    } else if (controlIntake.getLeftBumperPressed()) {
-      intake.driveIntake(-0.85);
-    } else if (controlIntake.getStartButtonPressed()) {
       intake.intakeStop();
     }
 
+    elevator.elevatorSmartDashboard();
 
   }
 

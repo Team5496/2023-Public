@@ -7,12 +7,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -53,15 +49,15 @@ public class Elevator {
         if (position < getPosition()) {
             e_leader.setClosedLoopRampRate(2);
         } else {
-            e_leader.setClosedLoopRampRate(.6);
+            e_leader.setClosedLoopRampRate(1);
         }
 
         e_leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
+
     public double getPosition() {
         return e_leaderEncoder.getPosition();
     }
-
 
     public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(

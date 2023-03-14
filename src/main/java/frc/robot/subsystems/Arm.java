@@ -82,7 +82,7 @@ public class Arm {
 
     public FunctionalCommand getPositionCommand(double position) {
         int slot = 1;
-        a_leader.setClosedLoopRampRate(.2);
+        a_leader.setClosedLoopRampRate(.05);
 
         if (position == Constants.ARM_RETRACT) {
             slot = 2;

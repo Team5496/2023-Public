@@ -59,6 +59,7 @@ public final class Constants {
 
     public static final int ELEVATOR_LOW = 500;
     public static final int ELEVATOR_MID = 850;
+    public static final int ELEVATOR_SHELF = 700;
     public static final int ELEVATOR_PICK_UP = 950;
     public static final int ELEVATOR_HIGH = 1540;
 
@@ -79,7 +80,7 @@ public final class Constants {
     public static final int ARM_GO_BACK = -1393; //-199
     public static final int ARM_UP = -7000; //-800
 
-    public static final double a_KP = 0.000175; //0.0007
+    public static final double a_KP = 0.00025; //0.0007
     public static final double a_KI = 6e-10; //3e-10
     public static final double a_KD = 0.0;
     public static final double a_KF = 5e-7; //2e-6
@@ -89,12 +90,12 @@ public final class Constants {
     public static final double a_KDR = 0.0;
     public static final double a_KFR = 5e-7; //2e-6
 
-    public static final double a_KPUP = 0.00018; //0.0007
-    public static final double a_KIUP = 5e-11; //2e-10
-    public static final double a_KDUP = 0.000174; //0.0007
+    public static final double a_KPUP = 0.00025; //0.0007
+    public static final double a_KIUP = 7e-11; //2e-10
+    public static final double a_KDUP = 0.00015; //0.0007
     public static final double a_KFUP = 1.875e-7; //0.75e-6
 
-    public static final double a_KPB = 0.00013; //0.00021
+    public static final double a_KPB = 0.00015; //0.00021
     public static final double a_KIB = 0.0;
     public static final double a_KDB = 0.000035; //0.0016
     public static final double a_KFB = 1.875e-7; //0.75e-6

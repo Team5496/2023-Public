@@ -28,8 +28,23 @@ public class RobotContainer {
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
+  /* 
   public double exponentiate(double x){
-    return Math.pow(x, 3);
+    if (x < 0.50) {
+      return x * 0.50;
+    } else {
+      return Math.pow(x, 3);
+    }
+  }
+
+  */
+
+  public double setInput(double num) {
+    if (m_controller.getTrigger()) {
+      return (num / 2.0);
+    } else {
+      return num;
+    }
   }
 
   /**
@@ -44,9 +59,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> exponentiate(modifyAxis(m_controller.getY())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> exponentiate(modifyAxis(m_controller.getX())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> exponentiate(-modifyAxis(m_controller.getZ())) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> setInput(modifyAxis(m_controller.getY())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(modifyAxis(m_controller.getX())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(-modifyAxis(m_controller.getZ())) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings
@@ -71,8 +86,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand(int count) {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 3));
-    PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, Alliance.Blue);
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 4));
     Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);    
     return autocommand;
   }

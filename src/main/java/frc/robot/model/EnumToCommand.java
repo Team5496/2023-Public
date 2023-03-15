@@ -6,6 +6,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 public class EnumToCommand {
     HashMap<RobotStates.RobotStatesEnum, SequentialCommandGroup> corresponding_commands = new HashMap<RobotStates.RobotStatesEnum, SequentialCommandGroup>();
@@ -14,8 +15,10 @@ public class EnumToCommand {
         corresponding_commands.put( 
             RobotStates.RobotStatesEnum.CARRY,
             new SequentialCommandGroup(
-                elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
-                arm.getPositionCommand(Constants.ARM_RETRACT), 
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(Constants.ELEVATOR_HIGH),
+                    arm.getPositionCommand(Constants.ARM_RETRACT)
+                ),
                 elevator.getPositionCommand(Constants.ELEVATOR_LOW)
             )
         );
@@ -23,8 +26,10 @@ public class EnumToCommand {
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PICK_UP_LOW,
             new SequentialCommandGroup(
-                elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
-                arm.getPositionCommand(Constants.ARM_DOWN), 
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
+                    arm.getPositionCommand(Constants.ARM_DOWN)    
+                ),
                 elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP)
             )
         );
@@ -32,33 +37,40 @@ public class EnumToCommand {
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.RETRACT_W_CARRY,
             new SequentialCommandGroup(
-                arm.getPositionCommand(Constants.ARM_GO_BACK), 
-                arm.getPositionCommand(Constants.ARM_RETRACT), 
-                elevator.getPositionCommand(Constants.ELEVATOR_LOW)
+                new ParallelCommandGroup(
+                    arm.getPositionCommand(Constants.ARM_GO_BACK), 
+                    elevator.getPositionCommand(Constants.ELEVATOR_LOW)
+                )
             )
         );
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PLACE_H,
             new SequentialCommandGroup(
-                elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
-                arm.getPositionCommand(Constants.ARM_UP)
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
+                    arm.getPositionCommand(Constants.ARM_UP)
+                )
             )
         );
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PLACE_M,
             new SequentialCommandGroup(
-                elevator.getPositionCommand(Constants.ELEVATOR_LOW), 
-                arm.getPositionCommand(Constants.ARM_UP_MIDDLE)
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(Constants.ELEVATOR_LOW), 
+                    arm.getPositionCommand(Constants.ARM_UP_MIDDLE)
+                )
             )
         );
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PICK_UP_SHELF,
             new SequentialCommandGroup(
-                elevator.getPositionCommand(Constants.ELEVATOR_SHELF), 
-                arm.getPositionCommand(Constants.ARM_UP_MIDDLE)
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(Constants.ELEVATOR_SHELF), 
+                    arm.getPositionCommand(Constants.ARM_UP_MIDDLE)
+                )
             )
         );
 

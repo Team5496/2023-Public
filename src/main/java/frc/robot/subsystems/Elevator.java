@@ -46,12 +46,6 @@ public class Elevator {
     }
 
     public void setPosition(double position) {
-        if (position < getPosition()) {
-            e_leader.setClosedLoopRampRate(2);
-        } else {
-            e_leader.setClosedLoopRampRate(1);
-        }
-
         e_leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
@@ -64,7 +58,7 @@ public class Elevator {
             () -> System.out.println("Driving elevator"),
             () -> setPosition(position),
             interrupted -> System.out.println("Ended driving elevator"),
-            () -> Math.abs(getPosition() - position) <= 200
+            () -> Math.abs(getPosition() - position) <= 210
         );
     }
 

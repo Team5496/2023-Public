@@ -162,15 +162,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 }
 
-  public Supplier<Pose2d> get_pose = () -> m_pose; // returns pose
+  public Supplier<Pose2d> get_pose = () -> m_odometry.getEstimatedPosition(); // returns pose
 
   public void drive(ChassisSpeeds chassisSpeeds) { // read name
     m_chassisSpeeds = chassisSpeeds;
   }
 
-  public Pose2d reset_pose(Pose2d pose){ // read name
-        m_pose = pose;
-        return m_pose;
+  public void reset_pose(Pose2d pose){ // read name
+        m_odometry.resetPosition(getGyroscopeRotation(), positions, pose);
   }
 
 

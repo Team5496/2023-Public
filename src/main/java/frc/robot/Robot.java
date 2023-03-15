@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.model.RobotStates.RobotStatesEnum;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Intake;
@@ -33,6 +34,8 @@ import frc.robot.model.EnumToCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+import frc.robot.model.RobotStates;
+import frc.robot.model.EnumToCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -43,32 +46,29 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private Command[] m_autonomousCommands = new Command[2];
-  private Command[] m_autonomousArmCommands = new Command[2];
-  private Command pollcommand_isfinished;
   private Arm arm = new Arm();
   private Elevator elevator = new Elevator();
   private Intake intake = new Intake();
   private GenericHID controlBoard = new GenericHID(1);
 
   // TELEOP
-  SequentialCommandGroup conePickUpGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_DOWN), elevator.getPositionCommand(Constants.ELEVATOR_PICK_UP));
-  SequentialCommandGroup carryGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
-  SequentialCommandGroup retractArmAndCarryGroup = new SequentialCommandGroup(arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
-  SequentialCommandGroup placeConeHighGroup = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
-  SequentialCommandGroup placeConeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), arm.getPositionCommand(Constants.ARM_UP_MIDDLE));
-  SequentialCommandGroup placeCubeMiddle = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), arm.getPositionCommand(Constants.ARM_UP_MIDDLE)); 
-  SequentialCommandGroup placeCubeHigh = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP));
-  SequentialCommandGroup pickUpShelf = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_SHELF), arm.getPositionCommand(Constants.ARM_UP_MIDDLE));
-  String lastcommand = "carry";
+  RobotStates curr_state = new RobotStates();
+  EnumToCommand enumToCommand = new EnumToCommand(elevator, arm, intake);
 
   // AUTO
-  
-  SequentialCommandGroup placeConeHighAuto = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_HIGH), arm.getPositionCommand(Constants.ARM_UP), intake.get_intakeCommand(-0.8), arm.getPositionCommand(Constants.ARM_GO_BACK), arm.getPositionCommand(Constants.ARM_RETRACT), elevator.getPositionCommand(Constants.ELEVATOR_LOW));
-  SequentialCommandGroup placeCubeLowAuto = new SequentialCommandGroup(elevator.getPositionCommand(Constants.ELEVATOR_LOW), intake.get_intakeCommand(0.8));
+  SequentialCommandGroup placeConeHighAuto = new SequentialCommandGroup(
+    elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
+    arm.getPositionCommand(Constants.ARM_UP), 
+    intake.get_intakeCommand(-0.8), 
+    arm.getPositionCommand(Constants.ARM_GO_BACK), 
+    arm.getPositionCommand(Constants.ARM_RETRACT), 
+    elevator.getPositionCommand(Constants.ELEVATOR_LOW)
+  );
 
-
-  // AUTO
+  SequentialCommandGroup placeCubeLowAuto = new SequentialCommandGroup(
+    elevator.getPositionCommand(Constants.ELEVATOR_LOW), 
+    intake.get_intakeCommand(0.8)
+  );
 
   /* 
    * This function is run when the robot is first started up and should be used for any
@@ -143,37 +143,73 @@ public class Robot extends TimedRobot {
 
     arm.armsmartdashboard();
 
-    if (controlBoard.getRawButtonPressed(1) && lastcommand.equals("carry")) {
-      System.out.println("ran");
-      conePickUpGroup.schedule();
-      lastcommand = "conepickup";
-    } else if (controlBoard.getRawButtonPressed(3) && lastcommand.equals("placeconehigh") || 
-               controlBoard.getRawButtonPressed(3) && lastcommand.equals("pickupshelf") || 
-               controlBoard.getRawButtonPressed(3) && lastcommand.equals("placecubehigh") ||
-               controlBoard.getRawButtonPressed(3) && lastcommand.equals("placecubemiddle") || 
-               controlBoard.getRawButtonPressed(3) && lastcommand.equals("placeconemiddle")){
-      retractArmAndCarryGroup.schedule();
-      lastcommand = "carry";
+    if (controlBoard.getRawButtonPressed(1)) {
+        switch (curr_state.getState()) {
+            case CARRY:
+            case RETRACT_W_CARRY:
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_LOW).schedule();
+              curr_state.setState(RobotStatesEnum.PICK_UP_LOW);
+              break;
+            default:
+              System.out.println("Bad call for Button 1");
+              break;
+        }
+
+    } else if (controlBoard.getRawButtonPressed(3)){
+        switch (curr_state.getState()) {
+            case PLACE_H:
+            case PICK_UP_SHELF:
+            case PLACE_M:
+              enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY).schedule();
+              curr_state.setState(RobotStatesEnum.RETRACT_W_CARRY);
+              break;
+            default:
+              System.out.println("Bad call for Button 2");
+              break;
+        }
     } else if (controlBoard.getRawButtonPressed(2)) {
-      System.out.println("pressed");
-      carryGroup.schedule();
-      lastcommand = "carry";
-    } else if (controlBoard.getRawButtonPressed(5) && lastcommand.equals("carry")) {
-      placeConeHighGroup.schedule();
-      lastcommand = "placeconehigh";
-    } else if (controlBoard.getRawButtonPressed(7) && lastcommand.equals("carry")) {
-      placeConeMiddle.schedule();
-      lastcommand = "placeconehigh";
-    } else if (controlBoard.getRawButtonPressed(6)) {
+        enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
+        curr_state.setState(RobotStatesEnum.CARRY);
+    } else if (controlBoard.getRawButtonPressed(5)) {
+        switch (curr_state.getState()) {
+            case CARRY:
+            case RETRACT_W_CARRY:
+              enumToCommand.getCommand(RobotStatesEnum.PLACE_H).schedule();
+              curr_state.setState(RobotStatesEnum.PLACE_H);
+              break;
+            default:
+              System.out.println("Bad call for Button 5");
+              break;
+        }
+    } else if (controlBoard.getRawButtonPressed(7)) {
+        switch (curr_state.getState()) {
+            case CARRY:
+            case RETRACT_W_CARRY:
+              enumToCommand.getCommand(RobotStatesEnum.PLACE_M).schedule();
+              curr_state.setState(RobotStatesEnum.PLACE_M);
+              break;
+            default:
+              System.out.println("Bad call for Button 7");
+              break;
+        }
+    } else if (controlBoard.getRawButtonPressed(4)) {
+        switch(curr_state.getState()) {
+            case CARRY:
+            case RETRACT_W_CARRY:
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_SHELF).schedule();
+              curr_state.setState(RobotStatesEnum.PICK_UP_SHELF);
+              break;
+            default:
+              System.out.println("Bad call for Button 4");
+              break;
+        }
+    }
+    
+    if (controlBoard.getRawButtonPressed(6)) {
       intake.driveIntake(0.85);
     } else if (controlBoard.getRawButtonPressed(8)) {
       intake.driveIntake(-0.85);
-    } else if (controlBoard.getRawButtonPressed(4) && lastcommand.equals("carry")) {
-      pickUpShelf.schedule();
-      lastcommand = "placeconehigh";
-    }
-
-    if (controlBoard.getRawButtonPressed(11)) {
+    } else if (controlBoard.getRawButtonPressed(11)) {
       intake.intakeStop();
     }
 

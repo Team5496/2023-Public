@@ -70,6 +70,13 @@ public class Robot extends TimedRobot {
     intake.get_intakeCommand(0.8)
   );
 
+  private void resetAll() {
+    CommandScheduler.getInstance().cancelAll();
+    elevator.resetEncoderPosition();
+    arm.setPosition(Constants.ARM_RETRACT, 2);
+    arm.resetEncoderPosition();
+  }
+
   /* 
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -102,11 +109,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous com1op  mand selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    elevator.resetEncoderPosition();
-    arm.resetEncoderPosition();
+    resetAll();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(-90.0);
-
-    arm.setPosition(Constants.ARM_RETRACT, 2);
 
     placeConeHighAuto.addCommands(m_robotContainer.getAutonomousCommand(1));
     placeConeHighAuto.schedule();
@@ -121,7 +125,8 @@ public class Robot extends TimedRobot {
   
 
   @Override
-  public void teleopInit() {    
+  public void teleopInit() {
+    resetAll();    
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
 
     if (m_autonomousCommand != null) {
@@ -131,7 +136,6 @@ public class Robot extends TimedRobot {
     if (placeConeHighAuto != null) {
       placeConeHighAuto.cancel();
     }
-    
 
   }
 

@@ -16,6 +16,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,6 +29,8 @@ public class RobotContainer {
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
+  
+
   /* 
   public double exponentiate(double x){
     if (x < 0.50) {
@@ -59,9 +62,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> setInput(modifyAxis(m_controller.getY())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> setInput(modifyAxis(m_controller.getX())) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> setInput(-modifyAxis(m_controller.getZ())) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> setInput(modifyAxis((m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(modifyAxis((m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(-modifyAxis((m_controller.getZ()))) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings

@@ -29,6 +29,9 @@ public class RobotContainer {
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
+  private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.5);
+  private SlewRateLimiter rotate_limiter = new SlewRateLimiter(1.5);
+  private SlewRateLimiter clock_limiter = new SlewRateLimiter(1.5);
   
 
   /* 
@@ -43,11 +46,11 @@ public class RobotContainer {
   */
 
   public double setInput(double num) {
-    if (m_controller.getTrigger()) {
-      return (num / 2.0);
-    } else {
-      return num;
-    }
+    if (m_controller.getTrigger()) { return (num / 2.0); } else return num;
+  }
+
+  public double setInputZ(double z) {
+    if (m_controller.getTrigger()) {return (z / 2.5);} else return z;
   }
 
   /**
@@ -62,9 +65,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> setInput(modifyAxis((m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> setInput(modifyAxis((m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> setInput(-modifyAxis((m_controller.getZ()))) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> setInput(-modifyAxis(rotate_limiter.calculate(m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(-modifyAxis(accel_limiter.calculate(m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInputZ(-modifyAxis(clock_limiter.calculate(m_controller.getZ()))) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings
@@ -89,7 +92,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand(int count) {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 4));
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 2));
     Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);    
     return autocommand;
   }

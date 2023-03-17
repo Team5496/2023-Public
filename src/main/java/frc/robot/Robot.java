@@ -104,12 +104,12 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous com1op  mand selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    elevator.resetEncoderPosition();
-    arm.resetEncoderPosition();
+    //elevator.resetEncoderPosition();
+    //arm.resetEncoderPosition();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
 
 
-    arm.setPosition(Constants.ARM_RETRACT, 2);
+   // arm.setPosition(Constants.ARM_RETRACT, 2);
 
     m_robotContainer.getAutonomousCommand(1).schedule();
   }
@@ -133,8 +133,6 @@ public class Robot extends TimedRobot {
     if (placeConeHighAuto != null) {
       placeConeHighAuto.cancel();
     }
-    
-
   }
 
   /** This function is called periodically during operator control. */

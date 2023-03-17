@@ -229,9 +229,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     traj, 
                     get_pose, // Pose supplier
                     m_kinematics, // kP 0.013
-                    new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                    new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-                    new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.035, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.035, 0, 0), // Y controller (usually the same values as X controller)
+                    new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                     consume_states, // Module states consumer
                     this // Requires this drive subsystem
                 )

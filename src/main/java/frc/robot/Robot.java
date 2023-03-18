@@ -33,10 +33,12 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorSensorV3.RawColor;
 import frc.robot.model.EnumToCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import java.util.HashMap;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import frc.robot.model.RobotStates;
 import frc.robot.model.EnumToCommand;
+import frc.robot.model.AutoHandler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -47,29 +49,35 @@ import frc.robot.model.EnumToCommand;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private Arm arm = new Arm();
-  private Elevator elevator = new Elevator();
-  private Intake intake = new Intake();
-  private GenericHID controlBoard = new GenericHID(1);
 
   // TELEOP
+
+  private GenericHID controlBoard = new GenericHID(1);
   RobotStates curr_state = new RobotStates();
-  EnumToCommand enumToCommand = new EnumToCommand(elevator, arm, intake);
+  EnumToCommand enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake);
 
   // AUTO
+
+  private HashMap<String, Command> eventMap = new HashMap<>();
+  private AutoHandler autoHandler = new AutoHandler("placeConeHighBalance");
+
+  /*
+
   SequentialCommandGroup placeConeHighAuto = new SequentialCommandGroup(
-    elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
-    arm.getPositionCommand(Constants.ARM_UP), 
-    intake.get_intakeCommand(-0.8), 
-    arm.getPositionCommand(Constants.ARM_GO_BACK), 
-    arm.getPositionCommand(Constants.ARM_RETRACT), 
-    elevator.getPositionCommand(Constants.ELEVATOR_LOW)
+    m_robotContainer.m_elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
+    m_robotContainer.m_arm.getPositionCommand(Constants.ARM_UP), 
+    m_robotContainer.m_intake.get_intakeCommand(-0.8), 
+    m_robotContainer.m_arm.getPositionCommand(Constants.ARM_GO_BACK), 
+    m_robotContainer.m_arm.getPositionCommand(Constants.ARM_RETRACT), 
+    m_robotContainer.m_elevator.getPositionCommand(Constants.ELEVATOR_LOW)
   );
 
   SequentialCommandGroup placeCubeLowAuto = new SequentialCommandGroup(
-    elevator.getPositionCommand(Constants.ELEVATOR_LOW), 
-    intake.get_intakeCommand(0.8)
+    m_robotContainer.m_elevator.getPositionCommand(Constants.ELEVATOR_LOW), 
+    m_robotContainer.m_intake.get_intakeCommand(0.8)
   );
+
+  */
 
   /* 
    * This function is run when the robot is first started up and should be used for any
@@ -105,13 +113,15 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     //elevator.resetEncoderPosition();
-    //arm.resetEncoderPosition();
+    //m_robotContainer.m_arm.resetEncoderPosition();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
 
 
-   // arm.setPosition(Constants.ARM_RETRACT, 2);
+   // m_robotContainer.m_arm.setPosition(Constants.ARM_RETRACT, 2);
 
-    m_robotContainer.getAutonomousCommand(1).schedule();
+   // m_robotContainer.getAutonomousCommand(1).schedule();
+
+   autoHandler.getCommandFromBuilder(m_robotContainer.getBuilder(autoHandler.getHashMap())).schedule();
   }
  
   /** This function is called periodically during autonomous. */
@@ -130,19 +140,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    if (placeConeHighAuto != null) {
-      placeConeHighAuto.cancel();
-    }
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Output", elevator.getOutput());
-    SmartDashboard.putNumber("Actual Position", elevator.getPosition());
-
-    arm.armsmartdashboard();
-
     if (controlBoard.getRawButtonPressed(1)) {
         switch (curr_state.getState()) {
             case CARRY:
@@ -206,15 +208,12 @@ public class Robot extends TimedRobot {
     }
     
     if (controlBoard.getRawButtonPressed(6)) {
-      intake.driveIntake(0.85);
+      m_robotContainer.m_intake.driveIntake(0.85);
     } else if (controlBoard.getRawButtonPressed(8)) {
-      intake.driveIntake(-0.85);
+      m_robotContainer.m_intake.driveIntake(-0.85);
     } else if (controlBoard.getRawButtonPressed(11)) {
-      intake.intakeStop();
+      m_robotContainer.m_intake.intakeStop();
     }
-
-    elevator.elevatorSmartDashboard();
-
   }
 
   @Override

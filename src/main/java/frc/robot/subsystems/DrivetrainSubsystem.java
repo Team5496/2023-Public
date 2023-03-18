@@ -60,7 +60,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
-  private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+  public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
           // Front left
           new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Front right
@@ -172,9 +172,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_chassisSpeeds = chassisSpeeds;
   }
 
-  public void reset_pose(Pose2d pose){ // read name
+  public Consumer<Pose2d> reset_poseConsumer = pose -> { // read name
         m_odometry.resetPosition(getGyroscopeRotation(), positions, pose);
-  }
+  };
+
+  public void reset_poseMethod(Pose2d pose) { // read name
+        m_odometry.resetPosition(getGyroscopeRotation(), positions, pose);
+  };
+
 
 
   public Consumer<SwerveModuleState[]> consume_states = states -> { // swerve consumer, just feeds into drivebase and then purges states
@@ -222,16 +227,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new InstantCommand(() -> {
                   // Reset odometry for the first path you run during auto
                   if(isFirst){
-                      this.reset_pose(traj.getInitialHolonomicPose());
+                      this.reset_poseMethod(traj.getInitialHolonomicPose());
                   }
                 }),
                 new PPSwerveControllerCommand(
                     traj, 
                     get_pose, // Pose supplier
                     m_kinematics, // kP 0.013
-                    new PIDController(0.035, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                    new PIDController(0.035, 0, 0), // Y controller (usually the same values as X controller)
-                    new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.05, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.05, 0, 0), // Y controller (usually the same values as X controller)
+                    new PIDController(0.015, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                     consume_states, // Module states consumer
                     this // Requires this drive subsystem
                 )

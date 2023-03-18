@@ -104,6 +104,12 @@
       "names": [
         "runIntake"
       ]
+    },
+    {
+      "position": 2.290909090909098,
+      "names": [
+        "finishedPiece"
+      ]
     }
   ]
 }

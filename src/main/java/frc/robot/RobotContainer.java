@@ -106,6 +106,7 @@ public class RobotContainer {
     return autocommand;
   }
 
+  /* 
   public SwerveAutoBuilder getBuilder(HashMap<String, Command> events) {
     return new SwerveAutoBuilder(
         m_drivetrainSubsystem.get_pose,
@@ -119,6 +120,8 @@ public class RobotContainer {
         m_drivetrainSubsystem
     );
   }
+
+  */
 
 
   private static double deadband(double value, double deadband) {

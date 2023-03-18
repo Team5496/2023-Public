@@ -49,16 +49,15 @@ import frc.robot.model.AutoHandler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  private EnumToCommand enumToCommand;
 
   // TELEOP
 
   private GenericHID controlBoard = new GenericHID(1);
   RobotStates curr_state = new RobotStates();
-  EnumToCommand enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake);
 
   // AUTO
 
-  private HashMap<String, Command> eventMap = new HashMap<>();
   private AutoHandler autoHandler = new AutoHandler("placeConeHighBalance");
 
   /*
@@ -86,8 +85,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake);
+
+
     PathPlannerServer.startServer(5811);  
   }
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -121,7 +124,9 @@ public class Robot extends TimedRobot {
 
    // m_robotContainer.getAutonomousCommand(1).schedule();
 
-   autoHandler.getCommandFromBuilder(m_robotContainer.getBuilder(autoHandler.getHashMap())).schedule();
+  // m_robotContainer.m_drivetrainSubsystem.reset_poseMethod(autoHandler.getPathGroup().getInitialHolonomicPose());
+
+   autoHandler.getCommandFromBuilder(m_robotContainer.m_drivetrainSubsystem).schedule();
   }
  
   /** This function is called periodically during autonomous. */

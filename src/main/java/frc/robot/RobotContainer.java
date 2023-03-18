@@ -4,19 +4,25 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlanner;
 import frc.robot.commands.DefaultDriveCommand;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lights;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,6 +33,9 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  public final Arm m_arm = new Arm();
+  public final Elevator m_elevator = new Elevator();
+  public final Intake m_intake = new Intake();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
   private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.5);
@@ -95,6 +104,20 @@ public class RobotContainer {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 2));
     Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);    
     return autocommand;
+  }
+
+  public SwerveAutoBuilder getBuilder(HashMap<String, Command> events) {
+    return new SwerveAutoBuilder(
+        m_drivetrainSubsystem.get_pose,
+        m_drivetrainSubsystem.reset_poseConsumer,
+        m_drivetrainSubsystem.m_kinematics,
+        new PIDConstants(0.05, 0, 0),
+        new PIDConstants(0.015, 0, 0),
+        m_drivetrainSubsystem.consume_states,
+        events,
+        true,
+        m_drivetrainSubsystem
+    );
   }
 
 

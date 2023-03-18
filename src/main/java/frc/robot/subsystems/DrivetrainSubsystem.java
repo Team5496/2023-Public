@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import java.util.function.Consumer;
 import com.pathplanner.lib.commands.*;
+import frc.robot.Constants;
 import java.util.function.Supplier;
 import edu.wpi.first.math.controller.PIDController;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
@@ -70,13 +71,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
           new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
   );
 
-  SwerveModulePosition[] positions = new SwerveModulePosition[4];
-
   private final Pigeon2 m_pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
 
   public double get_yaw() {
         return m_pigeon.getYaw();
   }
+
+  public static double falconToMeters(double positionCounts, double circumference, double gearRatio) {
+        return positionCounts * (circumference / (gearRatio * 2048.0));
+  }
+
 
   // positions are instantiated as 0
   public SwerveModule m_frontLeftModule;
@@ -87,10 +91,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public SwerveModulePosition m_backleftPosition = new SwerveModulePosition(0, new Rotation2d(0, 0));
   public SwerveModule m_backRightModule;
   public SwerveModulePosition m_backRightPosition = new SwerveModulePosition(0, new Rotation2d(0, 0));
+  public SwerveModulePosition[] positions = new SwerveModulePosition[]{m_frontleftPosition, m_frontRightPosition, m_backleftPosition, m_backRightPosition};
+  
   public SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
-        m_kinematics, getGyroscopeRotation(), new SwerveModulePosition[]{
-               m_frontleftPosition, m_frontRightPosition, m_backleftPosition, m_backRightPosition
-        }, m_pose);
+        m_kinematics, getGyroscopeRotation(), positions, m_pose);
         
      
  
@@ -191,14 +195,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
 
-    for (int i = 0; i < 4; i++) {
-        distances[i] += (states[i].speedMetersPerSecond / 50.0); // measure total meters a module has travelled
-    }        
-
-    positions[0] = new SwerveModulePosition(distances[0], new Rotation2d(m_frontLeftModule.getSteerAngle()));
-    positions[1] = new SwerveModulePosition(distances[1], new Rotation2d(m_frontRightModule.getSteerAngle()));
-    positions[2] = new SwerveModulePosition(distances[2], new Rotation2d(m_backLeftModule.getSteerAngle()));
-    positions[3] = new SwerveModulePosition(distances[3], new Rotation2d(m_backRightModule.getSteerAngle()));
+    positions[0] = new SwerveModulePosition(m_frontLeftModule.getDriveVelocity() / 50 + positions[0].distanceMeters, new Rotation2d(m_frontLeftModule.getSteerAngle()));
+    positions[1] = new SwerveModulePosition(m_frontRightModule.getDriveVelocity() / 50 + positions[1].distanceMeters, new Rotation2d(m_frontRightModule.getSteerAngle()));
+    positions[2] = new SwerveModulePosition(m_backLeftModule.getDriveVelocity() / 50 + positions[2].distanceMeters, new Rotation2d(m_backLeftModule.getSteerAngle()));
+    positions[3] = new SwerveModulePosition(m_backRightModule.getDriveVelocity() / 50 + positions[3].distanceMeters, new Rotation2d(m_backRightModule.getSteerAngle()));
     
     
     m_pose = m_odometry.update(getGyroscopeRotation(), positions); // update odometry
@@ -229,9 +229,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     traj, 
                     get_pose, // Pose supplier
                     m_kinematics, // kP 0.013
-                    new PIDController(0.013, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                    new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-                    new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.035, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.035, 0, 0), // Y controller (usually the same values as X controller)
+                    new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                     consume_states, // Module states consumer
                     this // Requires this drive subsystem
                 )

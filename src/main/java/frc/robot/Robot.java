@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
+import com.pathplanner.lib.server.PathPlannerServer;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorSensorV3.RawColor;
 import frc.robot.model.EnumToCommand;
@@ -83,7 +84,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();    
+    m_robotContainer = new RobotContainer();
+    PathPlannerServer.startServer(5811);  
   }
 
   /**
@@ -112,8 +114,7 @@ public class Robot extends TimedRobot {
     resetAll();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(-90.0);
 
-    placeConeHighAuto.addCommands(m_robotContainer.getAutonomousCommand(1));
-    placeConeHighAuto.schedule();
+    m_robotContainer.getAutonomousCommand(1).schedule();
   }
  
   /** This function is called periodically during autonomous. */
@@ -136,7 +137,6 @@ public class Robot extends TimedRobot {
     if (placeConeHighAuto != null) {
       placeConeHighAuto.cancel();
     }
-
   }
 
   /** This function is called periodically during operator control. */

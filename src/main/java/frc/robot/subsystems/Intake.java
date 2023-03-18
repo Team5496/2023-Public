@@ -1,19 +1,19 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
     private CANSparkMax i_leader;
     private double elapsed_time = 0.0;
+
 
     public Intake() {
         i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushed);
@@ -26,6 +26,10 @@ public class Intake extends SubsystemBase {
             interrupted -> intakeStop(),
             () -> getElapsedTime() > 1.0
         );
+    }
+
+    public void setIntakePos(double pos) {
+        
     }
 
     public double getElapsedTime() {

@@ -4,8 +4,13 @@
 
 package frc.robot;
 
+import frc.robot.model.EnumToCommand;
+import frc.robot.model.RobotStates;
+import frc.robot.model.RobotStates.RobotStatesEnum;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,21 +19,21 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.model.RobotStates.RobotStatesEnum;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
+import com.pathplanner.lib.server.PathPlannerServer;
 
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
-import com.pathplanner.lib.server.PathPlannerServer;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorSensorV3.RawColor;
 import frc.robot.model.EnumToCommand;
@@ -138,7 +143,8 @@ public class Robot extends TimedRobot {
   
 
   @Override
-  public void teleopInit() {    
+  public void teleopInit() {
+    resetAll();    
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
 
     if (m_autonomousCommand != null) {

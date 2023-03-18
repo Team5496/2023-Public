@@ -109,10 +109,24 @@ public final class Constants {
     public static final double a_MAX_ACCELERATION = 0.0;
     public static final double a_ALLOWED_ERROR = 0.0;
 
+    /* INTAKE ARM CONSTANTS */
+    public static final double IA_KP = 0.035679;
+    public static final double IA_KI = 0;
+    public static final double IA_KD = 0;
+    public static final double IA_KF = 0.035006;
+
+    /*
+    public static final double IA_KP_BACKUP = 0.021408;
+    public static final double IA_KI_BACKUP = 0;
+    public static final double IA_KD_BACKUP = 0;
+    public static final double IA_KF_BACKUP = 0.031972;
+    */
+
     /* INTAKE CONSTANTS */
     public static final int INTAKE_MOTOR = 1;
     public static final double INTAKE_IN = 0.45;
     public static final double INTAKE_OUT = 0.45;
+    
     /* VISION CONSTANTS */
     public static final double CAMERA_HEIGHT = 0.0;
     public static final double CAMERA_PITCH = 0.0;
@@ -127,7 +141,6 @@ public final class Constants {
     static {
         LIGHT_STATES = new HashMap<>();
         LIGHT_STATES.put(LightStates.OFF,LIGHT_STATE_OFF);
-        LIGHT_STATES.put(LightStates.ON, LIGHT_STATE_ON);
-        
+        LIGHT_STATES.put(LightStates.ON, LIGHT_STATE_ON);   
     }
 } 

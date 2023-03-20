@@ -38,9 +38,9 @@ public class RobotContainer {
   public final Intake m_intake = new Intake();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
-  private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.5);
-  private SlewRateLimiter rotate_limiter = new SlewRateLimiter(1.5);
-  private SlewRateLimiter clock_limiter = new SlewRateLimiter(1.5);
+  private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.7);
+  private SlewRateLimiter rotate_limiter = new SlewRateLimiter(1.7);
+  private SlewRateLimiter clock_limiter = new SlewRateLimiter(1.7);
   
 
   /* 

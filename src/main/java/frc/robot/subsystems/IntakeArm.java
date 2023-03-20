@@ -4,13 +4,11 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-//import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class IntakeArm {
     private TalonFX m_motor;
-    //private TalonSRX b_motor;
 
     public IntakeArm() {
         m_motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
@@ -18,8 +16,8 @@ public class IntakeArm {
 
 		m_motor.configNominalOutputForward(0);
 		m_motor.configNominalOutputReverse(0);
-		m_motor.configPeakOutputForward(0.7);
-		m_motor.configPeakOutputReverse(-0.7);
+		m_motor.configPeakOutputForward(0.4);
+		m_motor.configPeakOutputReverse(-0.4);
 
 		m_motor.selectProfileSlot(0, 0);
 		m_motor.config_kP(0, Constants.IA_KP);
@@ -54,6 +52,10 @@ public class IntakeArm {
         m_motor.set(TalonFXControlMode.MotionMagic, position);
         //b_motor.set(TalonSRXControlMode.MotionMagic, position);
     }
+
+	public void intakeArmSmartDashboard() {
+		SmartDashboard.putNumber("Intake Arm Position", m_motor.getSelectedSensorPosition());
+	}
 
     public void resetEncoder() {
         m_motor.setSelectedSensorPosition(0);

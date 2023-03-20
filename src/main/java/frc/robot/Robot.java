@@ -144,6 +144,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
 
     if (m_autonomousCommand != null) {

@@ -23,6 +23,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.IntakeArm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,6 +39,7 @@ public class RobotContainer {
   public final Intake m_intake = new Intake();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
+  public final IntakeArm m_intakearm = new IntakeArm();
   private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.7);
   private SlewRateLimiter rotate_limiter = new SlewRateLimiter(1.7);
   private SlewRateLimiter clock_limiter = new SlewRateLimiter(1.7);

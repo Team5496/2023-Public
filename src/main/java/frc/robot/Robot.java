@@ -144,7 +144,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
+    m_robotContainer.m_intakearm.resetEncoder();
+    m_robotContainer.m_arm.resetEncoderPosition();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
 
     if (m_autonomousCommand != null) {
@@ -156,6 +157,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    m_robotContainer.m_intakearm.intakeArmSmartDashboard();
+    m_robotContainer.m_arm.armsmartdashboard();
+
     if (controlBoard.getRawButtonPressed(1)) {
         switch (curr_state.getState()) {
             case CARRY:
@@ -219,11 +223,17 @@ public class Robot extends TimedRobot {
     }
     
     if (controlBoard.getRawButtonPressed(6)) {
-      m_robotContainer.m_intake.driveIntake(0.85);
+      // m_robotContainer.m_intake.driveIntake(0.85);
+      //m_robotContainer.m_intakearm.setPosition(-10300);
     } else if (controlBoard.getRawButtonPressed(8)) {
-      m_robotContainer.m_intake.driveIntake(-0.85);
+      //m_robotContainer.m_intake.driveIntake(-0.85);
+      //m_robotContainer.m_intakearm.setPosition(-15261);
     } else if (controlBoard.getRawButtonPressed(11)) {
-      m_robotContainer.m_intake.intakeStop();
+      // m_robotContainer.m_intake.intakeStop();
+      //m_robotContainer.m_intakearm.setPosition(-3000);
+
+      m_robotContainer.m_arm.setPosition(-2000, 1);
+      m_robotContainer.m_intakearm.setPosition(-2000);
     }
   }
 

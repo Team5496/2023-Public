@@ -17,7 +17,6 @@ public class Arm {
     private CANSparkMax a_leader;
     private SparkMaxPIDController a_leaderController;
     private RelativeEncoder a_leaderEncoder;
-    DigitalInput m_sensor = new DigitalInput(1);
 
     public Arm(){
         super();
@@ -28,7 +27,7 @@ public class Arm {
         a_leaderController = a_leader.getPIDController();
         a_leaderEncoder = a_leader.getEncoder();
         a_leaderEncoder.setPositionConversionFactor(100);
-        a_leader.setClosedLoopRampRate(.1);
+        a_leader.setClosedLoopRampRate(0.5);
 
         a_leaderController.setP(Constants.a_KP, 1);
         a_leaderController.setI(Constants.a_KI, 1);
@@ -44,14 +43,10 @@ public class Arm {
 
     }
 
-    public boolean getArmSensor() {
-        return m_sensor.get();
-    }
-
     public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(
             () -> System.out.println("Driving arm"),
-            () -> setPosition(position, 0),
+            () -> setPosition(position, 1),
             interrupted -> System.out.println("Ended driving arm"),
             () -> Math.abs(getArmPosition() - position) <= 400
         );
@@ -65,9 +60,7 @@ public class Arm {
 
 
     public void armsmartdashboard(){
-        SmartDashboard.putNumber("arm lead", a_leaderEncoder.getPosition());
-        SmartDashboard.putNumber("Arm Lead Temp", a_leader.getMotorTemperature());
-        SmartDashboard.putNumber("Voltage", a_leader.getAppliedOutput());
+        SmartDashboard.putNumber("Arm", a_leaderEncoder.getPosition());
     }
 
     public void resetEncoderPosition() {

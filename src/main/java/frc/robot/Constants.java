@@ -73,7 +73,7 @@ public final class Constants {
     public static final double e_OUTPUT_MAX = 2;
 
     /* ARM CONSTANTS */
-    public static final int ARM_MOTOR = 3; // Lead
+    public static final int ARM_MOTOR = 21; // Lead
     public static final int ARM_UP_MIDDLE = -5450;
     public static final int ARM_STRAIGHT = 9800; //1400
     public static final int ARM_RETRACT = -1500; //-300
@@ -81,10 +81,10 @@ public final class Constants {
     public static final int ARM_GO_BACK = -1393; //-199
     public static final int ARM_UP = -7000; //-800
 
-    public static final double a_KP = 0.00025; //0.0007
-    public static final double a_KI = 6e-10; //3e-10
-    public static final double a_KD = 0.0;
-    public static final double a_KF = 5e-7; //2e-6
+    public static final double a_KP = 0.000002; //too high
+    public static final double a_KI = 0.0; //3e-10
+    public static final double a_KD = 0.000001; //might not be doing anyting
+    public static final double a_KF = 0.0001; //2e-6
 
     public static final double a_KPR = 0.00030; //0.001
     public static final double a_KIR = 8.75e-11; //3.5e-10
@@ -109,10 +109,11 @@ public final class Constants {
     public static final double a_ALLOWED_ERROR = 0.0;
 
     /* INTAKE ARM CONSTANTS */
-    public static final double IA_KP = 0.035679;
-    public static final double IA_KI = 0;
-    public static final double IA_KD = 0;
-    public static final double IA_KF = 0.035006;
+    public static final int INTAKE_ARM_ID = 14;
+    public static final double IA_KP = 0.09;
+    public static final double IA_KI = 0.0;
+    public static final double IA_KD = 6.78;
+    public static final double IA_KF = 0.031972;
 
     /*
     public static final double IA_KP_BACKUP = 0.021408;
@@ -122,7 +123,7 @@ public final class Constants {
     */
 
     /* INTAKE CONSTANTS */
-    public static final int INTAKE_MOTOR = 1;
+    public static final int INTAKE_MOTOR = 15;
     public static final double INTAKE_IN = 0.45;
     public static final double INTAKE_OUT = 0.45;
     

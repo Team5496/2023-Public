@@ -16,10 +16,9 @@ public class EnumToCommand {
             RobotStates.RobotStatesEnum.CARRY,
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    elevator.getPositionCommand(Constants.ELEVATOR_HIGH),
-                    arm.getPositionCommand(Constants.ARM_RETRACT)
-                ),
-                elevator.getPositionCommand(Constants.ELEVATOR_LOW)
+                    arm.getPositionCommand(Constants.ARM_RETRACT),
+                    elevator.getPositionCommand(Constants.ELEVATOR_LOW)
+                )
             )
         );
 

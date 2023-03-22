@@ -44,7 +44,7 @@ public final class Constants {
     public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(204.52031250000002); //  Measure and set front right steer offset
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 6; //  Set back left drive motor ID
-    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 1; //  Set back left steer motor ID
+    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 22; //  Set back left steer motor ID
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 12; //  Set back left steer encoder ID
     public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(331.52109375000003); //  Measure and set back left steer offset
 
@@ -56,8 +56,8 @@ public final class Constants {
     public static final double WHEEL_CIRCUMFERENCE = 12.57;
 
     /* ELEVATOR CONSTANTS / PID VALUES */
-    public static final int LEFT_ELEVATOR_MOTOR = 2; // Lead
-    public static final int RIGHT_ELEVATOR_MOTOR = 5; // Follower
+    public static final int LEFT_ELEVATOR_MOTOR = 23; // Lead
+    public static final int RIGHT_ELEVATOR_MOTOR = 25; // Follower
 
     public static final int ELEVATOR_LOW = 500;
     public static final int ELEVATOR_MID = 850;
@@ -81,10 +81,10 @@ public final class Constants {
     public static final int ARM_GO_BACK = -1393; //-199
     public static final int ARM_UP = -7000; //-800
 
-    public static final double a_KP = 0.000002; //too high
+    public static final double a_KP = 0.00032; 
     public static final double a_KI = 0.0; //3e-10
-    public static final double a_KD = 0.000001; //might not be doing anyting
-    public static final double a_KF = 0.0001; //2e-6
+    public static final double a_KD = 0.0; 
+    public static final double a_KF = 0.0; //2e-6
 
     public static final double a_KPR = 0.00030; //0.001
     public static final double a_KIR = 8.75e-11; //3.5e-10
@@ -110,10 +110,10 @@ public final class Constants {
 
     /* INTAKE ARM CONSTANTS */
     public static final int INTAKE_ARM_ID = 14;
-    public static final double IA_KP = 0.09;
-    public static final double IA_KI = 0.0;
-    public static final double IA_KD = 6.78;
-    public static final double IA_KF = 0.031972;
+    public static final double IA_KP = 0.018; // 0.09
+    public static final double IA_KI = 0.0; // 0
+    public static final double IA_KD = 0.1668; // 6.78
+    public static final double IA_KF = 0.0278; // 0.03
 
     /*
     public static final double IA_KP_BACKUP = 0.021408;
@@ -123,7 +123,7 @@ public final class Constants {
     */
 
     /* INTAKE CONSTANTS */
-    public static final int INTAKE_MOTOR = 15;
+    public static final int INTAKE_MOTOR = 24;
     public static final double INTAKE_IN = 0.45;
     public static final double INTAKE_OUT = 0.45;
     

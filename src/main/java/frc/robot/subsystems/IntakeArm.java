@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class IntakeArm {
     private TalonFX m_motor;
@@ -31,14 +32,24 @@ public class IntakeArm {
 		m_motor.config_kD(0, Constants.IA_KD);
 		m_motor.config_kF(0, Constants.IA_KF);
 
-		m_motor.configMotionCruiseVelocity(2434);
-		m_motor.configMotionAcceleration(20000);
+		m_motor.configMotionCruiseVelocity(20000);
+		m_motor.configMotionAcceleration(2e6);
     }
 
     public void setPosition(double position) {
         m_motor.set(TalonFXControlMode.MotionMagic, position);
         //b_motor.set(TalonSRXControlMode.MotionMagic, position);
     }
+
+	public FunctionalCommand getIntakeArmCommand(double pos) {
+        return new FunctionalCommand(
+            () -> System.out.println("yippee"),
+            () -> setPosition(pos),
+            interrupted -> System.out.println("yippee"),
+            () -> Math.abs(m_motor.getSelectedSensorPosition() - pos) < 2000
+        );
+    }
+
 
 	public void intakeArmSmartDashboard() {
 		SmartDashboard.putNumber("Intake Arm Position", m_motor.getSelectedSensorPosition());

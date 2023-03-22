@@ -4,46 +4,18 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.server.PathPlannerServer;
+
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.model.AutoHandler;
 import frc.robot.model.EnumToCommand;
 import frc.robot.model.RobotStates;
 import frc.robot.model.RobotStates.RobotStatesEnum;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.IntakeArm;
-import frc.robot.subsystems.Limelight;
-
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.XboxController;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
-import com.pathplanner.lib.server.PathPlannerServer;
-
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorSensorV3.RawColor;
-import frc.robot.model.EnumToCommand;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import java.util.HashMap;
-
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
-import frc.robot.model.RobotStates;
-import frc.robot.model.EnumToCommand;
-import frc.robot.model.AutoHandler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -60,6 +32,7 @@ public class Robot extends TimedRobot {
 
   private GenericHID controlBoard = new GenericHID(1);
   RobotStates curr_state = new RobotStates();
+  public XboxController intakecontroller = new XboxController(2);
 
   // AUTO
 
@@ -146,7 +119,9 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     m_robotContainer.m_intakearm.resetEncoder();
     m_robotContainer.m_arm.resetEncoderPosition();
+    m_robotContainer.m_elevator.resetEncoderPosition();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
+    m_robotContainer.m_elevator.setPosition(1000);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -159,6 +134,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     m_robotContainer.m_intakearm.intakeArmSmartDashboard();
     m_robotContainer.m_arm.armsmartdashboard();
+    m_robotContainer.m_elevator.elevatorSmartDashboard();
 
     if (controlBoard.getRawButtonPressed(1)) {
         switch (curr_state.getState()) {
@@ -224,17 +200,37 @@ public class Robot extends TimedRobot {
     
     if (controlBoard.getRawButtonPressed(6)) {
       // m_robotContainer.m_intake.driveIntake(0.85);
-      //m_robotContainer.m_intakearm.setPosition(-10300);
     } else if (controlBoard.getRawButtonPressed(8)) {
-      //m_robotContainer.m_intake.driveIntake(-0.85);
-      //m_robotContainer.m_intakearm.setPosition(-15261);
+
+      ParallelCommandGroup group = new ParallelCommandGroup(
+        m_robotContainer.m_elevator.getPositionCommand(400),
+        m_robotContainer.m_arm.getPositionCommand(-400),
+        m_robotContainer.m_intakearm.getIntakeArmCommand(-2000)
+      );
+
+      group.schedule();
+
+
     } else if (controlBoard.getRawButtonPressed(11)) {
       // m_robotContainer.m_intake.intakeStop();
-      //m_robotContainer.m_intakearm.setPosition(-3000);
 
-      m_robotContainer.m_arm.setPosition(-2000, 1);
-      m_robotContainer.m_intakearm.setPosition(-2000);
+      //m_robotContainer.m_intakearm.setPosition(-10000);
+
+      ParallelCommandGroup group = new ParallelCommandGroup(
+        m_robotContainer.m_elevator.getPositionCommand(2000),
+        m_robotContainer.m_arm.getPositionCommand(-3400),
+        m_robotContainer.m_intakearm.getIntakeArmCommand(-20000)
+      );
+
+
+      group.schedule();
     }
+ 
+    if (intakecontroller.getBButtonPressed()) {m_robotContainer.m_intake.driveIntake(0.85);}
+    if (intakecontroller.getAButtonPressed()) {m_robotContainer.m_intake.driveIntake(-0.85);}
+    if (intakecontroller.getXButtonPressed()) {m_robotContainer.m_intake.intakeStop();}
+
+
   }
 
   @Override

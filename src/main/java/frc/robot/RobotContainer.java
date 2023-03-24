@@ -76,8 +76,8 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> setInput(-modifyAxis(rotate_limiter.calculate(m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> setInput(-modifyAxis(accel_limiter.calculate(m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(modifyAxis(rotate_limiter.calculate(m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(modifyAxis(accel_limiter.calculate(m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> setInputZ(-modifyAxis(clock_limiter.calculate(m_controller.getZ()))) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 

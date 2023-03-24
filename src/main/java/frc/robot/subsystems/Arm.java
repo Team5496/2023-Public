@@ -19,8 +19,6 @@ public class Arm {
     private RelativeEncoder a_leaderEncoder;
 
     public Arm(){
-        super();
-
         a_leader = new CANSparkMax(Constants.ARM_MOTOR, MotorType.kBrushless);
         a_leader.setIdleMode(CANSparkMax.IdleMode.kCoast);
 

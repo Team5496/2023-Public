@@ -59,11 +59,11 @@ public final class Constants {
     public static final int LEFT_ELEVATOR_MOTOR = 23; // Lead
     public static final int RIGHT_ELEVATOR_MOTOR = 25; // Follower
 
-    public static final int ELEVATOR_LOW = 500;
+    public static final int ELEVATOR_LOW = 400;
     public static final int ELEVATOR_MID = 850;
     public static final int ELEVATOR_SHELF = 700;
     public static final int ELEVATOR_PICK_UP = 950;
-    public static final int ELEVATOR_HIGH = 1400;
+    public static final int ELEVATOR_HIGH = 2000;
 
     public static final double e_KP = 0.00072;
     public static final double e_KI = 0.0;
@@ -74,12 +74,8 @@ public final class Constants {
 
     /* ARM CONSTANTS */
     public static final int ARM_MOTOR = 21; // Lead
-    public static final int ARM_UP_MIDDLE = -5450;
-    public static final int ARM_STRAIGHT = 9800; //1400
-    public static final int ARM_RETRACT = -1500; //-300
-    public static final int ARM_DOWN = 4844; //692
-    public static final int ARM_GO_BACK = -1393; //-199
-    public static final int ARM_UP = -7000; //-800
+    public static final int ARM_STRAIGHT = -3400; //1400
+    public static final int ARM_RETRACT = -100; //-300
 
     public static final double a_KP = 0.00032; 
     public static final double a_KI = 0.0; //3e-10
@@ -110,10 +106,17 @@ public final class Constants {
 
     /* INTAKE ARM CONSTANTS */
     public static final int INTAKE_ARM_ID = 14;
-    public static final double IA_KP = 0.018; // 0.09
+    public static final double IA_KP = 0.0111; // 0.09
     public static final double IA_KI = 0.0; // 0
-    public static final double IA_KD = 0.1668; // 6.78
-    public static final double IA_KF = 0.0278; // 0.03
+    public static final double IA_KD = 0.111; // 6.78
+    public static final double IA_KF = 0.0495; // 0.03
+
+
+    public static final int IA_IN = -100;
+    public static final int IA_OUT = -20000;
+
+    public static final int VTICKS = -24000;
+    public static final int HTICKS = -97800;
 
     /*
     public static final double IA_KP_BACKUP = 0.021408;

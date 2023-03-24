@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.model.AutoHandler;
 import frc.robot.model.EnumToCommand;
 import frc.robot.model.RobotStates;
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake);
+    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
 
 
     PathPlannerServer.startServer(5811);  
@@ -93,23 +94,29 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous com1op  mand selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    //elevator.resetEncoderPosition();
-    //m_robotContainer.m_arm.resetEncoderPosition();
+    m_robotContainer.m_elevator.resetEncoderPosition();
+    m_robotContainer.m_arm.resetEncoderPosition();
+    m_robotContainer.m_intakearm.resetEncoder();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
+    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(15000);
 
-
-   // m_robotContainer.m_arm.setPosition(Constants.ARM_RETRACT, 2);
+    SequentialCommandGroup scg = (SequentialCommandGroup) enumToCommand.getCommand(RobotStatesEnum.PLACE_CUBE_AUTO);
+    scg.schedule();
 
    // m_robotContainer.getAutonomousCommand(1).schedule();
 
   // m_robotContainer.m_drivetrainSubsystem.reset_poseMethod(autoHandler.getPathGroup().getInitialHolonomicPose());
 
-   autoHandler.getCommandFromBuilder(m_robotContainer.m_drivetrainSubsystem).schedule();
+   //autoHandler.getCommandFromBuilder(m_robotContainer.m_drivetrainSubsystem).schedule();
   }
  
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    m_robotContainer.m_intakearm.intakeArmSmartDashboard();
+    m_robotContainer.m_arm.armsmartdashboard();
+    m_robotContainer.m_elevator.elevatorSmartDashboard();
+
   }
 
 
@@ -117,11 +124,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.m_intakearm.resetEncoder();
-    m_robotContainer.m_arm.resetEncoderPosition();
-    m_robotContainer.m_elevator.resetEncoderPosition();
-    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
-    m_robotContainer.m_elevator.setPosition(1000);
+    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
+
+
+    m_robotContainer.m_elevator.setPosition(500);
+    m_robotContainer.m_arm.setPosition(0, 1);
+    m_robotContainer.m_intakearm.setPosition(0);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -147,22 +155,19 @@ public class Robot extends TimedRobot {
               System.out.println("Bad call for Button 1");
               break;
         }
-
-    } else if (controlBoard.getRawButtonPressed(3)){
-        switch (curr_state.getState()) {
-            case PLACE_H:
-            case PICK_UP_SHELF:
-            case PLACE_M:
-              enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY).schedule();
-              curr_state.setState(RobotStatesEnum.RETRACT_W_CARRY);
-              break;
-            default:
-              System.out.println("Bad call for Button 2");
-              break;
-        }
     } else if (controlBoard.getRawButtonPressed(2)) {
-        enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
-        curr_state.setState(RobotStatesEnum.CARRY);
+        switch (curr_state.getState()) {
+          case PICK_UP_CHUTE:
+          case PICK_UP_CHUTE_CONE:
+          case PICK_UP_LOW:
+            enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY).schedule();
+            curr_state.setState(RobotStatesEnum.CARRY);
+            break;
+          default:
+            enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
+            curr_state.setState(RobotStatesEnum.CARRY);
+            break;
+        }
     } else if (controlBoard.getRawButtonPressed(5)) {
         switch (curr_state.getState()) {
             case CARRY:
@@ -189,48 +194,33 @@ public class Robot extends TimedRobot {
         switch(curr_state.getState()) {
             case CARRY:
             case RETRACT_W_CARRY:
-              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_SHELF).schedule();
-              curr_state.setState(RobotStatesEnum.PICK_UP_SHELF);
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_CHUTE).schedule();
+              curr_state.setState(RobotStatesEnum.PICK_UP_CHUTE);
               break;
             default:
               System.out.println("Bad call for Button 4");
               break;
         }
+    } else if (controlBoard.getRawButtonPressed(3)) {
+        switch (curr_state.getState()) {
+            case CARRY:
+            case RETRACT_W_CARRY:
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_CHUTE_CONE).schedule();
+              curr_state.setState(RobotStatesEnum.PICK_UP_CHUTE_CONE);
+              break;
+            default:
+              System.out.println("Bad call for Button 3");
+              break;
+        }
     }
     
     if (controlBoard.getRawButtonPressed(6)) {
-      // m_robotContainer.m_intake.driveIntake(0.85);
+      m_robotContainer.m_intake.driveIntake(0.85);
     } else if (controlBoard.getRawButtonPressed(8)) {
-
-      ParallelCommandGroup group = new ParallelCommandGroup(
-        m_robotContainer.m_elevator.getPositionCommand(400),
-        m_robotContainer.m_arm.getPositionCommand(-400),
-        m_robotContainer.m_intakearm.getIntakeArmCommand(-2000)
-      );
-
-      group.schedule();
-
-
+      m_robotContainer.m_intake.driveIntake(-0.85);
     } else if (controlBoard.getRawButtonPressed(11)) {
-      // m_robotContainer.m_intake.intakeStop();
-
-      //m_robotContainer.m_intakearm.setPosition(-10000);
-
-      ParallelCommandGroup group = new ParallelCommandGroup(
-        m_robotContainer.m_elevator.getPositionCommand(2000),
-        m_robotContainer.m_arm.getPositionCommand(-3400),
-        m_robotContainer.m_intakearm.getIntakeArmCommand(-20000)
-      );
-
-
-      group.schedule();
+      m_robotContainer.m_intake.intakeStop();
     }
- 
-    if (intakecontroller.getBButtonPressed()) {m_robotContainer.m_intake.driveIntake(0.85);}
-    if (intakecontroller.getAButtonPressed()) {m_robotContainer.m_intake.driveIntake(-0.85);}
-    if (intakecontroller.getXButtonPressed()) {m_robotContainer.m_intake.intakeStop();}
-
-
   }
 
   @Override

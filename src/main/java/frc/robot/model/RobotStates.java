@@ -3,7 +3,9 @@ package frc.robot.model;
 public class RobotStates {
     public enum RobotStatesEnum {
         PICK_UP_LOW,
-        PICK_UP_SHELF,
+        PICK_UP_CHUTE,
+        PICK_UP_CHUTE_CONE,
+        PLACE_CUBE_AUTO,
         PLACE_H,
         PLACE_M,
         PLACE_L,

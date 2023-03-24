@@ -11,7 +11,7 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class IntakeArm {
-    private TalonFX m_motor;
+    public TalonFX m_motor;
 
     public IntakeArm() {
 		m_motor = new TalonFX(Constants.INTAKE_ARM_ID);
@@ -32,24 +32,33 @@ public class IntakeArm {
 		m_motor.config_kD(0, Constants.IA_KD);
 		m_motor.config_kF(0, Constants.IA_KF);
 
-		m_motor.configMotionCruiseVelocity(20000);
-		m_motor.configMotionAcceleration(2e6);
+		m_motor.configMotionCruiseVelocity(30000);
+		m_motor.configMotionAcceleration(3e6);
     }
 
     public void setPosition(double position) {
+		m_motor.config_kF(0, calculateKF(position));
         m_motor.set(TalonFXControlMode.MotionMagic, position);
         //b_motor.set(TalonSRXControlMode.MotionMagic, position);
     }
+
+	public double calculateKF(double position) {
+
+		double kf = Constants.IA_KF * Math.sin(
+			((position - (double)Constants.VTICKS)/(Constants.HTICKS - Constants.VTICKS)) * (Math.PI/2));
+
+		if (kf < .01) {kf = .01;}
+		return kf;
+	}
 
 	public FunctionalCommand getIntakeArmCommand(double pos) {
         return new FunctionalCommand(
             () -> System.out.println("yippee"),
             () -> setPosition(pos),
             interrupted -> System.out.println("yippee"),
-            () -> Math.abs(m_motor.getSelectedSensorPosition() - pos) < 2000
+            () -> Math.abs(m_motor.getSelectedSensorPosition() - pos) < 6000
         );
     }
-
 
 	public void intakeArmSmartDashboard() {
 		SmartDashboard.putNumber("Intake Arm Position", m_motor.getSelectedSensorPosition());

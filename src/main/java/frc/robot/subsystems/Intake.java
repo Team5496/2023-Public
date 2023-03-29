@@ -8,6 +8,7 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.revrobotics.CANSparkMax.IdleMode;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {

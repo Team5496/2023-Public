@@ -6,6 +6,8 @@ public class RobotStates {
         PICK_UP_CHUTE,
         PICK_UP_CHUTE_CONE,
         PLACE_CUBE_AUTO,
+        PLACE_CONE_AUTO,
+        PLACE_CUBE_LOW_AUTO,
         PLACE_H,
         PLACE_M,
         PLACE_L,

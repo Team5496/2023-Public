@@ -32,27 +32,61 @@ public class EnumToCommand {
             new ParallelCommandGroup(
                 elevator.getPositionCommand(0),
                 arm.getPositionCommand(0),
-                intakearm.getIntakeArmCommand(Constants.HTICKS + 30000)
+                intakearm.getIntakeArmCommand(Constants.HTICKS + 12000) //9500
             )
         );
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.RETRACT_W_CARRY,
-                new ParallelCommandGroup(
-                    intakearm.getIntakeArmCommand(0),
-                    elevator.getPositionCommand(Constants.ELEVATOR_LOW),
-                    arm.getPositionCommand(0)
-                )
+            new ParallelCommandGroup(
+                intakearm.getIntakeArmCommand(0),
+                elevator.getPositionCommand(Constants.ELEVATOR_LOW),
+                arm.getPositionCommand(0)
+            )
         );
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PLACE_H,
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 elevator.getPositionCommand(2000),
-                arm.getPositionCommand(-3400),
-                intakearm.getIntakeArmCommand(-54000)
-              )
+                new ParallelCommandGroup(
+                    arm.getPositionCommand(-3400),
+                    intakearm.getIntakeArmCommand(-65000)
+                )
+            )
         );
+
+        corresponding_commands.put(
+            RobotStates.RobotStatesEnum.PLACE_CONE_AUTO,
+
+            new SequentialCommandGroup(
+                intakearm.getIntakeArmCommand(Constants.VTICKS),
+
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(2000),
+                    arm.getPositionCommand(-3200)
+                ),
+
+                new SequentialCommandGroup(
+                    intakearm.getIntakeArmCommand(-63000),
+                    new WaitCommand(1.5),
+                    intake.get_intakeCommand(-0.85),
+                    intakearm.getIntakeArmCommand(Constants.VTICKS)                
+                ),
+
+                new ParallelCommandGroup(
+                    intakearm.getIntakeArmCommand(Constants.VTICKS),
+                    arm.getPositionCommand(Constants.ARM_RETRACT)
+                ),
+
+
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(Constants.ELEVATOR_LOW),
+                    intakearm.getIntakeArmCommand(0)
+                )
+            )
+        );
+
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PLACE_CUBE_AUTO,
@@ -67,7 +101,8 @@ public class EnumToCommand {
 
                 new SequentialCommandGroup(
                     intakearm.getIntakeArmCommand(-58000),
-                    intake.get_intakeCommand(-0.85),
+                    new WaitCommand(1),
+                    intake.get_intakeCommand(0.85),
                     intakearm.getIntakeArmCommand(Constants.VTICKS)                
                 ),
 
@@ -86,22 +121,18 @@ public class EnumToCommand {
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PLACE_M,
-            new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    elevator.getPositionCommand(2000),
-                    intakearm.getIntakeArmCommand(-76000)
-                )
+            new ParallelCommandGroup(
+                elevator.getPositionCommand(2000),
+                intakearm.getIntakeArmCommand(-87000)
             )
         );
 
         corresponding_commands.put(
             RobotStates.RobotStatesEnum.PICK_UP_CHUTE,
-            new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    elevator.getPositionCommand(Constants.ELEVATOR_LOW - 200),
-                    intakearm.getIntakeArmCommand(Constants.VTICKS + 1500),
-                    arm.getPositionCommand(0)
-                )
+            new ParallelCommandGroup(
+                elevator.getPositionCommand(Constants.ELEVATOR_LOW - 200),
+                intakearm.getIntakeArmCommand(Constants.VTICKS - 7000),
+                arm.getPositionCommand(0)
             )
         );
 
@@ -110,11 +141,27 @@ public class EnumToCommand {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     elevator.getPositionCommand(Constants.ELEVATOR_LOW - 100),
-                    intakearm.getIntakeArmCommand(-45000),
+                    intakearm.getIntakeArmCommand(-58000),
                     arm.getPositionCommand(0)
                 )
             )
         );
+
+        corresponding_commands.put(
+            RobotStates.RobotStatesEnum.PLACE_CUBE_LOW_AUTO,
+
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(0),
+                    arm.getPositionCommand(0),
+                    intakearm.getIntakeArmCommand(Constants.HTICKS + 12000)
+                ),
+
+                intake.get_intakeCommand(0.85),
+                intakearm.getIntakeArmCommand(0)
+            )
+        );
+
 
 
 

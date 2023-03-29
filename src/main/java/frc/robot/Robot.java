@@ -39,24 +39,6 @@ public class Robot extends TimedRobot {
 
   private AutoHandler autoHandler = new AutoHandler("placeConeHighBalance");
 
-  /*
-
-  SequentialCommandGroup placeConeHighAuto = new SequentialCommandGroup(
-    m_robotContainer.m_elevator.getPositionCommand(Constants.ELEVATOR_HIGH), 
-    m_robotContainer.m_arm.getPositionCommand(Constants.ARM_UP), 
-    m_robotContainer.m_intake.get_intakeCommand(-0.8), 
-    m_robotContainer.m_arm.getPositionCommand(Constants.ARM_GO_BACK), 
-    m_robotContainer.m_arm.getPositionCommand(Constants.ARM_RETRACT), 
-    m_robotContainer.m_elevator.getPositionCommand(Constants.ELEVATOR_LOW)
-  );
-
-  SequentialCommandGroup placeCubeLowAuto = new SequentialCommandGroup(
-    m_robotContainer.m_elevator.getPositionCommand(Constants.ELEVATOR_LOW), 
-    m_robotContainer.m_intake.get_intakeCommand(0.8)
-  );
-
-  */
-
   /* 
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -67,7 +49,7 @@ public class Robot extends TimedRobot {
     enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
 
 
-    PathPlannerServer.startServer(5811);  
+    //PathPlannerServer.startServer(5811);  
   }
 
 
@@ -97,17 +79,11 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_elevator.resetEncoderPosition();
     m_robotContainer.m_arm.resetEncoderPosition();
     m_robotContainer.m_intakearm.resetEncoder();
-    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(0.0);
+    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(90.0);
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(15000);
-
-    SequentialCommandGroup scg = (SequentialCommandGroup) enumToCommand.getCommand(RobotStatesEnum.PLACE_CUBE_AUTO);
+    SequentialCommandGroup scg = (SequentialCommandGroup) enumToCommand.getCommand(RobotStatesEnum.PLACE_CONE_AUTO);
+    scg.addCommands(m_robotContainer.getAutonomousCommand(1));
     scg.schedule();
-
-   // m_robotContainer.getAutonomousCommand(1).schedule();
-
-  // m_robotContainer.m_drivetrainSubsystem.reset_poseMethod(autoHandler.getPathGroup().getInitialHolonomicPose());
-
-   //autoHandler.getCommandFromBuilder(m_robotContainer.m_drivetrainSubsystem).schedule();
   }
  
   /** This function is called periodically during autonomous. */
@@ -119,13 +95,10 @@ public class Robot extends TimedRobot {
 
   }
 
-
-  
-
   @Override
   public void teleopInit() {
-    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
 
+    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
 
     m_robotContainer.m_elevator.setPosition(500);
     m_robotContainer.m_arm.setPosition(0, 1);
@@ -152,7 +125,9 @@ public class Robot extends TimedRobot {
               curr_state.setState(RobotStatesEnum.PICK_UP_LOW);
               break;
             default:
-              System.out.println("Bad call for Button 1");
+              System.out.println("Bad call for Button 1 on state" + curr_state.getState().name() + ": setting state to carry");
+              enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
+              curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
     } else if (controlBoard.getRawButtonPressed(2)) {
@@ -176,7 +151,9 @@ public class Robot extends TimedRobot {
               curr_state.setState(RobotStatesEnum.PLACE_H);
               break;
             default:
-              System.out.println("Bad call for Button 5");
+              System.out.println("Bad call for Button 5 on state" + curr_state.getState().name() + ": setting state to carry");
+              enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
+              curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
     } else if (controlBoard.getRawButtonPressed(7)) {
@@ -187,29 +164,37 @@ public class Robot extends TimedRobot {
               curr_state.setState(RobotStatesEnum.PLACE_M);
               break;
             default:
-              System.out.println("Bad call for Button 7");
+              System.out.println("Bad call for Button 7 on state" + curr_state.getState().name() + ": setting state to carry");
+              enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
+              curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
     } else if (controlBoard.getRawButtonPressed(4)) {
-        switch(curr_state.getState()) {
-            case CARRY:
-            case RETRACT_W_CARRY:
-              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_CHUTE).schedule();
-              curr_state.setState(RobotStatesEnum.PICK_UP_CHUTE);
-              break;
-            default:
-              System.out.println("Bad call for Button 4");
-              break;
+          switch (curr_state.getState()) {
+              case CARRY:
+              case RETRACT_W_CARRY:
+              case PICK_UP_CHUTE_CONE:
+                  enumToCommand.getCommand(RobotStatesEnum.PICK_UP_CHUTE).schedule();
+                  curr_state.setState(RobotStatesEnum.PICK_UP_CHUTE);
+                  break;
+              default:
+                System.out.println("Bad call for Button 4 on state" + curr_state.getState().name() + ": setting state to carry");
+                enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
+                curr_state.setState(RobotStatesEnum.CARRY);
+                break;
         }
     } else if (controlBoard.getRawButtonPressed(3)) {
         switch (curr_state.getState()) {
             case CARRY:
             case RETRACT_W_CARRY:
+            case PICK_UP_CHUTE:
               enumToCommand.getCommand(RobotStatesEnum.PICK_UP_CHUTE_CONE).schedule();
               curr_state.setState(RobotStatesEnum.PICK_UP_CHUTE_CONE);
               break;
             default:
-              System.out.println("Bad call for Button 3");
+              System.out.println("Bad call for Button 3 on state" + curr_state.getState().name() + ": setting state to carry");
+              enumToCommand.getCommand(RobotStatesEnum.CARRY).schedule();
+              curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
     }

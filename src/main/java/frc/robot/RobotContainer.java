@@ -40,9 +40,9 @@ public class RobotContainer {
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
   public final IntakeArm m_intakearm = new IntakeArm();
-  private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.7);
-  private SlewRateLimiter rotate_limiter = new SlewRateLimiter(1.7);
-  private SlewRateLimiter clock_limiter = new SlewRateLimiter(1.7);
+  private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.9);
+  private SlewRateLimiter rotate_limiter = new SlewRateLimiter(1.9);
+  private SlewRateLimiter clock_limiter = new SlewRateLimiter(1.9);
   
 
   /* 
@@ -76,8 +76,8 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> setInput(modifyAxis(rotate_limiter.calculate(m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> setInput(modifyAxis(accel_limiter.calculate(m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(-modifyAxis(rotate_limiter.calculate(m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(modifyAxis(accel_limiter.calculate(m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> setInputZ(-modifyAxis(clock_limiter.calculate(m_controller.getZ()))) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
@@ -104,6 +104,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand(int count) {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 2));
+    
+    if (count == 2) {
+      trajectory = PathPlanner.loadPath("2", new PathConstraints(3, 2));
+    }
+
     Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);    
     return autocommand;
   }

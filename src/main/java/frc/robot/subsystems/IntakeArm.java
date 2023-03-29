@@ -64,7 +64,7 @@ public class IntakeArm {
 		SmartDashboard.putNumber("Intake Arm Position", m_motor.getSelectedSensorPosition());
 	}
 
-    public void resetEncoder() {
+   public void resetEncoder() {
         m_motor.setSelectedSensorPosition(0);
     }
 }

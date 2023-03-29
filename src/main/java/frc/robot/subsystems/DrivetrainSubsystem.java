@@ -209,17 +209,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_pose = m_odometry.update(getGyroscopeRotation(), positions); // update odometry
     consume_states.accept(states);
 
-    /* 
-    if (res.hasTargets()) {
-        Optional<EstimatedRobotPose> result = limelight.getRobotPoseAprilTag(m_odometry.getEstimatedPosition());
-        EstimatedRobotPose campose = result.get();
-
-        m_odometry.addVisionMeasurement(
-                campose.estimatedPose.toPose2d(),
-                campose.timestampSeconds
-        );
-    }
-    */
   }
 
   public Command generatetrajectory(PathPlannerTrajectory traj, boolean isFirst){
@@ -234,9 +223,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     traj, 
                     get_pose, // Pose supplier
                     m_kinematics, // kP 0.013
-                    new PIDController(0.04, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                    new PIDController(0.04, 0, 0), // Y controller (usually the same values as X controller)
-                    new PIDController(0.015, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.01, 0, 0.1), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(0.01, 0, 0.1), // Y controller (usually the same values as X controller)
+                    new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                     consume_states, // Module states consumer
                     this // Requires this drive subsystem
                 )

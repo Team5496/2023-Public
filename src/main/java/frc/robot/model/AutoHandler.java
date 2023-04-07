@@ -35,12 +35,4 @@ public class AutoHandler {
         return events;
     }
 
-    public Command getCommandFromBuilder(DrivetrainSubsystem subsystem) {
-        return new FollowPathWithEvents(
-            subsystem.generatetrajectory(pathGroup, true),
-            pathGroup.getMarkers(),
-            events
-        );
-    }
-
 }

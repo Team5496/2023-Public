@@ -10,6 +10,7 @@ public class RobotStates {
         PLACE_CUBE_LOW_AUTO,
         PLACE_H,
         PLACE_M,
+        INTAKEON,
         PLACE_L,
         CARRY,
         RETRACT_W_CARRY

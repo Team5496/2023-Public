@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
     enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
 
 
-    //PathPlannerServer.startServer(5811);  
+    PathPlannerServer.startServer(5811);  
   }
 
 
@@ -81,9 +81,11 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_intakearm.resetEncoder();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(90.0);
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(15000);
-    SequentialCommandGroup scg = (SequentialCommandGroup) enumToCommand.getCommand(RobotStatesEnum.PLACE_CONE_AUTO);
-    scg.addCommands(m_robotContainer.getAutonomousCommand(1));
-    scg.schedule();
+   // SequentialCommandGroup scg = (SequentialCommandGroup) enumToCommand.getCommand(RobotStatesEnum.PLACE_CONE_AUTO);
+   // scg.addCommands(m_robotContainer.getAutonomousCommand(1));
+    //scg.schedule();
+
+    m_robotContainer.getAutonomousCommand(1).schedule();
   }
  
   /** This function is called periodically during autonomous. */
@@ -97,7 +99,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
 
     m_robotContainer.m_elevator.setPosition(500);

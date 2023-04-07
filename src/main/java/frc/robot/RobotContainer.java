@@ -15,6 +15,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.model.EnumToCommand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DefaultDriveCommand;
@@ -76,8 +77,8 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> setInput(-modifyAxis(rotate_limiter.calculate(m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> setInput(modifyAxis(accel_limiter.calculate(m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(modifyAxis(rotate_limiter.calculate(m_controller.getX()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> setInput(-modifyAxis(accel_limiter.calculate(m_controller.getY()))) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> setInputZ(-modifyAxis(clock_limiter.calculate(m_controller.getZ()))) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
@@ -103,7 +104,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand(int count) {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("1", new PathConstraints(3, 2));
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("getonepiecebalance/1", new PathConstraints(3, 2));
     
     if (count == 2) {
       trajectory = PathPlanner.loadPath("2", new PathConstraints(3, 2));

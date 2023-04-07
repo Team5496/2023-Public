@@ -8,10 +8,20 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+
 import java.util.function.Consumer;
 import com.pathplanner.lib.commands.*;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import java.util.function.DoubleSupplier;
+import frc.robot.model.RobotStates.RobotStatesEnum;
 import frc.robot.Constants;
+import frc.robot.commands.DefaultDriveCommand;
+
 import java.util.function.Supplier;
+import frc.robot.model.EnumToCommand;
+import java.util.HashMap;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.math.controller.PIDController;
 import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
 import com.swervedrivespecialties.swervelib.MotorType;
@@ -89,11 +99,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public SwerveModule m_backLeftModule;
   public SwerveModule m_backRightModule;
   public SwerveModulePosition[] positions;
-  private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-        m_kinematics,
-        getGyroscopeRotation(),
-        positions
-);     
+  private SwerveDriveOdometry m_odometry; 
      
  
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
@@ -101,7 +107,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public DrivetrainSubsystem() {
     super();
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-    positions = new SwerveModulePosition[]{m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(), m_backLeftModule.getPosition(), m_backRightModule.getPosition()};
 
     m_frontLeftModule = new MkSwerveModuleBuilder()
                 .withLayout(tab.getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -147,6 +152,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 .withSteerEncoderPort(Constants.BACK_RIGHT_MODULE_STEER_ENCODER)
                 .withSteerOffset(Constants.BACK_RIGHT_MODULE_STEER_OFFSET)
                 .build();
+
+        positions = new SwerveModulePosition[]{m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(), m_backLeftModule.getPosition(), m_backRightModule.getPosition()};
+
+
+        m_odometry = new SwerveDriveOdometry(
+                m_kinematics,
+                getGyroscopeRotation(),
+                positions
+        );     
+                
         
   }
 
@@ -208,6 +223,38 @@ public class DrivetrainSubsystem extends SubsystemBase {
     consume_states.accept(states);
   }
 
+  public double returnZero() {
+        return 0.0;
+  }
+
+  public double returnZeroPointOne(){
+        return 0.1;
+  }
+
+  public void generatefullauto(String auto, EnumToCommand enumtocommand) {
+        switch (auto)
+        {
+                case "getonepiecebalance":
+                        PathPlannerTrajectory trajectory = PathPlanner.loadPath(auto + "1", new PathConstraints(3, 2));
+                        SequentialCommandGroup seq; seq.addCommands(generatetrajectory(trajectory, true));
+                        seq.addCommands(
+                                enumtocommand.getCommand(RobotStatesEnum.PICK_UP_LOW),
+                                new ParallelCommandGroup(
+                                        enumtocommand.getCommand(RobotStatesEnum.INTAKEON),
+                                        new DefaultDriveCommand(
+                                                () -> returnZero(),
+                                                () -> returnZeroPointOne(),
+                                                () -> returnZero()
+                                        )
+                                )
+                        );
+
+        }
+
+        return;
+  }
+
+
   public Command generatetrajectory(PathPlannerTrajectory traj, boolean isFirst){
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
@@ -220,9 +267,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     traj, 
                     get_pose, // Pose supplier
                     m_kinematics, // kP 0.013
-                    new PIDController(0.01, 0, 0.1), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                    new PIDController(0.01, 0, 0.1), // Y controller (usually the same values as X controller)
-                    new PIDController(0.01, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(1.0, 0, 0.0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(1.0, 0, 0.0), // Y controller (usually the same values as X controller)
+                    new PIDController(1.25, 0, 0.0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                     consume_states, // Module states consumer
                     this // Requires this drive subsystem
                 )

@@ -42,6 +42,12 @@ public class EnumToCommand {
         );
 
         corresponding_commands.put(
+            RobotStates.RobotStatesEnum.INTAKEOFF,
+            intake.get_intakeCommand(0.0)
+        );
+
+
+        corresponding_commands.put(
             RobotStates.RobotStatesEnum.RETRACT_W_CARRY,
             new ParallelCommandGroup(
                 intakearm.getIntakeArmCommand(0),

@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private EnumToCommand enumToCommand;
+  private AutoHandler autoHandler;
 
   // TELEOP
 
@@ -37,8 +38,6 @@ public class Robot extends TimedRobot {
 
   // AUTO
 
-  private AutoHandler autoHandler = new AutoHandler("placeConeHighBalance");
-
   /* 
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -47,7 +46,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
-
+    autoHandler = new AutoHandler("pickuponepiecebalance", enumToCommand, m_robotContainer);
 
     PathPlannerServer.startServer(5811);  
   }

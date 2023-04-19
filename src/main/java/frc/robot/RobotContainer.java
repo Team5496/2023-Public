@@ -114,22 +114,20 @@ public class RobotContainer {
     return autocommand;
   }
 
-  /* 
+  
   public SwerveAutoBuilder getBuilder(HashMap<String, Command> events) {
     return new SwerveAutoBuilder(
         m_drivetrainSubsystem.get_pose,
         m_drivetrainSubsystem.reset_poseConsumer,
         m_drivetrainSubsystem.m_kinematics,
-        new PIDConstants(0.05, 0, 0),
-        new PIDConstants(0.015, 0, 0),
+        new PIDConstants(1.0, 0, 0.0),
+        new PIDConstants(1.25, 0, 0.0),
         m_drivetrainSubsystem.consume_states,
         events,
         true,
         m_drivetrainSubsystem
     );
   }
-
-  */
 
 
   private static double deadband(double value, double deadband) {

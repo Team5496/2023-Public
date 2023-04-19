@@ -11,6 +11,7 @@ public class RobotStates {
         PLACE_H,
         PLACE_M,
         INTAKEON,
+        INTAKEOFF,
         PLACE_L,
         CARRY,
         RETRACT_W_CARRY

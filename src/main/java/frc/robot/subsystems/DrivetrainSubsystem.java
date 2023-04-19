@@ -27,6 +27,8 @@ import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
 import com.swervedrivespecialties.swervelib.MotorType;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.PathPoint;
@@ -50,6 +52,8 @@ import java.lang.ArithmeticException;
 import static frc.robot.Constants.*;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.math.geometry.Pose2d;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import frc.robot.commands.TimedDefaultDriveCommand;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -194,8 +198,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new SwerveModulePosition[]{m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(), m_backLeftModule.getPosition(), m_backRightModule.getPosition() },
                 pose
         );
-;
-  };
+  }
 
 
 
@@ -223,6 +226,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     consume_states.accept(states);
   }
 
+
   public double returnZero() {
         return 0.0;
   }
@@ -231,29 +235,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return 0.1;
   }
 
-  public void generatefullauto(String auto, EnumToCommand enumtocommand) {
-        switch (auto)
-        {
-                case "getonepiecebalance":
-                        PathPlannerTrajectory trajectory = PathPlanner.loadPath(auto + "1", new PathConstraints(3, 2));
-                        SequentialCommandGroup seq; seq.addCommands(generatetrajectory(trajectory, true));
-                        seq.addCommands(
-                                enumtocommand.getCommand(RobotStatesEnum.PICK_UP_LOW),
-                                new ParallelCommandGroup(
-                                        enumtocommand.getCommand(RobotStatesEnum.INTAKEON),
-                                        new DefaultDriveCommand(
-                                                () -> returnZero(),
-                                                () -> returnZeroPointOne(),
-                                                () -> returnZero()
-                                        )
-                                )
-                        );
-
-        }
-
-        return;
-  }
-
+  
 
   public Command generatetrajectory(PathPlannerTrajectory traj, boolean isFirst){
         return new SequentialCommandGroup(

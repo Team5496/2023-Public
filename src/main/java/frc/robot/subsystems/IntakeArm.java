@@ -8,9 +8,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
-public class IntakeArm {
+public class IntakeArm extends SubsystemBase{
     public TalonFX m_motor;
 
     public IntakeArm() {
@@ -41,6 +42,11 @@ public class IntakeArm {
         m_motor.set(TalonFXControlMode.MotionMagic, position);
         //b_motor.set(TalonSRXControlMode.MotionMagic, position);
     }
+
+	@Override
+	public void periodic() {
+		m_motor.config_kF(0, calculateKF(m_motor.getSelectedSensorPosition()));
+	}
 
 	public double calculateKF(double position) {
 

@@ -11,11 +11,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.model.AutoHandler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.model.EnumToCommand;
 import frc.robot.model.RobotStates;
+import java.util.HashMap;
 import frc.robot.model.RobotStates.RobotStatesEnum;
 
 /**
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private EnumToCommand enumToCommand;
   private AutoHandler autoHandler;
+  private HashMap<String, Command> events;
 
   // TELEOP
 
@@ -45,9 +47,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
-    autoHandler = new AutoHandler("pickuponepiecebalance", enumToCommand, m_robotContainer);
-
     PathPlannerServer.startServer(5811);  
   }
 
@@ -80,11 +79,14 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_intakearm.resetEncoder();
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(90.0);
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(15000);
-   // SequentialCommandGroup scg = (SequentialCommandGroup) enumToCommand.getCommand(RobotStatesEnum.PLACE_CONE_AUTO);
-   // scg.addCommands(m_robotContainer.getAutonomousCommand(1));
-    //scg.schedule();
+    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
+    autoHandler = new AutoHandler("pickuponepiecebalance");
+    events = autoHandler.initializeAutoHashMap(enumToCommand);
 
-    m_robotContainer.getAutonomousCommand(1).schedule();
+    autoHandler.getautocommand(m_robotContainer.m_drivetrainSubsystem, events).schedule();
+
+
+
   }
  
   /** This function is called periodically during autonomous. */
@@ -93,27 +95,16 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_intakearm.intakeArmSmartDashboard();
     m_robotContainer.m_arm.armsmartdashboard();
     m_robotContainer.m_elevator.elevatorSmartDashboard();
-
   }
 
   @Override
   public void teleopInit() {
-    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
-
-    m_robotContainer.m_elevator.resetEncoderPosition();
-    m_robotContainer.m_arm.resetEncoderPosition();
-    m_robotContainer.m_intakearm.resetEncoder();
-    m_robotContainer.m_elevator.setPosition(500);
-    m_robotContainer.m_arm.setPosition(0, 1);
-    m_robotContainer.m_intakearm.setPosition(0);
-
-    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(90.0);
-
-
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
 
+    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
+    curr_state.setState(RobotStatesEnum.CARRY);
   }
 
   /** This function is called periodically during operator control. */

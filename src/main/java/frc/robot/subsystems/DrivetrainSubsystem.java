@@ -17,7 +17,7 @@ import java.util.function.DoubleSupplier;
 import frc.robot.model.RobotStates.RobotStatesEnum;
 import frc.robot.Constants;
 import frc.robot.commands.DefaultDriveCommand;
-
+import com.pathplanner.lib.auto.PIDConstants;
 import java.util.function.Supplier;
 import frc.robot.model.EnumToCommand;
 import java.util.HashMap;
@@ -65,6 +65,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
           SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
           SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+
+
+  public SwerveAutoBuilder getBuilder(HashMap<String, Command> events) {
+        return new SwerveAutoBuilder(
+                get_pose,
+                reset_poseConsumer,
+                m_kinematics,
+                new PIDConstants(1.0, 0, 0.0),
+                new PIDConstants(1.25, 0, 0.0),
+                consume_states,
+                events,
+                true,
+                this
+        );
+  }
+        
+            
 
   /**
    * The maximum angular velocity of the robot in radians per second.
@@ -249,9 +266,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     traj, 
                     get_pose, // Pose supplier
                     m_kinematics, // kP 0.013
-                    new PIDController(1.0, 0, 0.0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                    new PIDController(1.0, 0, 0.0), // Y controller (usually the same values as X controller)
-                    new PIDController(1.25, 0, 0.0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(.125, 0, 0.0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                    new PIDController(.125, 0, 0.0), // Y controller (usually the same values as X controller)
+                    new PIDController(.65, 0, 0.0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                     consume_states, // Module states consumer
                     this // Requires this drive subsystem
                 )

@@ -29,10 +29,6 @@ public class Intake extends SubsystemBase {
         );
     }
 
-    public void setIntakePos(double pos) {
-        
-    }
-
     public double getElapsedTime() {
         return elapsed_time;
     }

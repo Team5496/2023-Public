@@ -38,7 +38,7 @@ public class IntakeArm extends SubsystemBase{
     }
 
     public void setPosition(double position) {
-		m_motor.config_kF(0, calculateKF(position));
+		//m_motor.config_kF(0, calculateKF(position));
         m_motor.set(TalonFXControlMode.MotionMagic, position);
         //b_motor.set(TalonSRXControlMode.MotionMagic, position);
     }
@@ -62,7 +62,7 @@ public class IntakeArm extends SubsystemBase{
             () -> System.out.println("yippee"),
             () -> setPosition(pos),
             interrupted -> System.out.println("yippee"),
-            () -> Math.abs(m_motor.getSelectedSensorPosition() - pos) < 6000
+            () -> Math.abs(m_motor.getSelectedSensorPosition() - pos) < 7000
         );
     }
 

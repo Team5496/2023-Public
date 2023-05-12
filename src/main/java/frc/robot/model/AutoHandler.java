@@ -19,33 +19,15 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 public class AutoHandler {
-    HashMap<String, Command> events = new HashMap<>();
     List<PathPlannerTrajectory> pathGroup;
-    SwerveAutoBuilder builder;
-    Command autocommand;
 
-    public AutoHandler(String auto, EnumToCommand enumtocommand, RobotContainer m_container) {
+
+    public AutoHandler(String auto) {
         if (auto == "pickuponepiecebalance") {
-            events.put("runIntake", new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    enumtocommand.getCommand(RobotStatesEnum.INTAKEON),
-                    enumtocommand.getCommand(RobotStatesEnum.PICK_UP_LOW)
-                )
-            ));
-
-            events.put("intakeup", new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    enumtocommand.getCommand(RobotStatesEnum.INTAKEOFF),
-                    enumtocommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY)
-                )
-            ));
-
             pathGroup = PathPlanner.loadPathGroup("PickUpOnePieceBalance", 
                 new PathConstraints(4, 3),
                 new PathConstraints(2, 1.5),
                 new PathConstraints(4, 3));
-
-            autocommand = m_container.getBuilder(events).fullAuto(pathGroup);
         }
     }
 
@@ -53,12 +35,31 @@ public class AutoHandler {
         return pathGroup;
     }
 
-    public Command getautocommand() {
-        return autocommand;
+    public HashMap<String, Command> initializeAutoHashMap(EnumToCommand enumToCommand) {
+        HashMap<String, Command> events = new HashMap<String, Command>();
+
+        events.put("runintake", new SequentialCommandGroup(
+          new ParallelCommandGroup(
+              enumToCommand.getCommand(RobotStatesEnum.INTAKEON),
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_LOW)
+          )
+        ));
+    
+        events.put("intakeup", new SequentialCommandGroup(
+          new ParallelCommandGroup(
+              enumToCommand.getCommand(RobotStatesEnum.INTAKEOFF),
+              enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY)
+          )
+        ));
+
+
+        return events;
+    
     }
 
-    public HashMap<String, Command> getHashMap() {
-        return events;
+    public Command getautocommand(DrivetrainSubsystem drive, HashMap<String, Command> events) {
+        return drive.getBuilder(events).fullAuto(pathGroup);
     }
+
 
 }

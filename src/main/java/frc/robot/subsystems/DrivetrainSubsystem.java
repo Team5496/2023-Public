@@ -86,7 +86,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /**
    * The maximum angular velocity of the robot in radians per second.
    * <p>
-   * This is a measure of how fast the robot can rotate in place.
+   * This is a measure of how fast the robot can rotate in place .
    */
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /

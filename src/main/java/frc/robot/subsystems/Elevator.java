@@ -50,6 +50,7 @@ public class Elevator extends SubsystemBase {
         e_leaderController.setOutputRange(Constants.e_OUTPUT_MIN, Constants.e_OUTPUT_MAX, 0);
 
         elevatorlogger = new Logger("Elevator");
+        loggingdata = new ArrayList<>();
     }
 
     @Override

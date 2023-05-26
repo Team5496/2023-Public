@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_elevator.resetEncoderPosition();
     m_robotContainer.m_arm.resetEncoderPosition();
     m_robotContainer.m_intakearm.resetEncoder();
+
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(90.0);
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(15000);
     enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
@@ -101,6 +102,10 @@ public class Robot extends TimedRobot {
     }
 
     enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
+    m_robotContainer.m_elevator.setPosition(0);
+    m_robotContainer.m_arm.setPosition(0, 1);
+    m_robotContainer.m_intakearm.setPosition(0);
+
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
     curr_state.setState(RobotStatesEnum.CARRY);
   }

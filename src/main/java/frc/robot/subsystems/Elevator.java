@@ -11,16 +11,26 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Elevator {
+import java.util.ArrayList;
+import java.io.IOException;
+import java.lang.System;
+
+
+public class Elevator extends SubsystemBase {
     
     public CANSparkMax e_leader, e_follower;
     private SparkMaxPIDController e_leaderController;
     private RelativeEncoder e_leaderEncoder, e_followerEncoder;
     public double kP, kI, kD, kF, kMaxOutput, kMinOutput;
+    public Logger elevatorlogger;
+    public ArrayList<String[]> loggingdata;
+    public double goingto = 0;
 
     public Elevator() {
         super();
+
 
         e_leader = new CANSparkMax(Constants.LEFT_ELEVATOR_MOTOR, MotorType.kBrushless);
         e_follower = new CANSparkMax(Constants.RIGHT_ELEVATOR_MOTOR, MotorType.kBrushless);
@@ -38,6 +48,26 @@ public class Elevator {
         e_leaderController.setD(Constants.e_KD, 0);
         e_leaderController.setFF(Constants.e_KF, 0);
         e_leaderController.setOutputRange(Constants.e_OUTPUT_MIN, Constants.e_OUTPUT_MAX, 0);
+
+        elevatorlogger = new Logger("Elevator");
+    }
+
+    @Override
+    public void periodic() {
+        loggingdata.add(new String[]{
+            elevatorlogger.getSystemTime(), 
+            String.valueOf(e_leaderEncoder.getPosition()),
+            String.valueOf(this.goingto),
+            String.valueOf(e_leader.getOutputCurrent()),
+            String.valueOf(e_follower.getOutputCurrent())
+        });
+
+        try {
+            elevatorlogger.log(loggingdata);
+            loggingdata.clear();
+        } catch (IOException exception) {
+            System.out.println("IO Exception in Subsystem Elevator: " + exception);
+        }
     }
 
     public void resetEncoderPosition() {
@@ -55,7 +85,7 @@ public class Elevator {
 
     public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(
-            () -> System.out.println("Driving elevator"),
+            () -> goingto = position,
             () -> setPosition(position),
             interrupted -> System.out.println("Ended driving elevator"),
             () -> Math.abs(getPosition() - position) <= 210
@@ -74,6 +104,7 @@ public class Elevator {
 
         return group;
     }
+
     public void setPositionRoutine(double... positions) {
         for (double position : positions) {
             setPosition(position);

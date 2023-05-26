@@ -25,7 +25,7 @@ public class Intake extends SubsystemBase {
             () -> elapsed_time = 0.0,
             () -> driveIntake(speed),
             interrupted -> intakeStop(),
-            () -> getElapsedTime() > 2.0
+            () -> false
         );
     }
 

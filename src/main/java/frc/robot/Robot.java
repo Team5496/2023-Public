@@ -84,9 +84,6 @@ public class Robot extends TimedRobot {
     events = autoHandler.initializeAutoHashMap(enumToCommand);
 
     autoHandler.getautocommand(m_robotContainer.m_drivetrainSubsystem, events).schedule();
-
-
-
   }
  
   /** This function is called periodically during autonomous. */
@@ -103,6 +100,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
     curr_state.setState(RobotStatesEnum.CARRY);
   }

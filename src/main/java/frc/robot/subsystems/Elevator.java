@@ -51,6 +51,13 @@ public class Elevator extends SubsystemBase {
 
         elevatorlogger = new Logger("Elevator");
         loggingdata = new ArrayList<>();
+        
+        try {
+            elevatorlogger.initialize();
+        } catch (IOException e) {
+            System.out.println("IO Exception in Elevator subsystem constructor");
+        }
+        
     }
 
     @Override

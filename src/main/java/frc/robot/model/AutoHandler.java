@@ -58,6 +58,7 @@ public class AutoHandler {
     }
 
     public Command getautocommand(DrivetrainSubsystem drive, HashMap<String, Command> events) {
+        drive.resetPoseToPath(pathGroup.get(0).getInitialHolonomicPose());
         return drive.getBuilder(events).fullAuto(pathGroup);
     }
 

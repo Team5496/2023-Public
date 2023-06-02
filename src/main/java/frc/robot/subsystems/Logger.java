@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Logger extends SubsystemBase {
-    String subsystemname, strDate;
+    String subsystemname, strDate, directory = "/home/lvuser/";
 
     public Logger(String namesubsystem) {
         this.subsystemname = namesubsystem;
@@ -28,26 +28,23 @@ public class Logger extends SubsystemBase {
 
     public String getSystemTime() {
         return strDate;
-    }
-
-    public String escapeSpecialCharacters(String data) {
-        String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
-            data = data.replace("\"", "\"\"");
-            escapedData = "\"" + data + "\"";
-        }
-        return escapedData;
-    }
-    
+    }    
 
     public String convertToCSV(String[] data) {
         return Stream.of(data)
-            .map(this::escapeSpecialCharacters)
             .collect(Collectors.joining(","));
     }
 
-    public void log(ArrayList<String[]> data) throws IOException {
-        String filename = subsystemname + "Logs.csv";
+    public void initialize() throws IOException {
+        File csvOut = new File(directory + subsystemname + "Logs.csv");
+
+        if (!csvOut.exists()) {
+            csvOut.createNewFile();
+        }
+    }
+
+    public void log(ArrayList<String[]> data) throws IOException{
+        String filename = directory + subsystemname + "Logs.csv";
         File csvOut = new File(filename);
 
         try (PrintWriter pw = new PrintWriter(csvOut)) {

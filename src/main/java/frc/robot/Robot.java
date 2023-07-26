@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {}
 
 
-  /** This autonomous runs the autonomous com1op  mand selected by your {@link RobotContainer} class. */
+  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     m_robotContainer.m_elevator.resetEncoderPosition();
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_intakearm.intakeArmSmartDashboard();
     m_robotContainer.m_arm.armsmartdashboard();
     m_robotContainer.m_elevator.elevatorSmartDashboard();
-  }
+  } 
 
   @Override
   public void teleopInit() {
@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
               curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
-    } else if (controlBoard.getRawButtonPressed(2)) {
+    } else if (controlBoard.getRawButtonPressed(2)) { 
         switch (curr_state.getState()) {
           case PICK_UP_CHUTE:
           case PICK_UP_CHUTE_CONE:

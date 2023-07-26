@@ -19,7 +19,6 @@ import java.lang.System;
 
 
 public class Elevator extends SubsystemBase {
-    
     public CANSparkMax e_leader, e_follower;
     private SparkMaxPIDController e_leaderController;
     private RelativeEncoder e_leaderEncoder, e_followerEncoder;
@@ -27,10 +26,10 @@ public class Elevator extends SubsystemBase {
     public Logger elevatorlogger;
     public ArrayList<String[]> loggingdata;
     public double goingto = 0;
+    public Boolean isdone = false;
 
     public Elevator() {
         super();
-
 
         e_leader = new CANSparkMax(Constants.LEFT_ELEVATOR_MOTOR, MotorType.kBrushless);
         e_follower = new CANSparkMax(Constants.RIGHT_ELEVATOR_MOTOR, MotorType.kBrushless);
@@ -57,7 +56,7 @@ public class Elevator extends SubsystemBase {
         } catch (IOException e) {
             System.out.println("IO Exception in Elevator subsystem constructor");
         }
-        
+
     }
 
     @Override
@@ -66,8 +65,8 @@ public class Elevator extends SubsystemBase {
             elevatorlogger.getSystemTime(), 
             String.valueOf(e_leaderEncoder.getPosition()),
             String.valueOf(this.goingto),
-            String.valueOf(e_leader.getOutputCurrent()),
-            String.valueOf(e_follower.getOutputCurrent())
+            String.valueOf(this.isdone),
+            String.valueOf(e_leader.getOutputCurrent())
         });
 
         try {

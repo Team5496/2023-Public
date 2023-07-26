@@ -10,9 +10,17 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import java.util.ArrayList;
+import java.io.IOException;
+import java.lang.Boolean;
 
-public class IntakeArm extends SubsystemBase{
+
+public class IntakeArm extends SubsystemBase {
     public TalonFX m_motor;
+    public Logger intakearmlogger;
+    public ArrayList<String[]> loggingdata;
+	public double goingto = 0.0;
+	public Boolean isdone = false;
 
     public IntakeArm() {
 		m_motor = new TalonFX(Constants.INTAKE_ARM_ID);
@@ -35,6 +43,16 @@ public class IntakeArm extends SubsystemBase{
 
 		m_motor.configMotionCruiseVelocity(30000);
 		m_motor.configMotionAcceleration(3e6);
+
+		intakearmlogger = new Logger("Intake Arm");
+        loggingdata = new ArrayList<>();
+        
+        try {
+            intakearmlogger.initialize();
+        } catch (IOException e) {
+            System.out.println("IO Exception in Intake Arm subsystem constructor");
+        }
+
     }
 
     public void setPosition(double position) {
@@ -45,11 +63,26 @@ public class IntakeArm extends SubsystemBase{
 
 	@Override
 	public void periodic() {
+		loggingdata.add(new String[]{
+				intakearmlogger.getSystemTime(), 
+				String.valueOf(m_motor.getSelectedSensorPosition()),
+				String.valueOf(this.goingto),
+				String.valueOf(this.isdone),
+				String.valueOf(m_motor.getStatorCurrent()),
+
+		});
+	
+		try {
+			intakearmlogger.log(loggingdata);
+			loggingdata.clear();
+		} catch (IOException exception) {
+			System.out.println("IO Exception in Subsystem Intake Arm: " + exception);
+		}
+	
 		m_motor.config_kF(0, calculateKF(m_motor.getSelectedSensorPosition()));
 	}
 
 	public double calculateKF(double position) {
-
 		double kf = Constants.IA_KF * Math.sin(
 			((position - (double)Constants.VTICKS)/(Constants.HTICKS - Constants.VTICKS)) * (Math.PI/2));
 
@@ -59,12 +92,17 @@ public class IntakeArm extends SubsystemBase{
 
 	public FunctionalCommand getIntakeArmCommand(double pos) {
         return new FunctionalCommand(
-            () -> System.out.println("yippee"),
+            () -> {
+				isdone = false;
+				goingto = pos;
+			},
             () -> setPosition(pos),
-            interrupted -> System.out.println("yippee"),
+            interrupted -> isdone = true,
             () -> Math.abs(m_motor.getSelectedSensorPosition() - pos) < 7000
         );
     }
+
+
 
 	public void intakeArmSmartDashboard() {
 		SmartDashboard.putNumber("Intake Arm Position", m_motor.getSelectedSensorPosition());

@@ -21,7 +21,6 @@ import com.pathplanner.lib.commands.FollowPathWithEvents;
 public class AutoHandler {
     List<PathPlannerTrajectory> pathGroup;
 
-
     public AutoHandler(String auto) {
         if (auto == "pickuponepiecebalance") {
             pathGroup = PathPlanner.loadPathGroup("PickUpOnePieceBalance", 

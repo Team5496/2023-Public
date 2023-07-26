@@ -1,12 +1,10 @@
 package frc.robot.subsystems;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-
 import java.io.IOException;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -32,9 +30,6 @@ public class Limelight
     NetworkTableEntry tx, ty, ta;
     AprilTagFieldLayout aprilTagFieldLayout;
     PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera, robotToCam);
-
-   
-    
 
     public Limelight(String name) {
         camera = new PhotonCamera(name);
@@ -87,7 +82,6 @@ public class Limelight
         }
         return 0.0;
     }
-
 
     //not working
     public void changePipeline(int index) {

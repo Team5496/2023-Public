@@ -9,8 +9,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+/*
+ * LOGGER CONVENTIONS FOR SUBSYSTEMS
+ * 1st LOG: ALWAYS SYSTEM TIME
+ * 2nd LOG: SUBSYSTEM POSITION (IF APPLICABLE)
+ * 3rd LOG: POSITION GOING TO (IF APPLICABLE)
+ * 4th LOG: 
+ */
 
 public class Logger extends SubsystemBase {
     String subsystemname, strDate, directory = "/home/lvuser/";

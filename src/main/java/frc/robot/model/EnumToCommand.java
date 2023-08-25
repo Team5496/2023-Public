@@ -173,9 +173,6 @@ public class EnumToCommand {
             )
         );
 
-
-
-
     }
 
     public Command getCommand(RobotStates.RobotStatesEnum state) {

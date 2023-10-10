@@ -32,6 +32,7 @@ public class Lights {
     public void on() {
         this.setState(LightStates.ON);
     }
+
     public void off() {
         this.setState(LightStates.OFF);
     }    

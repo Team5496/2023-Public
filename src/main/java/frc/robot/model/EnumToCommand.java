@@ -10,11 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.IntakeArm;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.IntakeSwivel;
 
 public class EnumToCommand {
     HashMap<RobotStates.RobotStatesEnum, Command> corresponding_commands = new HashMap<RobotStates.RobotStatesEnum, Command>();
   
-    public EnumToCommand(Elevator elevator, Arm arm, Intake intake, IntakeArm intakearm){    
+    public EnumToCommand(Elevator elevator, Arm arm, Intake intake, IntakeArm intakearm, IntakeSwivel intakeswivel){    
         corresponding_commands.put( 
             RobotStates.RobotStatesEnum.CARRY,
             new SequentialCommandGroup(

@@ -15,7 +15,6 @@ public class Intake extends SubsystemBase {
     private CANSparkMax i_leader;
     private double elapsed_time = 0.0;
 
-
     public Intake() {
         i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushed);
     }

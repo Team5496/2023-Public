@@ -87,16 +87,6 @@ public final class Constants {
     public static final double a_KDR = 0.0;
     public static final double a_KFR = 5e-7; //2e-6
 
-    public static final double a_KPUP = 0.00025; //0.0007
-    public static final double a_KIUP = 7e-11; //2e-10
-    public static final double a_KDUP = 0.00015; //0.0007
-    public static final double a_KFUP = 1.875e-7; //0.75e-6
-
-    public static final double a_KPB = 0.00025; //0.00021
-    public static final double a_KIB = 0.0;
-    public static final double a_KDB = 0.000035; //0.0016
-    public static final double a_KFB = 1.875e-7; //0.75e-6
-
     public static final int a_OUTPUT_MAX = 2;
     public static final int a_OUTPUT_MIN = -2;
     public static final double a_MAX_VELOCITY = 0.0;
@@ -129,6 +119,13 @@ public final class Constants {
     public static final int INTAKE_MOTOR = 24;
     public static final double INTAKE_IN = 0.45;
     public static final double INTAKE_OUT = 0.45;
+
+    /* INTAKE SWIVEL CONSTANTS */
+    public static final double s_P = 0.1; // TODO: Test values
+    public static final double s_I = 0.001;
+    public static final double s_D = 1;
+    public static final double s_F = 0.1;
+    public static final int SwivelCANID = 0;
     
     /* VISION CONSTANTS */
     public static final double CAMERA_HEIGHT = 0.0;

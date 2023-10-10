@@ -49,7 +49,6 @@ public class Arm extends SubsystemBase {
             System.out.println("IO Exception in Arm subsystem constructor");
         }
 
-        
     }
 
     @Override
@@ -70,10 +69,8 @@ public class Arm extends SubsystemBase {
         }
     }
 
-
     public double getArmPosition() {
         return a_leaderEncoder.getPosition();
-
     }
 
     public FunctionalCommand getPositionCommand(double position) {
@@ -99,8 +96,4 @@ public class Arm extends SubsystemBase {
     public void resetEncoderPosition() {
         a_leaderEncoder.setPosition(0.0);
     }
-
-
-    
 }
-

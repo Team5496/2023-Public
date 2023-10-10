@@ -121,7 +121,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public SwerveModule m_backRightModule;
   public SwerveModulePosition[] positions;
   private SwerveDriveOdometry m_odometry; 
-     
  
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 

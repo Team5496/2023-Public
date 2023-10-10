@@ -22,6 +22,8 @@ public class IntakeArm extends SubsystemBase {
 	public double goingto = 0.0;
 	public Boolean isdone = false;
 
+	// TODO: When we get the Intake Arm, reconfigure PIDs
+
     public IntakeArm() {
 		m_motor = new TalonFX(Constants.INTAKE_ARM_ID);
 		
@@ -40,7 +42,7 @@ public class IntakeArm extends SubsystemBase {
 		m_motor.config_kI(0, Constants.IA_KI);
 		m_motor.config_kD(0, Constants.IA_KD);
 		m_motor.config_kF(0, Constants.IA_KF);
-
+ 
 		m_motor.configMotionCruiseVelocity(30000);
 		m_motor.configMotionAcceleration(3e6);
 

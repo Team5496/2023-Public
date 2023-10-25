@@ -39,7 +39,7 @@ public class RobotContainer {
   public final Arm m_arm = new Arm();
   public final Elevator m_elevator = new Elevator();
   public final Intake m_intake = new Intake();
-  public final IntakeSwivel m_intakeSwivel = new IntakeSwivel();
+  //public final IntakeSwivel m_intakeSwivel = new IntakeSwivel();
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
   public final IntakeArm m_intakearm = new IntakeArm();

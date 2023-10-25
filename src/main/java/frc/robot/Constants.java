@@ -95,7 +95,7 @@ public final class Constants {
     public static final double a_ALLOWED_ERROR = 0.0;
 
     /* INTAKE ARM CONSTANTS */
-    public static final int INTAKE_ARM_ID = 14;
+    public static final int INTAKE_ARM_ID = 14;  //falcon
     public static final double IA_KP = 0.0111; // 0.09
     public static final double IA_KI = 0.0; // 0
     public static final double IA_KD = 0.111; // 6.78
@@ -116,7 +116,7 @@ public final class Constants {
     */
 
     /* INTAKE CONSTANTS */
-    public static final int INTAKE_MOTOR = 24;
+    public static final int INTAKE_MOTOR = 0; //775
     public static final double INTAKE_IN = 0.45;
     public static final double INTAKE_OUT = 0.45;
 
@@ -125,7 +125,7 @@ public final class Constants {
     public static final double s_I = 0.001;
     public static final double s_D = 1;
     public static final double s_F = 0.1;
-    public static final int SwivelCANID = 0;
+    public static final int SwivelCANID = 2; //neo
     
     /* VISION CONSTANTS */
     public static final double CAMERA_HEIGHT = 0.0;

@@ -1,34 +1,36 @@
 package frc.robot.subsystems;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.RelativeEncoder;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import frc.robot.Constants;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.ControlType;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeSwivel {
-    CANSparkMax motor;
+    TalonSRX motor;
     SparkMaxPIDController pidcontroller;
     RelativeEncoder encoder; 
 
-    public IntakeSwivel(int swivelcanid) {
-        motor = new CANSparkMax(swivelcanid, MotorType.kBrushless);
-        encoder = motor.getEncoder();
-        pidcontroller = motor.getPIDController();
+    public IntakeSwivel() {
+        motor = new TalonSRX(Constants.SwivelCANID);
+        //encoder = motor.getEncoder();
+        //pidcontroller = motor.getPIDController();
 
         // P, I, D , F -- F stands for functional (which is another multiplier like P)
 
-        pidcontroller.setP(Constants.s_P);
-        pidcontroller.setI(Constants.s_I);
-        pidcontroller.setD(Constants.s_D);
-        pidcontroller.setFF(Constants.s_F);
+        //pidcontroller.setP(Constants.s_P);
+        //pidcontroller.setI(Constants.s_I);
+        //pidcontroller.setD(Constants.s_D);
+        //pidcontroller.setFF(Constants.s_F);
     }
 
     /* UTILITY METHODS */
 
     public double getSwivelPosition() {
-        return encoder.getPosition();
+        return motor.getSelectedSensorPosition();
     }
 
     public void setSwivelPosition(double position) {
@@ -43,4 +45,10 @@ public class IntakeSwivel {
             () -> Math.abs(position - getSwivelPosition()) < 100
         );
     }
+
+    public void intakeswivelarmdashboard() {
+        SmartDashboard.putNumber("Intake Swivel Ticks", getSwivelPosition());
+    }
+
+
 }

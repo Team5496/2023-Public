@@ -18,6 +18,7 @@ import frc.robot.model.EnumToCommand;
 import frc.robot.model.RobotStates;
 import java.util.HashMap;
 import frc.robot.model.RobotStates.RobotStatesEnum;
+import frc.robot.subsystems.Intake;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -36,7 +37,7 @@ public class Robot extends TimedRobot {
 
   private GenericHID controlBoard = new GenericHID(1);
   RobotStates curr_state = new RobotStates();
-  public XboxController intakecontroller = new XboxController(2);
+  public XboxController intakecontroller = new XboxController(0); //changed from 2
 
   // AUTO
 
@@ -78,7 +79,14 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(90.0);
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(15000);
-    //enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm);
+    enumToCommand = new EnumToCommand(
+      m_robotContainer.m_elevator, 
+      m_robotContainer.m_arm, 
+      m_robotContainer.m_intake,
+      m_robotContainer.m_intakearm,
+      m_robotContainer.m_intakeSwivel
+    );
+     
     autoHandler = new AutoHandler("pickuponepiecebalance");
     events = autoHandler.initializeAutoHashMap(enumToCommand);
 
@@ -100,12 +108,14 @@ public class Robot extends TimedRobot {
     }
 
     //enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm, m_robotContainer.m_intakeSwivel);
+    
     m_robotContainer.m_elevator.setPosition(0);
     m_robotContainer.m_arm.setPosition(0, 1);
     m_robotContainer.m_intakearm.setPosition(0);
 
     m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
     curr_state.setState(RobotStatesEnum.CARRY);
+    
   }
 
   /** This function is called periodically during operator control. */
@@ -114,7 +124,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_intakearm.intakeArmSmartDashboard();
     m_robotContainer.m_arm.armsmartdashboard();
     m_robotContainer.m_elevator.elevatorSmartDashboard();
-
+    m_robotContainer.m_intakeSwivel.intakeswivelarmdashboard();
+  
     if (controlBoard.getRawButtonPressed(1)) {
         switch (curr_state.getState()) {
             case CARRY:
@@ -204,6 +215,7 @@ public class Robot extends TimedRobot {
     } else if (controlBoard.getRawButtonPressed(11)) {
       m_robotContainer.m_intake.intakeStop();
     }
+    
   }
 
   @Override

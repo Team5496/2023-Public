@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
     private double elapsed_time = 0.0;
 
     public Intake() {
-        i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushed);
+        i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
     }
 
     public FunctionalCommand get_intakeCommand(double speed) {
@@ -43,6 +43,13 @@ public class Intake extends SubsystemBase {
 
     public void intakeStop() {
         i_leader.stopMotor();
+    }
+
+    public void drive() {
+        i_leader.set(0.2);
+    }
+    public void stop() {
+        i_leader.set(0.0);
     }
 
 }

@@ -23,7 +23,7 @@ public class IntakeArm extends SubsystemBase {
 	public Boolean isdone = false;
 
 	// TODO: When we get the Intake Arm, reconfigure PIDs
-
+ 
     public IntakeArm() {
 		m_motor = new TalonFX(Constants.INTAKE_ARM_ID);
 		
@@ -60,7 +60,6 @@ public class IntakeArm extends SubsystemBase {
     public void setPosition(double position) {
 		//m_motor.config_kF(0, calculateKF(position));
         m_motor.set(TalonFXControlMode.MotionMagic, position);
-        //b_motor.set(TalonSRXControlMode.MotionMagic, position);
     }
 
 	@Override
@@ -103,8 +102,6 @@ public class IntakeArm extends SubsystemBase {
             () -> Math.abs(m_motor.getSelectedSensorPosition() - pos) < 7000
         );
     }
-
-
 
 	public void intakeArmSmartDashboard() {
 		SmartDashboard.putNumber("Intake Arm Position", m_motor.getSelectedSensorPosition());

@@ -43,8 +43,8 @@ public class IntakeArm extends SubsystemBase {
 		m_motor.config_kD(0, Constants.IA_KD);
 		m_motor.config_kF(0, Constants.IA_KF);
  
-		m_motor.configMotionCruiseVelocity(30000);
-		m_motor.configMotionAcceleration(3e6);
+		m_motor.configMotionCruiseVelocity(20000);
+		m_motor.configMotionAcceleration(1e6);
 
 		intakearmlogger = new Logger("Intake Arm");
         loggingdata = new ArrayList<>();

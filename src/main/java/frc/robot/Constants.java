@@ -67,8 +67,8 @@ public final class Constants {
 
     public static final double e_KP = 0.00072;
     public static final double e_KI = 0.0;
-    public static final double e_KD = 0.00135;
-    public static final double e_KF = 0.000095;
+    public static final double e_KD = 0.004;
+    public static final double e_KF = 0.00026; // 0.000095
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
 

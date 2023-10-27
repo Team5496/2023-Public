@@ -1,30 +1,32 @@
 package frc.robot.subsystems;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.RelativeEncoder;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import frc.robot.Constants;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMax.ControlType;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 public class IntakeSwivel {
     TalonSRX motor;
-    SparkMaxPIDController pidcontroller;
-    RelativeEncoder encoder; 
 
     public IntakeSwivel() {
         motor = new TalonSRX(Constants.SwivelCANID);
-        //encoder = motor.getEncoder();
-        //pidcontroller = motor.getPIDController();
 
-        // P, I, D , F -- F stands for functional (which is another multiplier like P)
+        motor.configFactoryDefault();
+        motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
+		motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
 
-        //pidcontroller.setP(Constants.s_P);
-        //pidcontroller.setI(Constants.s_I);
-        //pidcontroller.setD(Constants.s_D);
-        //pidcontroller.setFF(Constants.s_F);
+        motor.selectProfileSlot(0, 0);
+		motor.config_kP(0, Constants.s_P);
+		motor.config_kI(0, Constants.s_I);
+		motor.config_kD(0, Constants.s_D);
+		motor.config_kF(0, Constants.s_F);
+ 
     }
 
     /* UTILITY METHODS */
@@ -33,8 +35,12 @@ public class IntakeSwivel {
         return motor.getSelectedSensorPosition();
     }
 
+    public void resetEncoder() {
+        motor.setSelectedSensorPosition(0);
+    }
+
     public void setSwivelPosition(double position) {
-        pidcontroller.setReference(position, ControlType.kPosition);
+        motor.set(TalonSRXControlMode.Position, position);
     }
 
     public FunctionalCommand getCommand(double position) {

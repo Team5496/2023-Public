@@ -34,20 +34,20 @@ public class AutoHandler {
         return pathGroup;
     }
 
-    public HashMap<String, Command> initializeAutoHashMap(EnumToCommand enumToCommand) {
+    public HashMap<String, Command> initializeAutoHashMap(EnumToCommand enumToCommand, boolean is_cone) {
         HashMap<String, Command> events = new HashMap<String, Command>();
 
         events.put("runintake", new SequentialCommandGroup(
           new ParallelCommandGroup(
-              enumToCommand.getCommand(RobotStatesEnum.INTAKEON),
-              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_LOW)
+              enumToCommand.getCommand(RobotStatesEnum.INTAKEON, is_cone),
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_LOW, is_cone)
           )
         ));
     
         events.put("intakeup", new SequentialCommandGroup(
           new ParallelCommandGroup(
-              enumToCommand.getCommand(RobotStatesEnum.INTAKEOFF),
-              enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY)
+              enumToCommand.getCommand(RobotStatesEnum.INTAKEOFF, is_cone),
+              enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY, is_cone)
           )
         ));
 

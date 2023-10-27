@@ -20,13 +20,22 @@ public class IntakeSwivel {
         motor.configFactoryDefault();
         motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
 		motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+        motor.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+        
+        motor.setSensorPhase(true);
+        motor.configNominalOutputForward(0);
+		motor.configNominalOutputReverse(0);
+		motor.configPeakOutputForward(0.5);
+		motor.configPeakOutputReverse(-0.5);
 
         motor.selectProfileSlot(0, 0);
 		motor.config_kP(0, Constants.s_P);
 		motor.config_kI(0, Constants.s_I);
 		motor.config_kD(0, Constants.s_D);
 		motor.config_kF(0, Constants.s_F);
- 
+
+        motor.configMotionCruiseVelocity(20000);
+		motor.configMotionAcceleration(1e6);
     }
 
     /* UTILITY METHODS */
@@ -40,7 +49,7 @@ public class IntakeSwivel {
     }
 
     public void setSwivelPosition(double position) {
-        motor.set(TalonSRXControlMode.Position, position);
+        motor.set(TalonSRXControlMode.MotionMagic, position);
     }
 
     public FunctionalCommand getCommand(double position) {
@@ -55,6 +64,4 @@ public class IntakeSwivel {
     public void intakeswivelarmdashboard() {
         SmartDashboard.putNumber("Intake Swivel Ticks", getSwivelPosition());
     }
-
-
 }

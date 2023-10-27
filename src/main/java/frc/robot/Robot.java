@@ -20,6 +20,7 @@ import java.util.HashMap;
 import frc.robot.model.RobotStates.RobotStatesEnum;
 import frc.robot.subsystems.Intake;
 
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -224,7 +225,14 @@ public class Robot extends TimedRobot {
     } else if (controlBoard.getRawButtonPressed(8)) {
       m_robotContainer.m_intake.driveIntake(-0.40);
     } else if (controlBoard.getRawButtonPressed(11)) {
-      m_robotContainer.m_intakearm.getIntakeArmCommand(-40000).schedule();
+      SequentialCommandGroup group = new SequentialCommandGroup(
+        m_robotContainer.m_elevator.getPositionCommand(1721),
+        m_robotContainer.m_arm.getPositionCommand(-5400),
+        m_robotContainer.m_intakearm.getIntakeArmCommand(-40000),
+        m_robotContainer.m_intakeSwivel.getCommand(1784)
+      );
+
+      group.schedule();
     }
     
   }

@@ -96,10 +96,10 @@ public final class Constants {
 
     /* INTAKE ARM CONSTANTS */
     public static final int INTAKE_ARM_ID = 14;  //falcon
-    public static final double IA_KP = 0.0; // 0.0111
+    public static final double IA_KP = 0.03; // 0.0111
     public static final double IA_KI = 0.0; // 0
-    public static final double IA_KD = 0.0; // 0.111
-    public static final double IA_KF = 0.0; // 0.0495
+    public static final double IA_KD = 0.05; // 0.111
+    public static final double IA_KF = 0.01; // 0.0495
 
 
     public static final int IA_IN = -100;
@@ -121,10 +121,10 @@ public final class Constants {
     public static final double INTAKE_OUT = 0.45;
 
     /* INTAKE SWIVEL CONSTANTS */
-    public static final double s_P = 0.1; // TODO: Test values
-    public static final double s_I = 0.001;
-    public static final double s_D = 1;
-    public static final double s_F = 0.1;
+    public static final double s_P = .5; // TODO: Test values
+    public static final double s_I = 0.00;
+    public static final double s_D = 0.0;
+    public static final double s_F = 0.001;
     public static final int SwivelCANID = 26; //775
     
     /* VISION CONSTANTS */

@@ -1,7 +1,6 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import java.util.HashMap;
@@ -56,26 +55,36 @@ public final class Constants {
     public static final double WHEEL_CIRCUMFERENCE = 12.57;
 
     /* ELEVATOR CONSTANTS / PID VALUES */
-    public static final int LEFT_ELEVATOR_MOTOR = 23; // Lead
-    public static final int RIGHT_ELEVATOR_MOTOR = 25; // Follower
+    public static final int LEAD_ELEVATOR_ID = 23; // Left
+    public static final int FOLLOW_ELEVATOR_ID = 25; // Right
 
-    public static final int ELEVATOR_LOW = 400;
-    public static final int ELEVATOR_MID = 850;
+    public static final int ELEVATOR_CARRY = 200;
     public static final int ELEVATOR_SHELF = 700;
-    public static final int ELEVATOR_PICK_UP = 950;
-    public static final int ELEVATOR_HIGH = 2000;
+    public static final int ELEVATOR_FLOOR = 0;
 
-    public static final double e_KP = 0.00072;
+    public static final int ELEVATOR_MID_CONE = 1609;
+    public static final int ELEVATOR_HIGH_CONE = 1721;
+
+    public static final int ELEVATOR_MID_CUBE = 566;
+    public static final int ELEVATOR_HIGH_CUBE = 1607;
+
+    public static final double e_KP = 0.0005;
     public static final double e_KI = 0.0;
-    public static final double e_KD = 0.004;
+    public static final double e_KD = 0.010;
     public static final double e_KF = 0.00026; // 0.000095
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
 
     /* ARM CONSTANTS */
-    public static final int ARM_MOTOR = 21; // Lead
+    public static final int ARM_ID = 21; // Lead
+    public static final int ARM_CARRY = 0;
+    public static final int A_PLACE_HIGH = -5485;
+    public static final int A_PLACE_MID = -3300;
+    public static final int A_PLACE_LOW = 0; //497
+    /*
     public static final int ARM_STRAIGHT = -3400; //1400
-    public static final int ARM_RETRACT = -100; //-300
+    public static final int ARM_RETRACT = 0; //-300
+    */
 
     public static final double a_KP = 0.00032; 
     public static final double a_KI = 0.0; //3e-10
@@ -96,17 +105,24 @@ public final class Constants {
 
     /* INTAKE ARM CONSTANTS */
     public static final int INTAKE_ARM_ID = 14;  //falcon
-    public static final double IA_KP = 0.03; // 0.0111
-    public static final double IA_KI = 0.0; // 0
-    public static final double IA_KD = 0.05; // 0.111
-    public static final double IA_KF = 0.01; // 0.0495
+    public static final double ia_KP = 0.03; // 0.0111
+    public static final double ia_KI = 0.0; // 0
+    public static final double ia_KD = 0.05; // 0.111
+    public static final double ia_KF = 0.01; // 0.0495
 
-
-    public static final int IA_IN = -100;
-    public static final int IA_OUT = -20000;
+    //public static final int IA_IN = -100;
+    //public static final int IA_OUT = -20000;
 
     public static final int VTICKS = -24000;
     public static final int HTICKS = -97800;
+
+    public static final int IA_CARRY = 0;
+
+    public static final int IA_CONE_FLOOR = -61180;
+
+    public static final int IA_PLACE_CONE_HIGH = -39375;
+    public static final int IA_PLACE_CONE_MID = -28158;
+    public static final int IA_PLACE_CONE_LOW = 346;
 
     /*
     public static final double IA_KP_BACKUP = 0.021408;
@@ -116,16 +132,35 @@ public final class Constants {
     */
 
     /* INTAKE CONSTANTS */
-    public static final int INTAKE_MOTOR = 28; //neo
-    public static final double INTAKE_IN = 0.45;
-    public static final double INTAKE_OUT = 0.45;
+    public static final int INTAKE_ID = 28; //neo
+
+    public static final double INTAKE_FORWARD = 0.8;
+    public static final double INTAKE_BACKWARD = -0.8;
+
+    public static final double INTAKE_FORWARD_HOLD = 0.08;
+    public static final double INTAKE_BACKWARD_HOLD = -0.08;
 
     /* INTAKE SWIVEL CONSTANTS */
+        public static final int SWIVEL_ID = 26; //775
+
     public static final double s_P = .5; // TODO: Test values
     public static final double s_I = 0.00;
     public static final double s_D = 0.0;
     public static final double s_F = 0.001;
-    public static final int SwivelCANID = 26; //775
+
+    public static final int SWIVEL_CARRY = 2700;
+
+    public static final double S_CONE_HIGH = -1784.0;
+    public static final double S_CONE_MID = -817;
+    public static final double S_CONE_LOW = -1066;
+    public static final double S_CONE_RAMP = 4245;
+    public static final double S_CONE_FLOOR = -990;
+
+    public static final double S_CUBE_HIGH = 2545;
+    public static final double S_CUBE_MID = 2793;
+    public static final double S_CUBE_LOW = 2645;
+    public static final double S_CUBE_RAMP = 1900;
+    public static final double S_CUBE_FLOOR = 0;
     
     /* VISION CONSTANTS */
     public static final double CAMERA_HEIGHT = 0.0;
@@ -134,6 +169,7 @@ public final class Constants {
     public static final double GRID_TARGET_HEIGHT = 0.0;
     public static final double LOADING_TARGET_HEIGHT = 0.0;
 
+    /* LIGHT CONTANTS */
     public static final Map<LightStates,String> LIGHT_STATES; 
     public static final String LIGHT_STATE_OFF =  "{'on':false}";
     public static final String LIGHT_STATE_ON =  "{'on':true}";

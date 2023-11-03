@@ -40,14 +40,15 @@ public class RobotContainer {
   public final Elevator m_elevator = new Elevator();
   public final Intake m_intake = new Intake();
   public final IntakeSwivel m_intakeSwivel = new IntakeSwivel();
+  public final IntakeArm m_intakeArm = new IntakeArm();
+
   private final Joystick m_controller = new Joystick(0);
   private final Lights m_lights = new Lights();
-  public final IntakeArm m_intakearm = new IntakeArm();
+
   private SlewRateLimiter accel_limiter = new SlewRateLimiter(1.9);
   private SlewRateLimiter rotate_limiter = new SlewRateLimiter(1.9);
   private SlewRateLimiter clock_limiter = new SlewRateLimiter(1.9);
   
-
   /* 
   public double exponentiate(double x){
     if (x < 0.50) {
@@ -56,7 +57,6 @@ public class RobotContainer {
       return Math.pow(x, 3);
     }
   }
-
   */
 
   public double setInput(double num) {
@@ -112,11 +112,9 @@ public class RobotContainer {
       trajectory = PathPlanner.loadPath("2", new PathConstraints(3, 2));
     }
 
-    Command autocommand = m_drivetrainSubsystem.generatetrajectory(trajectory, true);    
-    return autocommand;
+    Command autoCommand = m_drivetrainSubsystem.generateTrajectory(trajectory, true);    
+    return autoCommand;
   }
-
-  
 
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {

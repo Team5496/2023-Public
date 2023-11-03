@@ -1,22 +1,25 @@
 package frc.robot.model;
-import java.util.HashMap;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import com.pathplanner.lib.commands.*;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import java.util.List;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathConstraints;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.RobotContainer;
-import frc.robot.model.RobotStates.RobotStatesEnum;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
+import com.pathplanner.lib.commands.*;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+
+import java.util.HashMap;
+import java.util.List;
+
+import frc.robot.model.RobotStates.RobotStatesEnum;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class AutoHandler {
     List<PathPlannerTrajectory> pathGroup;
@@ -39,14 +42,14 @@ public class AutoHandler {
 
         events.put("runintake", new SequentialCommandGroup(
           new ParallelCommandGroup(
-              enumToCommand.getCommand(RobotStatesEnum.INTAKEON, is_cone),
-              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_LOW, is_cone)
+              enumToCommand.getCommand(RobotStatesEnum.INTAKE_ON, is_cone),
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_FLOOR, is_cone)
           )
         ));
     
         events.put("intakeup", new SequentialCommandGroup(
           new ParallelCommandGroup(
-              enumToCommand.getCommand(RobotStatesEnum.INTAKEOFF, is_cone),
+              enumToCommand.getCommand(RobotStatesEnum.INTAKE_OFF, is_cone),
               enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY, is_cone)
           )
         ));
@@ -56,7 +59,7 @@ public class AutoHandler {
     
     }
 
-    public Command getautocommand(DrivetrainSubsystem drive, HashMap<String, Command> events) {
+    public Command getAutoCommand(DrivetrainSubsystem drive, HashMap<String, Command> events) {
         drive.resetPoseToPath(pathGroup.get(0).getInitialHolonomicPose());
         return drive.getBuilder(events).fullAuto(pathGroup);
     }

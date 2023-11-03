@@ -2,16 +2,16 @@ package frc.robot.model;
 
 public class RobotStates {
     public enum RobotStatesEnum {
-        PICK_UP_LOW,
+        PICK_UP_FLOOR,
         PICK_UP_RAMP,
-        PLACE_CUBE_AUTO,
-        PLACE_CONE_AUTO,
-        PLACE_CUBE_LOW_AUTO,
         PLACE_H,
         PLACE_M,
-        INTAKEON,
-        INTAKEOFF,
-        PLACE_L,
+        //PLACE_L,
+        //PLACE_CUBE_AUTO,
+        //PLACE_CONE_AUTO,
+        PLACE_CUBE_MID_AUTO,
+        INTAKE_ON,
+        INTAKE_OFF,
         CARRY,
         RETRACT_W_CARRY
     }
@@ -21,18 +21,18 @@ public class RobotStates {
         CUBE_PICKED_UP
     }
 
-    RobotStatesEnum curr_state = RobotStatesEnum.CARRY;
+    RobotStatesEnum currState = RobotStatesEnum.CARRY;
 
     public RobotStates() {
-        curr_state = RobotStatesEnum.CARRY;
+        currState = RobotStatesEnum.CARRY;
     }
 
     public RobotStatesEnum getState() {
-        return curr_state;
+        return currState;
     }
 
-    public void setState(RobotStatesEnum statetoset) {
-        curr_state = statetoset;
+    public void setState(RobotStatesEnum stateToSet) {
+        currState = stateToSet;
     }
 
 

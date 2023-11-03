@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,10 +21,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 
 public class Logger extends SubsystemBase {
-    String subsystemname, strDate, directory = "/home/lvuser/";
+    String subsystemName, strDate, directory = "/home/lvuser/";
 
-    public Logger(String namesubsystem) {
-        this.subsystemname = namesubsystem;
+    public Logger(String nameSubsystem) {
+        this.subsystemName = nameSubsystem;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class Logger extends SubsystemBase {
     }
 
     public void initialize() throws IOException {
-        File csvOut = new File(directory + subsystemname + "Logs.csv");
+        File csvOut = new File(directory + subsystemName + "Logs.csv");
 
         if (!csvOut.exists()) {
             csvOut.createNewFile();
@@ -51,8 +52,8 @@ public class Logger extends SubsystemBase {
     }
 
     public void log(ArrayList<String[]> data) throws IOException{
-        String filename = directory + subsystemname + "Logs.csv";
-        File csvOut = new File(filename);
+        String fileName = directory + subsystemName + "Logs.csv";
+        File csvOut = new File(fileName);
 
         try (PrintWriter pw = new PrintWriter(csvOut)) {
             data.stream()
@@ -60,7 +61,7 @@ public class Logger extends SubsystemBase {
                 .forEach(pw::println);
         }
 
-        assert csvOut.exists() : "CSV File not found when writing to subsystem " + subsystemname;
+        assert csvOut.exists() : "CSV File not found when writing to subsystem " + subsystemName;
     }
 
     

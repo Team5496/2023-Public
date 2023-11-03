@@ -1,97 +1,98 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import java.util.ArrayList;
 import java.io.IOException;
 import java.lang.System;
 
+import frc.robot.Constants;
+
 public class Elevator extends SubsystemBase {
-    public CANSparkMax e_leader, e_follower;
-    private SparkMaxPIDController e_leaderController;
-    private RelativeEncoder e_leaderEncoder, e_followerEncoder;
+    public CANSparkMax leader, follower;
+    private SparkMaxPIDController leaderController;
+    private RelativeEncoder leaderEncoder, followerEncoder;
     public double kP, kI, kD, kF, kMaxOutput, kMinOutput;
-    public Logger elevatorlogger;
-    public ArrayList<String[]> loggingdata;
-    public double goingto = 0;
-    public Boolean isdone = false;
+
+    public double goingTo = 0;
+    public Boolean isDone = false;
+
+    public Logger logger;
+    public ArrayList<String[]> loggingData;
 
     public Elevator() {
         super();
 
-        e_leader = new CANSparkMax(Constants.LEFT_ELEVATOR_MOTOR, MotorType.kBrushless);
-        e_follower = new CANSparkMax(Constants.RIGHT_ELEVATOR_MOTOR, MotorType.kBrushless);
+        leader = new CANSparkMax(Constants.LEAD_ELEVATOR_ID, MotorType.kBrushless);
+        follower = new CANSparkMax(Constants.FOLLOW_ELEVATOR_ID, MotorType.kBrushless);
 
-        e_leaderController = e_leader.getPIDController();
-        e_leaderEncoder = e_leader.getEncoder();
-        e_leaderEncoder.setPositionConversionFactor(100);
-        e_leader.setClosedLoopRampRate(.3);
+        leaderController = leader.getPIDController();
+        leaderEncoder = leader.getEncoder();
+        leaderEncoder.setPositionConversionFactor(100);
+        leader.setClosedLoopRampRate(.3);
 
-        e_follower.follow(e_leader, true);
-        e_followerEncoder = e_follower.getEncoder();
+        follower.follow(leader, true);
+        followerEncoder = follower.getEncoder();
 
-        e_leaderController.setP(Constants.e_KP, 0);
-        e_leaderController.setI(Constants.e_KI, 0);
-        e_leaderController.setD(Constants.e_KD, 0);
-        e_leaderController.setFF(Constants.e_KF, 0);
-        e_leaderController.setOutputRange(Constants.e_OUTPUT_MIN, Constants.e_OUTPUT_MAX, 0);
+        leaderController.setP(Constants.e_KP, 0);
+        leaderController.setI(Constants.e_KI, 0);
+        leaderController.setD(Constants.e_KD, 0);
+        leaderController.setFF(Constants.e_KF, 0);
+        leaderController.setOutputRange(Constants.e_OUTPUT_MIN, Constants.e_OUTPUT_MAX, 0);
 
-        elevatorlogger = new Logger("Elevator");
-        loggingdata = new ArrayList<>();
+        logger = new Logger("Elevator");
+        loggingData = new ArrayList<>();
         
         try {
-            elevatorlogger.initialize();
+            logger.initialize();
         } catch (IOException e) {
             System.out.println("IO Exception in Elevator subsystem constructor");
         }
 
     }
 
+    // Logging
     @Override
     public void periodic() {
-        loggingdata.add(new String[]{
-            elevatorlogger.getSystemTime(), 
-            String.valueOf(e_leaderEncoder.getPosition()),
-            String.valueOf(this.goingto),
-            String.valueOf(this.isdone),
-            String.valueOf(e_leader.getOutputCurrent())
+        loggingData.add(new String[]{
+            logger.getSystemTime(), 
+            String.valueOf(leaderEncoder.getPosition()),
+            String.valueOf(this.goingTo),
+            String.valueOf(this.isDone),
+            String.valueOf(leader.getOutputCurrent())
         });
 
         try {
-            elevatorlogger.log(loggingdata);
-            loggingdata.clear();
+            logger.log(loggingData);
+            loggingData.clear();
         } catch (IOException exception) {
             System.out.println("IO Exception in Subsystem Elevator: " + exception);
         }
     }
 
-    public void resetEncoderPosition() {
-        e_leaderEncoder.setPosition(0);
-        e_followerEncoder.setPosition(0);
-    }
-
     public void setPosition(double position) {
-        e_leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
+        leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
     public double getPosition() {
-        return e_leaderEncoder.getPosition();
+        return leaderEncoder.getPosition();
     }
 
     public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(
-            () -> goingto = position,
+            () -> goingTo = position,
             () -> setPosition(position),
             interrupted -> System.out.println("Ended driving elevator"),
-            () -> Math.abs(getPosition() - position) <= 210
+            () -> Math.abs(getPosition() - position) <= 300
         );
     }
 
@@ -108,31 +109,38 @@ public class Elevator extends SubsystemBase {
         return group;
     }
 
+    public void resetEncoderPosition() {
+        leaderEncoder.setPosition(0);
+        followerEncoder.setPosition(0);
+    }
+
+    public void smartDashboard() {
+        SmartDashboard.putNumber("Lead Position", leaderEncoder.getPosition());
+    }
+
+    // Experimental Methods
     public void setPositionRoutine(double... positions) {
         for (double position : positions) {
             setPosition(position);
         }
     }
 
-    //experimental/testing methods
     public double getOutput() {
-        return e_leader.getOutputCurrent();
-    }
+        return leader.getOutputCurrent();
+    }    
 
+     /* Nudging elevator with joystick
     public void driveJoystick(double y) {
-        e_leader.set(y);
+        leader.set(y);
     }
     public void goUp() {
-        e_leaderController.setReference(50, CANSparkMax.ControlType.kVelocity);
+        leaderController.setReference(50, CANSparkMax.ControlType.kVelocity);
     }
     public void goDown() {
-        e_leaderController.setReference(-50.0, CANSparkMax.ControlType.kVelocity);
+        leaderController.setReference(-50.0, CANSparkMax.ControlType.kVelocity);
     }
     public void hold() {
-        e_leaderController.setReference(e_leaderEncoder.getPosition(), CANSparkMax.ControlType.kPosition);
+        leaderController.setReference(e_leaderEncoder.getPosition(), CANSparkMax.ControlType.kPosition);
     }
-
-    public void elevatorSmartDashboard() {
-        SmartDashboard.putNumber("Lead Position", e_leaderEncoder.getPosition());
-    }
+    */
 }

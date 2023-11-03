@@ -2,54 +2,44 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.revrobotics.CANSparkMax.IdleMode;
+
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    private CANSparkMax i_leader;
-    private double elapsed_time = 0.0;
+    private CANSparkMax motor;
+    private double elapsedTime = 0.0;
 
     public Intake() {
-        i_leader = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
+        motor = new CANSparkMax(Constants.INTAKE_ID, MotorType.kBrushless);
     }
 
-    public FunctionalCommand get_intakeCommand(double speed) {
+    public FunctionalCommand getIntakeCommand(double speed) {
         return new FunctionalCommand(
-            () -> elapsed_time = 0.0,
+            () -> elapsedTime = 0.0,
             () -> driveIntake(speed),
-            interrupted -> intakeStop(),
-            () -> false
+            interrupted -> stopIntake(),
+            () -> elapsedTime > 2.0
         );
-    }
-
-    public double getElapsedTime() {
-        return elapsed_time;
     }
 
     @Override
     public void periodic() {
-        elapsed_time += (1.0 / 50.0);
+        elapsedTime += (1.0 / 50.0);
+    }
+    public double getElapsedTime() {
+        return elapsedTime;
     }
 
     public void driveIntake(double speed) {
-        i_leader.set(speed);
+        motor.set(speed);
     }
-
-    public void intakeStop() {
-        i_leader.stopMotor();
+    public void stopIntake() {
+        motor.stopMotor();
     }
-
-    public void drive() {
-        i_leader.set(0.2);
-    }
-    public void stop() {
-        i_leader.set(0.0);
-    }
-
 }

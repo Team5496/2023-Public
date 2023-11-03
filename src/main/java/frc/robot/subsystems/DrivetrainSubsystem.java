@@ -1,60 +1,64 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
+
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.commands.*;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-
-import java.util.function.Consumer;
-import com.pathplanner.lib.commands.*;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import java.util.function.DoubleSupplier;
-import frc.robot.model.RobotStates.RobotStatesEnum;
-import frc.robot.Constants;
-import frc.robot.commands.DefaultDriveCommand;
-import com.pathplanner.lib.auto.PIDConstants;
-import java.util.function.Supplier;
-import frc.robot.model.EnumToCommand;
-import java.util.HashMap;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
-import edu.wpi.first.math.controller.PIDController;
-import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
-import com.swervedrivespecialties.swervelib.MotorType;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-
-import com.swervedrivespecialties.swervelib.SwerveModule;
-import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathConstraints;
-import com.ctre.phoenix.sensors.Pigeon2;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.Elevator;
-import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
+
 import java.lang.ArithmeticException;
+import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+import java.util.HashMap;
+import java.util.Optional;
+
+import frc.robot.Constants;
 import static frc.robot.Constants.*;
-import frc.robot.subsystems.Limelight;
-import edu.wpi.first.math.geometry.Pose2d;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.TimedDefaultDriveCommand;
-import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.model.EnumToCommand;
+import frc.robot.model.RobotStates.RobotStatesEnum;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Limelight;
+
+import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
+import com.swervedrivespecialties.swervelib.MotorType;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import com.swervedrivespecialties.swervelib.SwerveModule;
+
+import com.ctre.phoenix.sensors.Pigeon2;
+
+import org.photonvision.EstimatedRobotPose;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   public static double second_timer = 0.0; // lol
@@ -253,7 +257,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   
 
-  public Command generatetrajectory(PathPlannerTrajectory traj, boolean isFirst){
+  public Command generateTrajectory(PathPlannerTrajectory traj, boolean isFirst){
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
                   // Reset odometry for the first path you run during auto

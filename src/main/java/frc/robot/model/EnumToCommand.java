@@ -1,279 +1,237 @@
 package frc.robot.model;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import java.util.HashMap;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.IntakeArm;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.IntakeSwivel;
 
 public class EnumToCommand {
-    HashMap<RobotStates.RobotStatesEnum, Command> corresponding_commands_cube = new HashMap<RobotStates.RobotStatesEnum, Command>();
-    HashMap<RobotStates.RobotStatesEnum, Command> corresponding_commands_cone = new HashMap<RobotStates.RobotStatesEnum, Command>();
+    HashMap<RobotStates.RobotStatesEnum, Command> correspondingCommandsCube = new HashMap<RobotStates.RobotStatesEnum, Command>();
+    HashMap<RobotStates.RobotStatesEnum, Command> correspondingCommandsCone = new HashMap<RobotStates.RobotStatesEnum, Command>();
 
-    
-    public EnumToCommand(Elevator elevator, Arm arm, Intake intake, IntakeArm intakearm, IntakeSwivel intakeswivel){    
-        // CARRY
-
+    public EnumToCommand(Elevator elevator, Arm arm, Intake intake, IntakeArm intakeArm, IntakeSwivel intakeSwivel){    
+    // CARRY
         // CONE
-
-        corresponding_commands_cone.put( 
+        correspondingCommandsCone.put( 
             RobotStates.RobotStatesEnum.CARRY,
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    arm.getPositionCommand(Constants.ARM_RETRACT),
-                    elevator.getPositionCommand(Constants.ELEVATOR_LOW),
-                    intakearm.getIntakeArmCommand(Constants.VTICKS)
+                    arm.getPositionCommand(Constants.ARM_CARRY),
+                    elevator.getPositionCommand(Constants.ELEVATOR_CARRY),
+                    intakeArm.getIntakeArmCommand(Constants.IA_CARRY)
                 ),
-                intakearm.getIntakeArmCommand(0)
+                new ParallelCommandGroup(
+                    intakeSwivel.getCommand(Constants.SWIVEL_CARRY),
+                    intake.getIntakeCommand(Constants.INTAKE_BACKWARD_HOLD)
+                )
             )
         );
 
         // CUBE
-
-        corresponding_commands_cube.put( 
+        correspondingCommandsCube.put( 
             RobotStates.RobotStatesEnum.CARRY,
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    arm.getPositionCommand(Constants.ARM_RETRACT),
-                    elevator.getPositionCommand(Constants.ELEVATOR_LOW),
-                    intakearm.getIntakeArmCommand(Constants.VTICKS)
+                    arm.getPositionCommand(Constants.ARM_CARRY),
+                    elevator.getPositionCommand(Constants.ELEVATOR_CARRY),
+                    intakeArm.getIntakeArmCommand(Constants.IA_CARRY)
                 ),
-                intakearm.getIntakeArmCommand(0)
+                new ParallelCommandGroup(
+                    intakeSwivel.getCommand(Constants.SWIVEL_CARRY),
+                    intake.getIntakeCommand(Constants.INTAKE_FORWARD_HOLD)
+                )
             )
         );
 
 
-        // PICK UP LOW
-
+    // PICK UP LOW
         // CONE
-
-        corresponding_commands_cone.put(
-            RobotStates.RobotStatesEnum.PICK_UP_LOW,
+        correspondingCommandsCone.put(
+            RobotStates.RobotStatesEnum.PICK_UP_FLOOR,
             new ParallelCommandGroup(
-                elevator.getPositionCommand(0),
+                elevator.getPositionCommand(Constants.ELEVATOR_FLOOR),
                 arm.getPositionCommand(0),
-                intakearm.getIntakeArmCommand(Constants.HTICKS + 12000) //9500
+                intakeArm.getIntakeArmCommand(Constants.IA_CONE_FLOOR),
+                intakeSwivel.getCommand(Constants.S_CONE_FLOOR) 
             )
         );
 
-        // CUBE
-
-        corresponding_commands_cube.put(
-            RobotStates.RobotStatesEnum.PICK_UP_LOW,
+        // CUBE --> not tuned for new intake
+        correspondingCommandsCube.put(
+            RobotStates.RobotStatesEnum.PICK_UP_FLOOR,
             new ParallelCommandGroup(
-                elevator.getPositionCommand(0),
+                elevator.getPositionCommand(Constants.ELEVATOR_FLOOR),
                 arm.getPositionCommand(0),
-                intakearm.getIntakeArmCommand(Constants.HTICKS + 12000) //9500
+                intakeArm.getIntakeArmCommand(0) 
             )
         );
 
+    // INTAKE
         // INTAKE ON
-
-        corresponding_commands_cone.put(
-            RobotStates.RobotStatesEnum.INTAKEON,
-            intake.get_intakeCommand(-0.85)
+        correspondingCommandsCone.put(
+            RobotStates.RobotStatesEnum.INTAKE_ON,
+            intake.getIntakeCommand(Constants.INTAKE_BACKWARD)
         );
 
-        corresponding_commands_cube.put(
-            RobotStates.RobotStatesEnum.INTAKEON,
-            intake.get_intakeCommand(-0.85)
+        correspondingCommandsCube.put(
+            RobotStates.RobotStatesEnum.INTAKE_ON,
+            intake.getIntakeCommand(Constants.INTAKE_FORWARD)
         );
 
         // INTAKE OFF
-
-        corresponding_commands_cone.put(
-            RobotStates.RobotStatesEnum.INTAKEOFF,
-            intake.get_intakeCommand(0.0)
+        correspondingCommandsCone.put(
+            RobotStates.RobotStatesEnum.INTAKE_OFF,
+            intake.getIntakeCommand(0.0)
         );
 
-        corresponding_commands_cube.put(
-            RobotStates.RobotStatesEnum.INTAKEOFF,
-            intake.get_intakeCommand(0.0)
+        correspondingCommandsCube.put(
+            RobotStates.RobotStatesEnum.INTAKE_OFF,
+            intake.getIntakeCommand(0.0)
         );
 
 
-        // RETRACT W CARRY
-
-        corresponding_commands_cone.put(
-            RobotStates.RobotStatesEnum.RETRACT_W_CARRY,
-            new ParallelCommandGroup(
-                intakearm.getIntakeArmCommand(0),
-                elevator.getPositionCommand(Constants.ELEVATOR_LOW),
-                arm.getPositionCommand(0)
-            )
-        );
-
-        corresponding_commands_cube.put(
-            RobotStates.RobotStatesEnum.RETRACT_W_CARRY,
-            new ParallelCommandGroup(
-                intakearm.getIntakeArmCommand(0),
-                elevator.getPositionCommand(Constants.ELEVATOR_LOW),
-                arm.getPositionCommand(0)
-            )
-        );
-
-        // PLACE HIGH
-
+    // RETRACT W CARRY
         // CONE
+        correspondingCommandsCone.put(
+            RobotStates.RobotStatesEnum.RETRACT_W_CARRY,
+            new ParallelCommandGroup(
+                intakeArm.getIntakeArmCommand(0),
+                elevator.getPositionCommand(0),
+                arm.getPositionCommand(0),
+                intakeSwivel.getCommand(0)
+            )
+        );
 
-        corresponding_commands_cone.put(
+        // CUBE
+        correspondingCommandsCube.put(
+            RobotStates.RobotStatesEnum.RETRACT_W_CARRY,
+            new ParallelCommandGroup(
+                intakeArm.getIntakeArmCommand(0),
+                elevator.getPositionCommand(0),
+                arm.getPositionCommand(0),
+                intakeSwivel.getCommand(0)
+            )
+        );
+
+    // PLACE HIGH
+        // CONE
+        correspondingCommandsCone.put(
             RobotStates.RobotStatesEnum.PLACE_H,
             new SequentialCommandGroup(
-                elevator.getPositionCommand(2000),
+                elevator.getPositionCommand(1700), // 2000
                 new ParallelCommandGroup(
-                    arm.getPositionCommand(-3400),
-                    intakearm.getIntakeArmCommand(-65000)
+                    intake.getIntakeCommand(Constants.INTAKE_BACKWARD_HOLD),
+                    intakeSwivel.getCommand(5385)
+                ),
+                new ParallelCommandGroup(
+                    arm.getPositionCommand(-6362), //-3400
+                    intakeArm.getIntakeArmCommand(-38290)
                 )
             )
         );
 
         // CUBE
-
-        corresponding_commands_cube.put(
+        correspondingCommandsCube.put(
             RobotStates.RobotStatesEnum.PLACE_H,
             new SequentialCommandGroup(
-                elevator.getPositionCommand(2000),
+                elevator.getPositionCommand(1607), //2000
                 new ParallelCommandGroup(
-                    arm.getPositionCommand(-3400),
-                    intakearm.getIntakeArmCommand(-65000)
+                    intakeSwivel.getCommand(2545 - 6500),
+                    intake.getIntakeCommand(Constants.INTAKE_FORWARD_HOLD),
+                    arm.getPositionCommand(-5150), //-3400
+                    intakeArm.getIntakeArmCommand(-52700)
                 )
             )
         );
 
-        corresponding_commands_cone.put(
-            RobotStates.RobotStatesEnum.PLACE_CONE_AUTO,
-
-            new SequentialCommandGroup(
-                intakearm.getIntakeArmCommand(Constants.VTICKS),
-
-                new ParallelCommandGroup(
-                    elevator.getPositionCommand(2000),
-                    arm.getPositionCommand(-3200)
-                ),
-
-                new SequentialCommandGroup(
-                    intakearm.getIntakeArmCommand(-63000),
-                    new WaitCommand(1.5),
-                    intake.get_intakeCommand(-0.85),
-                    intakearm.getIntakeArmCommand(Constants.VTICKS)                
-                ),
-
-                new ParallelCommandGroup(
-                    intakearm.getIntakeArmCommand(Constants.VTICKS),
-                    arm.getPositionCommand(Constants.ARM_RETRACT)
-                ),
-
-
-                new ParallelCommandGroup(
-                    elevator.getPositionCommand(Constants.ELEVATOR_LOW),
-                    intakearm.getIntakeArmCommand(0)
-                )
-            )
-        );
-
-
-        corresponding_commands_cube.put(
-            RobotStates.RobotStatesEnum.PLACE_CUBE_AUTO,
-
-            new SequentialCommandGroup(
-                intakearm.getIntakeArmCommand(Constants.VTICKS),
-
-                new ParallelCommandGroup(
-                    elevator.getPositionCommand(2000),
-                    arm.getPositionCommand(-3400)
-                ),
-
-                new SequentialCommandGroup(
-                    intakearm.getIntakeArmCommand(-58000),
-                    new WaitCommand(1),
-                    intake.get_intakeCommand(0.85),
-                    intakearm.getIntakeArmCommand(Constants.VTICKS)                
-                ),
-
-                new ParallelCommandGroup(
-                    intakearm.getIntakeArmCommand(Constants.VTICKS),
-                    arm.getPositionCommand(Constants.ARM_RETRACT)
-                ),
-
-
-                new ParallelCommandGroup(
-                    elevator.getPositionCommand(Constants.ELEVATOR_LOW),
-                    intakearm.getIntakeArmCommand(0)
-                )
-            )
-        );
-
-        // PLACE M
-
+    // PLACE MID
         // CONE
-
-        corresponding_commands_cone.put(
+        correspondingCommandsCone.put(
             RobotStates.RobotStatesEnum.PLACE_M,
-            new ParallelCommandGroup(
-                elevator.getPositionCommand(2000),
-                intakearm.getIntakeArmCommand(-87000)
+            new SequentialCommandGroup(
+                elevator.getPositionCommand(1500),
+                new ParallelCommandGroup(
+                    intake.getIntakeCommand(Constants.INTAKE_BACKWARD_HOLD),
+                    intakeArm.getIntakeArmCommand(-45758),
+                    intakeSwivel.getCommand(-812),
+                    arm.getPositionCommand(-2923)
+                )
             )
         );
 
         // CUBE 
-
-        corresponding_commands_cube.put(
+        correspondingCommandsCube.put(
             RobotStates.RobotStatesEnum.PLACE_M,
-            new ParallelCommandGroup(
-                elevator.getPositionCommand(2000),
-                intakearm.getIntakeArmCommand(-87000)
+
+            new SequentialCommandGroup (
+                elevator.getPositionCommand(761),
+                new ParallelCommandGroup(
+                    intake.getIntakeCommand(Constants.INTAKE_FORWARD_HOLD),
+                    intakeArm.getIntakeArmCommand(-44990),
+                    intakeSwivel.getCommand(2793),
+                    arm.getPositionCommand(-1719)
+                )    
             )
         );
 
-        // PICK UP RAMP
-
+    // PICK UP RAMP
         // CONE
-
-        corresponding_commands_cone.put(
+        correspondingCommandsCone.put(
             RobotStates.RobotStatesEnum.PICK_UP_RAMP,
             new ParallelCommandGroup(
-                elevator.getPositionCommand(Constants.ELEVATOR_LOW - 200),
-                intakearm.getIntakeArmCommand(Constants.VTICKS - 7000),
-                arm.getPositionCommand(0)
+                elevator.getPositionCommand(0),
+                intakeArm.getIntakeArmCommand(-21465),
+                arm.getPositionCommand(0),
+                intakeSwivel.getCommand(4245)
             )
         );
 
         // CUBE
-
-        corresponding_commands_cube.put(
+        correspondingCommandsCube.put(
             RobotStates.RobotStatesEnum.PICK_UP_RAMP,
             new ParallelCommandGroup(
-                elevator.getPositionCommand(Constants.ELEVATOR_LOW - 200),
-                intakearm.getIntakeArmCommand(Constants.VTICKS - 7000),
-                arm.getPositionCommand(0)
+                elevator.getPositionCommand(0),
+                intakeArm.getIntakeArmCommand(-18385),
+                arm.getPositionCommand(0),
+                intakeSwivel.getCommand(1900)
             )
         );
 
-
-        corresponding_commands_cone.put(
-            RobotStates.RobotStatesEnum.PLACE_CUBE_LOW_AUTO,
-
+    // AUTO
+        correspondingCommandsCube.put(
+            RobotStates.RobotStatesEnum.PLACE_CUBE_MID_AUTO,
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    elevator.getPositionCommand(0),
-                    arm.getPositionCommand(0),
-                    intakearm.getIntakeArmCommand(Constants.HTICKS + 12000)
+                    intake.getIntakeCommand(0.07),
+                    elevator.getPositionCommand(566),
+                    intakeArm.getIntakeArmCommand(-44990),
+                    intakeSwivel.getCommand(2793),
+                    arm.getPositionCommand(-1719)
                 ),
-
-                intake.get_intakeCommand(0.85),
-                intakearm.getIntakeArmCommand(0)
+                intake.getIntakeCommand(-0.85),
+                new ParallelCommandGroup(
+                    elevator.getPositionCommand(0),
+                    intakeArm.getIntakeArmCommand(0),
+                    intakeSwivel.getCommand(0),
+                    arm.getPositionCommand(0)
+                )
             )
         );
 
     }
 
-    public Command getCommand(RobotStates.RobotStatesEnum state, boolean is_cone) {
-       return is_cone ? corresponding_commands_cone.get(state) : corresponding_commands_cube.get(state);
+    // Return command for requested position 
+    public Command getCommand(RobotStates.RobotStatesEnum state, boolean isCone) {
+       return isCone ? correspondingCommandsCone.get(state) : correspondingCommandsCube.get(state);
     }
 }

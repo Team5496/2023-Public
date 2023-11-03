@@ -11,15 +11,15 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.model.AutoHandler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
+import java.util.HashMap;
+
+import frc.robot.model.AutoHandler;
 import frc.robot.model.EnumToCommand;
 import frc.robot.model.RobotStates;
-import java.util.HashMap;
 import frc.robot.model.RobotStates.RobotStatesEnum;
-import frc.robot.subsystems.Intake;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -40,7 +40,8 @@ public class Robot extends TimedRobot {
   private GenericHID controlBoard = new GenericHID(1);
   RobotStates curr_state = new RobotStates();
   public XboxController intakecontroller = new XboxController(2);
-  public boolean is_cone = false;
+  public boolean isCone = false;
+  public boolean hasCone = false;
 
   // AUTO
 
@@ -78,30 +79,29 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.m_elevator.resetEncoderPosition();
     m_robotContainer.m_arm.resetEncoderPosition();
-    m_robotContainer.m_intakearm.resetEncoder();
+    m_robotContainer.m_intakeArm.resetEncoder();
+    m_robotContainer.m_intakeSwivel.resetEncoder();
 
-    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(90.0);
-    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(15000);
+    m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(270.0);
+    m_robotContainer.m_intakeArm.motor.configMotionCruiseVelocity(15000);
+   
     enumToCommand = new EnumToCommand(
       m_robotContainer.m_elevator, 
       m_robotContainer.m_arm, 
       m_robotContainer.m_intake,
-      m_robotContainer.m_intakearm,
+      m_robotContainer.m_intakeArm,
       m_robotContainer.m_intakeSwivel
     );
-     
-    autoHandler = new AutoHandler("pickuponepiecebalance");
-    events = autoHandler.initializeAutoHashMap(enumToCommand, is_cone);
 
-    autoHandler.getautocommand(m_robotContainer.m_drivetrainSubsystem, events).schedule();
+    // enumToCommand.getCommand(RobotStatesEnum.PLACE_CUBE_MID_AUTO, false).schedule();
   }
  
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_robotContainer.m_intakearm.intakeArmSmartDashboard();
-    m_robotContainer.m_arm.armsmartdashboard();
-    m_robotContainer.m_elevator.elevatorSmartDashboard();
+    m_robotContainer.m_intakeArm.smartDashboard();
+    m_robotContainer.m_arm.smartDashboard();
+    m_robotContainer.m_elevator.smartDashboard();
   } 
 
   @Override
@@ -112,17 +112,12 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.m_elevator.resetEncoderPosition();
     m_robotContainer.m_arm.resetEncoderPosition();
-    m_robotContainer.m_intakearm.resetEncoder();
+    m_robotContainer.m_intakeArm.resetEncoder();
     m_robotContainer.m_intakeSwivel.resetEncoder();
 
-
-    //enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakearm, m_robotContainer.m_intakeSwivel);
-    /* 
-    m_robotContainer.m_elevator.setPosition(0);
-    m_robotContainer.m_arm.setPosition(0, 1);
-    m_robotContainer.m_intakearm.setPosition(0);
-    */
-    m_robotContainer.m_intakearm.m_motor.configMotionCruiseVelocity(30000);
+    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakeArm, m_robotContainer.m_intakeSwivel);
+            
+    m_robotContainer.m_intakeArm.motor.configMotionCruiseVelocity(30000);
     curr_state.setState(RobotStatesEnum.CARRY);
     
   }
@@ -130,37 +125,39 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.m_intakearm.intakeArmSmartDashboard();
-    m_robotContainer.m_arm.armsmartdashboard();
-    m_robotContainer.m_elevator.elevatorSmartDashboard();
-    m_robotContainer.m_intakeSwivel.intakeswivelarmdashboard();
+    m_robotContainer.m_intakeArm.smartDashboard();
+    m_robotContainer.m_arm.smartDashboard();
+    m_robotContainer.m_elevator.smartDashboard();
+    m_robotContainer.m_intakeSwivel.smartDashboard();    
 
-    if (controlBoard.getRawButtonPressed(16)) {
-      is_cone = !is_cone;
+    //Switch state between cone and cube
+    if (controlBoard.getRawButtonPressed(4)) {
+      isCone = !isCone;
     }
   
     if (controlBoard.getRawButtonPressed(1)) {
         switch (curr_state.getState()) {
             case CARRY:
             case RETRACT_W_CARRY:
-              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_LOW, is_cone).schedule();
-              curr_state.setState(RobotStatesEnum.PICK_UP_LOW);
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_FLOOR, isCone).schedule();
+              curr_state.setState(RobotStatesEnum.PICK_UP_FLOOR);
               break;
             default:
               System.out.println("Bad call for Button 1 on state" + curr_state.getState().name() + ": setting state to carry");
-              enumToCommand.getCommand(RobotStatesEnum.CARRY, is_cone).schedule();
+              enumToCommand.getCommand(RobotStatesEnum.CARRY, isCone).schedule();
               curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
     } else if (controlBoard.getRawButtonPressed(2)) { 
         switch (curr_state.getState()) {
           case PICK_UP_RAMP:
-          case PICK_UP_LOW:
-            enumToCommand.getCommand(RobotStatesEnum.RETRACT_W_CARRY, is_cone).schedule();
+          case PICK_UP_FLOOR:
+          case CARRY:
+            enumToCommand.getCommand(RobotStatesEnum.CARRY, isCone).schedule();
             curr_state.setState(RobotStatesEnum.CARRY);
             break;
           default:
-            enumToCommand.getCommand(RobotStatesEnum.CARRY, is_cone).schedule();
+            enumToCommand.getCommand(RobotStatesEnum.CARRY, isCone).schedule();
             curr_state.setState(RobotStatesEnum.CARRY);
             break;
         }
@@ -168,12 +165,12 @@ public class Robot extends TimedRobot {
         switch (curr_state.getState()) {
             case CARRY:
             case RETRACT_W_CARRY:
-              enumToCommand.getCommand(RobotStatesEnum.PLACE_H, is_cone).schedule();
+              enumToCommand.getCommand(RobotStatesEnum.PLACE_H, isCone).schedule();
               curr_state.setState(RobotStatesEnum.PLACE_H);
               break;
             default:
               System.out.println("Bad call for Button 5 on state" + curr_state.getState().name() + ": setting state to carry");
-              enumToCommand.getCommand(RobotStatesEnum.CARRY, is_cone).schedule();
+              enumToCommand.getCommand(RobotStatesEnum.CARRY, isCone).schedule();
               curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
@@ -181,60 +178,47 @@ public class Robot extends TimedRobot {
         switch (curr_state.getState()) {
             case CARRY:
             case RETRACT_W_CARRY:
-              enumToCommand.getCommand(RobotStatesEnum.PLACE_M, is_cone).schedule();
+              enumToCommand.getCommand(RobotStatesEnum.PLACE_M, isCone).schedule();
               curr_state.setState(RobotStatesEnum.PLACE_M);
               break;
             default:
               System.out.println("Bad call for Button 7 on state" + curr_state.getState().name() + ": setting state to carry");
-              enumToCommand.getCommand(RobotStatesEnum.CARRY, is_cone).schedule();
+              enumToCommand.getCommand(RobotStatesEnum.CARRY, isCone).schedule();
               curr_state.setState(RobotStatesEnum.CARRY);
               break;
-        }
-    } else if (controlBoard.getRawButtonPressed(4)) {
-          switch (curr_state.getState()) {
-              case CARRY:
-              case RETRACT_W_CARRY:
-              case PICK_UP_RAMP:
-                  enumToCommand.getCommand(RobotStatesEnum.PICK_UP_RAMP, is_cone).schedule();
-                  curr_state.setState(RobotStatesEnum.PICK_UP_RAMP);
-                  break;
-              default:
-                System.out.println("Bad call for Button 4 on state" + curr_state.getState().name() + ": setting state to carry");
-                enumToCommand.getCommand(RobotStatesEnum.CARRY, is_cone).schedule();
-                curr_state.setState(RobotStatesEnum.CARRY);
-                break;
         }
     } else if (controlBoard.getRawButtonPressed(3)) {
         switch (curr_state.getState()) {
             case CARRY:
             case RETRACT_W_CARRY:
             case PICK_UP_RAMP:
-              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_RAMP, is_cone).schedule();
+              enumToCommand.getCommand(RobotStatesEnum.PICK_UP_RAMP, isCone).schedule();
               curr_state.setState(RobotStatesEnum.PICK_UP_RAMP);
               break;
             default:
               System.out.println("Bad call for Button 3 on state" + curr_state.getState().name() + ": setting state to carry");
-              enumToCommand.getCommand(RobotStatesEnum.CARRY, is_cone).schedule();
+              enumToCommand.getCommand(RobotStatesEnum.CARRY, isCone).schedule();
               curr_state.setState(RobotStatesEnum.CARRY);
               break;
         }
     }
     
     if (controlBoard.getRawButtonPressed(6)) {
-      m_robotContainer.m_intake.driveIntake(0.40);
+      m_robotContainer.m_intake.driveIntake(Constants.INTAKE_BACKWARD);
+      hasCone = true;
     } else if (controlBoard.getRawButtonPressed(8)) {
-      m_robotContainer.m_intake.driveIntake(-0.40);
+      m_robotContainer.m_intake.driveIntake(Constants.INTAKE_FORWARD);
+      hasCone = false;
     } else if (controlBoard.getRawButtonPressed(11)) {
-      SequentialCommandGroup group = new SequentialCommandGroup(
-        m_robotContainer.m_elevator.getPositionCommand(1721),
-        m_robotContainer.m_arm.getPositionCommand(-5400),
-        m_robotContainer.m_intakearm.getIntakeArmCommand(-40000),
-        m_robotContainer.m_intakeSwivel.getCommand(1784)
-      );
+      m_robotContainer.m_intake.stopIntake();
 
-      group.schedule();
-    }
+      if (hasCone) {
+        m_robotContainer.m_intake.getIntakeCommand(Constants.INTAKE_BACKWARD_HOLD).schedule();
+      } else {
+        m_robotContainer.m_intake.getIntakeCommand(Constants.INTAKE_FORWARD_HOLD).schedule();
+      }
     
+    }
   }
 
   @Override

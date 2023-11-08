@@ -17,6 +17,7 @@ public class IntakeSwivel {
     TalonSRX motor;
 
     public IntakeSwivel() {
+        // Initialize motor and settings
         motor = new TalonSRX(Constants.SWIVEL_ID);
 
         motor.configFactoryDefault();
@@ -50,18 +51,18 @@ public class IntakeSwivel {
 
         motor.configContinuousCurrentLimit(30, 60);
         motor.configPeakCurrentLimit(0);
-
     }
 
+    // Position control
     public double getSwivelPosition() {
         return motor.getSelectedSensorPosition();
     }
-
     public void setSwivelPosition(double position) {
         motor.set(TalonSRXControlMode.MotionMagic, position);
     }
 
-    public FunctionalCommand getCommand(double position) {
+    // Create base subsystem command
+    public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(
             () -> System.out.println("Intake swivel command initialized for position: " + position),
             () -> setSwivelPosition(position),
@@ -70,10 +71,12 @@ public class IntakeSwivel {
         );
     }
 
+    // Set encoder value to zero
     public void resetEncoder() {
         motor.setSelectedSensorPosition(0);
     }
 
+    // Put values onto SmartDashboard for testing
     public void smartDashboard() {
         SmartDashboard.putNumber("Intake Swivel Ticks", getSwivelPosition());
         SmartDashboard.putNumber("Intake Swivel Current", motor.getSupplyCurrent());

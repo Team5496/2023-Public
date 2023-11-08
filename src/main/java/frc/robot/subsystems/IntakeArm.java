@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -24,10 +23,9 @@ public class IntakeArm extends SubsystemBase {
 
     public Logger logger;
     public ArrayList<String[]> loggingData;
-
-	// TODO: When we get the Intake Arm, reconfigure PIDs
  
     public IntakeArm() {
+		// Initialize motor and settings
 		motor = new TalonFX(Constants.INTAKE_ARM_ID);
 		
 		motor.configFactoryDefault();
@@ -49,9 +47,9 @@ public class IntakeArm extends SubsystemBase {
 		motor.configMotionCruiseVelocity(20000);
 		motor.configMotionAcceleration(1e6);
 
+		// Initialize logger
 		logger = new Logger("Intake Arm");
         loggingData = new ArrayList<>();
-        
         try {
             logger.initialize();
         } catch (IOException e) {
@@ -60,7 +58,7 @@ public class IntakeArm extends SubsystemBase {
 
     }
 
-	// Logging
+	// Update periodic values
 	@Override
 	public void periodic() {
 		loggingData.add(new String[]{
@@ -90,12 +88,13 @@ public class IntakeArm extends SubsystemBase {
 		return kf;
 	}
 
+	// Position control
     public void setPosition(double position) {
-		//m_motor.config_kF(0, calculateKF(position));
         motor.set(TalonFXControlMode.MotionMagic, position);
     }
 
-	public FunctionalCommand getIntakeArmCommand(double position) {
+	// Create base subsystem command
+	public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(
             () -> {
 				isDone = false;
@@ -107,10 +106,12 @@ public class IntakeArm extends SubsystemBase {
         );
     }
 
-   public void resetEncoder() {
+	// Set encoder value to zero
+    public void resetEncoder() {
         motor.setSelectedSensorPosition(0);
     }
 
+	// Put values into SmartDashboard for testing
 	public void smartDashboard() {
 		SmartDashboard.putNumber("Intake Arm Position", motor.getSelectedSensorPosition());
 	}	

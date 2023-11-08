@@ -4,7 +4,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import java.lang.System;
-import java.util.function.DoubleSupplier;
 
 public class TimedDefaultDriveCommand extends CommandBase {
     private DrivetrainSubsystem m_drivetrainSubsystem;

@@ -17,6 +17,7 @@ import frc.robot.subsystems.LightStates;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    // DRIVETRAIN CONSTANTS
     /**
      * The left-to-right distance between the drivetrain wheels
      *
@@ -54,47 +55,35 @@ public final class Constants {
     
     public static final double WHEEL_CIRCUMFERENCE = 12.57;
 
-    /* ELEVATOR CONSTANTS / PID VALUES */
+
+    // ELEVATOR CONSTANTS
     public static final int LEAD_ELEVATOR_ID = 23; // Left
     public static final int FOLLOW_ELEVATOR_ID = 25; // Right
-
-    public static final int ELEVATOR_CARRY = 200;
-    public static final int ELEVATOR_SHELF = 700;
-    public static final int ELEVATOR_FLOOR = 0;
-
-    public static final int ELEVATOR_MID_CONE = 1609;
-    public static final int ELEVATOR_HIGH_CONE = 1721;
-
-    public static final int ELEVATOR_MID_CUBE = 566;
-    public static final int ELEVATOR_HIGH_CUBE = 1607;
 
     public static final double e_KP = 0.0005;
     public static final double e_KI = 0.0;
     public static final double e_KD = 0.010;
-    public static final double e_KF = 0.00026; // 0.000095
+    public static final double e_KF = 0.00026;
     public static final double e_OUTPUT_MIN = -2;
     public static final double e_OUTPUT_MAX = 2;
 
-    /* ARM CONSTANTS */
+    public static final int ELEVATOR_CARRY = 200;
+    public static final int ELEVATOR_SHELF = 700;
+
+    public static final int ELEVATOR_HIGH_CONE = 1700;
+    public static final int ELEVATOR_MID_CONE = 1500;
+    
+    public static final int ELEVATOR_HIGH_CUBE = 1600;
+    public static final int ELEVATOR_MID_CUBE = 760;
+
+
+    // ARM CONSTANTS
     public static final int ARM_ID = 21; // Lead
-    public static final int ARM_CARRY = 0;
-    public static final int A_PLACE_HIGH = -5485;
-    public static final int A_PLACE_MID = -3300;
-    public static final int A_PLACE_LOW = 0; //497
-    /*
-    public static final int ARM_STRAIGHT = -3400; //1400
-    public static final int ARM_RETRACT = 0; //-300
-    */
-
+    
     public static final double a_KP = 0.00032; 
-    public static final double a_KI = 0.0; //3e-10
+    public static final double a_KI = 0.0;
     public static final double a_KD = 0.0; 
-    public static final double a_KF = 0.0; //2e-6
-
-    public static final double a_KPR = 0.00030; //0.001
-    public static final double a_KIR = 8.75e-11; //3.5e-10
-    public static final double a_KDR = 0.0;
-    public static final double a_KFR = 5e-7; //2e-6
+    public static final double a_KF = 0.0;
 
     public static final int a_OUTPUT_MAX = 2;
     public static final int a_OUTPUT_MIN = -2;
@@ -102,37 +91,69 @@ public final class Constants {
     public static final double a_MIN_VELOCITY = 0.0;
     public static final double a_MAX_ACCELERATION = 0.0;
     public static final double a_ALLOWED_ERROR = 0.0;
+    
+    public static final int ARM_CARRY = 0;
 
-    /* INTAKE ARM CONSTANTS */
-    public static final int INTAKE_ARM_ID = 14;  //falcon
-    public static final double ia_KP = 0.03; // 0.0111
-    public static final double ia_KI = 0.0; // 0
-    public static final double ia_KD = 0.05; // 0.111
-    public static final double ia_KF = 0.01; // 0.0495
+    public static final int ARM_HIGH_CONE = -6360;
+    public static final int ARM_MID_CONE = -2920;
+    public static final int ARM_LOW_CONE = 0;
 
-    //public static final int IA_IN = -100;
-    //public static final int IA_OUT = -20000;
+    public static final int ARM_HIGH_CUBE = -5150;
+    public static final int ARM_MID_CUBE = -1720;
+    public static final int ARM_LOW_CUBE = 0;
+   
+
+    // INTAKE ARM CONSTANTS
+    public static final int INTAKE_ARM_ID = 14; // Falcon
+    public static final double ia_KP = 0.03;
+    public static final double ia_KI = 0.0;
+    public static final double ia_KD = 0.05;
+    public static final double ia_KF = 0.01;
 
     public static final int VTICKS = -24000;
     public static final int HTICKS = -97800;
 
-    public static final int IA_CARRY = 0;
+    public static final int INARM_CARRY = 0;
 
-    public static final int IA_CONE_FLOOR = -61180;
+    public static final int INARM_HIGH_CONE = -38290;
+    public static final int INARM_MID_CONE = -45760;
+    public static final int INARM_LOW_CONE = 345; // Need to Check
+    public static final int INARM_FLOOR_CONE = -61180;
+    public static final int INARM_RAMP_CONE = -21465;    
 
-    public static final int IA_PLACE_CONE_HIGH = -39375;
-    public static final int IA_PLACE_CONE_MID = -28158;
-    public static final int IA_PLACE_CONE_LOW = 346;
+    public static final int INARM_HIGH_CUBE = -52700;
+    public static final int INARM_MID_CUBE = -44990;
+    public static final int INARM_LOW_CUBE = 0; // Need to Check
+    public static final int INARM_FLOOR_CUBE = 0; // Need to Check
+    public static final int INARM_RAMP_CUBE = -18385;
 
-    /*
-    public static final double IA_KP_BACKUP = 0.021408;
-    public static final double IA_KI_BACKUP = 0;
-    public static final double IA_KD_BACKUP = 0;
-    public static final double IA_KF_BACKUP = 0.031972;
-    */
 
-    /* INTAKE CONSTANTS */
-    public static final int INTAKE_ID = 28; //neo
+    // INTAKE SWIVEL CONSTANTS
+    public static final int SWIVEL_ID = 26; // 775
+
+    public static final double s_P = 0.5; // TODO: Test values
+    public static final double s_I = 0.00;
+    public static final double s_D = 0.0;
+    public static final double s_F = 0.001;
+
+    // FULL ROTATION = 6500 TICKS
+    public static final int SWIVEL_CARRY = 2700;
+
+    public static final int SWIVEL_HIGH_CONE = 5385;
+    public static final int SWIVEL_MID_CONE = -810;
+    public static final int SWIVEL_LOW_CONE = -1070; // Need to Check
+    public static final int SWIVEL_FLOOR_CONE = 4245; // Need to Check
+    public static final int SWIVEL_RAMP_CONE = 4245;
+
+    public static final int SWIVEL_HIGH_CUBE = -3955;
+    public static final int SWIVEL_MID_CUBE = 2790;
+    public static final int SWIVEL_LOW_CUBE = 2645; // Need to Check
+    public static final int SWIVEL_FLOOR_CUBE = 1900; // Need to Check
+    public static final int SWIVEL_RAMP_CUBE = 1900;
+
+
+    // INTAKE CONSTANTS
+    public static final int INTAKE_ID = 28; // Neo
 
     public static final double INTAKE_FORWARD = 0.8;
     public static final double INTAKE_BACKWARD = -0.8;
@@ -140,36 +161,16 @@ public final class Constants {
     public static final double INTAKE_FORWARD_HOLD = 0.08;
     public static final double INTAKE_BACKWARD_HOLD = -0.08;
 
-    /* INTAKE SWIVEL CONSTANTS */
-        public static final int SWIVEL_ID = 26; //775
-
-    public static final double s_P = .5; // TODO: Test values
-    public static final double s_I = 0.00;
-    public static final double s_D = 0.0;
-    public static final double s_F = 0.001;
-
-    public static final int SWIVEL_CARRY = 2700;
-
-    public static final double S_CONE_HIGH = -1784.0;
-    public static final double S_CONE_MID = -817;
-    public static final double S_CONE_LOW = -1066;
-    public static final double S_CONE_RAMP = 4245;
-    public static final double S_CONE_FLOOR = -990;
-
-    public static final double S_CUBE_HIGH = 2545;
-    public static final double S_CUBE_MID = 2793;
-    public static final double S_CUBE_LOW = 2645;
-    public static final double S_CUBE_RAMP = 1900;
-    public static final double S_CUBE_FLOOR = 0;
     
-    /* VISION CONSTANTS */
+    // VISION CONSTANTS
     public static final double CAMERA_HEIGHT = 0.0;
     public static final double CAMERA_PITCH = 0.0;
 
     public static final double GRID_TARGET_HEIGHT = 0.0;
     public static final double LOADING_TARGET_HEIGHT = 0.0;
 
-    /* LIGHT CONTANTS */
+
+    // LIGHT CONTANTS
     public static final Map<LightStates,String> LIGHT_STATES; 
     public static final String LIGHT_STATE_OFF =  "{'on':false}";
     public static final String LIGHT_STATE_ON =  "{'on':true}";

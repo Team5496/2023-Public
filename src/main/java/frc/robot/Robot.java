@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import java.util.HashMap;
 
@@ -34,12 +32,10 @@ public class Robot extends TimedRobot {
   private AutoHandler autoHandler;
   private HashMap<String, Command> events;
 
-
   // TELEOP
-
   private GenericHID controlBoard = new GenericHID(1);
   RobotStates curr_state = new RobotStates();
-  public XboxController intakecontroller = new XboxController(2);
+  public XboxController intakeController = new XboxController(2);
   public boolean isCone = false;
   public boolean hasCone = false;
 
@@ -77,14 +73,14 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    // Reset encoder values on auto init
     m_robotContainer.m_elevator.resetEncoderPosition();
     m_robotContainer.m_arm.resetEncoderPosition();
     m_robotContainer.m_intakeArm.resetEncoder();
     m_robotContainer.m_intakeSwivel.resetEncoder();
-
     m_robotContainer.m_drivetrainSubsystem.zeroGyroscope(270.0);
-    m_robotContainer.m_intakeArm.motor.configMotionCruiseVelocity(15000);
-   
+
+    // Initialize commands
     enumToCommand = new EnumToCommand(
       m_robotContainer.m_elevator, 
       m_robotContainer.m_arm, 
@@ -93,12 +89,14 @@ public class Robot extends TimedRobot {
       m_robotContainer.m_intakeSwivel
     );
 
+    m_robotContainer.m_intakeArm.motor.configMotionCruiseVelocity(15000);
     // enumToCommand.getCommand(RobotStatesEnum.PLACE_CUBE_MID_AUTO, false).schedule();
   }
  
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    // Update SmartDashboard during auto
     m_robotContainer.m_intakeArm.smartDashboard();
     m_robotContainer.m_arm.smartDashboard();
     m_robotContainer.m_elevator.smartDashboard();
@@ -106,25 +104,36 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    // End any incomplete auto commands
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
 
+    // Reset encoder values on teleop init
     m_robotContainer.m_elevator.resetEncoderPosition();
     m_robotContainer.m_arm.resetEncoderPosition();
     m_robotContainer.m_intakeArm.resetEncoder();
     m_robotContainer.m_intakeSwivel.resetEncoder();
 
-    enumToCommand = new EnumToCommand(m_robotContainer.m_elevator, m_robotContainer.m_arm, m_robotContainer.m_intake, m_robotContainer.m_intakeArm, m_robotContainer.m_intakeSwivel);
-            
-    m_robotContainer.m_intakeArm.motor.configMotionCruiseVelocity(30000);
+    // Initialize commands
+    enumToCommand = new EnumToCommand(
+      m_robotContainer.m_elevator,
+      m_robotContainer.m_arm, 
+      m_robotContainer.m_intake, 
+      m_robotContainer.m_intakeArm, 
+      m_robotContainer.m_intakeSwivel
+    );
+
+    // Put the robot in carry on init
     curr_state.setState(RobotStatesEnum.CARRY);
-    
+
+    m_robotContainer.m_intakeArm.motor.configMotionCruiseVelocity(30000);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // Update SmartDashboard during teleop
     m_robotContainer.m_intakeArm.smartDashboard();
     m_robotContainer.m_arm.smartDashboard();
     m_robotContainer.m_elevator.smartDashboard();
@@ -135,6 +144,7 @@ public class Robot extends TimedRobot {
       isCone = !isCone;
     }
   
+    // Robot control / State machine
     if (controlBoard.getRawButtonPressed(1)) {
         switch (curr_state.getState()) {
             case CARRY:
@@ -203,6 +213,7 @@ public class Robot extends TimedRobot {
         }
     }
     
+    // Intake Controls
     if (controlBoard.getRawButtonPressed(6)) {
       m_robotContainer.m_intake.driveIntake(Constants.INTAKE_BACKWARD);
       hasCone = true;
@@ -217,7 +228,6 @@ public class Robot extends TimedRobot {
       } else {
         m_robotContainer.m_intake.getIntakeCommand(Constants.INTAKE_FORWARD_HOLD).schedule();
       }
-    
     }
   }
 

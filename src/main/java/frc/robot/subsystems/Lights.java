@@ -17,9 +17,8 @@ public class Lights {
             System.err.println("Error setting up serial port, lights will probably not work");
         }
     }
-    /*
-     * set state until state is set otherwise
-     */
+    
+    // Set state until state is set otherwise
     public void setState(LightStates state) {
         try {
             String command = Constants.LIGHT_STATES.getOrDefault(state,Constants.DEFAULT_LIGHT_STATE);
@@ -30,10 +29,10 @@ public class Lights {
         }
     }
 
+    // Control lights
     public void on() {
         this.setState(LightStates.ON);
     }
-
     public void off() {
         this.setState(LightStates.OFF);
     }    

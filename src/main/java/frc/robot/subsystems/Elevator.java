@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase {
 
     public Elevator() {
         super();
-
+        // Initialize motors, motor controllers, and settings
         leader = new CANSparkMax(Constants.LEAD_ELEVATOR_ID, MotorType.kBrushless);
         follower = new CANSparkMax(Constants.FOLLOW_ELEVATOR_ID, MotorType.kBrushless);
 
@@ -49,9 +49,9 @@ public class Elevator extends SubsystemBase {
         leaderController.setFF(Constants.e_KF, 0);
         leaderController.setOutputRange(Constants.e_OUTPUT_MIN, Constants.e_OUTPUT_MAX, 0);
 
+        // Initialize logger
         logger = new Logger("Elevator");
         loggingData = new ArrayList<>();
-        
         try {
             logger.initialize();
         } catch (IOException e) {
@@ -60,7 +60,7 @@ public class Elevator extends SubsystemBase {
 
     }
 
-    // Logging
+    // Update periodic values
     @Override
     public void periodic() {
         loggingData.add(new String[]{
@@ -79,14 +79,15 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    // Position control
     public void setPosition(double position) {
         leaderController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
-
     public double getPosition() {
         return leaderEncoder.getPosition();
     }
 
+    // Create base subsystem commands
     public FunctionalCommand getPositionCommand(double position) {
         return new FunctionalCommand(
             () -> goingTo = position,
@@ -95,7 +96,6 @@ public class Elevator extends SubsystemBase {
             () -> Math.abs(getPosition() - position) <= 300
         );
     }
-
     public SequentialCommandGroup getPositionCommandSequential(double... positions) {
         SequentialCommandGroup group = new SequentialCommandGroup(new InstantCommand(() -> setPosition(positions[0])));
     
@@ -109,11 +109,13 @@ public class Elevator extends SubsystemBase {
         return group;
     }
 
+    // Set encoder values to zero
     public void resetEncoderPosition() {
         leaderEncoder.setPosition(0);
         followerEncoder.setPosition(0);
     }
 
+    // Put values into SmartDashboard for testing
     public void smartDashboard() {
         SmartDashboard.putNumber("Lead Position", leaderEncoder.getPosition());
     }
@@ -128,19 +130,4 @@ public class Elevator extends SubsystemBase {
     public double getOutput() {
         return leader.getOutputCurrent();
     }    
-
-     /* Nudging elevator with joystick
-    public void driveJoystick(double y) {
-        leader.set(y);
-    }
-    public void goUp() {
-        leaderController.setReference(50, CANSparkMax.ControlType.kVelocity);
-    }
-    public void goDown() {
-        leaderController.setReference(-50.0, CANSparkMax.ControlType.kVelocity);
-    }
-    public void hold() {
-        leaderController.setReference(e_leaderEncoder.getPosition(), CANSparkMax.ControlType.kPosition);
-    }
-    */
 }
